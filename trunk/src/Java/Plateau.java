@@ -128,8 +128,12 @@ public int rotationAleatoire()
 		return PlateauCase[ligne][colonne];
 	}
 	
-	public void modifierColonne(int colonne, Partie maPartie, String sens)
+	public Case modifierColonne(Coup monCoup)
 	{
+		Case caseCoup = monCoup.maCase;
+		colonne = monCoup.modif;
+		String sens = monCoup.sens;
+		
 		Case caseTemp;
 		if(sens=="haut")
 		{
@@ -140,7 +144,7 @@ public int rotationAleatoire()
 			}
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
-			PlateauCase[0][colonne]=maPartie.getCaseCourante();
+			PlateauCase[0][colonne]=caseCoup;
 		}
 		else
 		{
@@ -151,13 +155,17 @@ public int rotationAleatoire()
 			}
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
-			PlateauCase[6][colonne]=maPartie.getCaseCourante();
+			PlateauCase[6][colonne]=caseCoup;
 		}
-		maPartie.setCaseCourante(caseTemp);
+		return caseTemp;
 	}
 	
-	public void modifierLigne(int ligne, Partie maPartie, String sens)
+	public Case modifierLigne(Coup monCoup)
 	{
+		Case caseCoup = monCoup.maCase;
+		ligne = monCoup.modif;
+		String sens = monCoup.sens;
+		
 		Case caseTemp;
 		if(sens=="gauche")
 		{
@@ -168,7 +176,7 @@ public int rotationAleatoire()
 			}
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
-			PlateauCase[ligne][0]=maPartie.getCaseCourante();
+			PlateauCase[ligne][0]=caseCoup;
 		}
 		else
 		{	
@@ -179,9 +187,9 @@ public int rotationAleatoire()
 			}
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
-			PlateauCase[ligne][6]=maPartie.getCaseCourante();
+			PlateauCase[ligne][6]=caseCoup;
 		}
-		maPartie.setCaseCourante(caseTemp);
+		return caseTemp;
 	}
 
 	

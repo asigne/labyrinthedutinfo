@@ -49,26 +49,26 @@ public final class R {
     }
     public static final class id {
         public static final int AbsoluteLayout01=0x7f050000;
-        public static final int CaseCourante=0x7f05003a;
+        public static final int CaseCourante=0x7f05004b;
         public static final int Plateau=0x7f050001;
-        public static final int Text01=0x7f05004b;
-        public static final int TextView01=0x7f05004c;
-        public static final int fb1=0x7f050040;
-        public static final int fb2=0x7f050041;
-        public static final int fb3=0x7f050042;
-        public static final int fd1=0x7f050048;
-        public static final int fd2=0x7f050049;
-        public static final int fd3=0x7f05004a;
-        public static final int fg1=0x7f050044;
-        public static final int fg2=0x7f050045;
-        public static final int fg3=0x7f050046;
-        public static final int fh1=0x7f05003c;
-        public static final int fh2=0x7f05003d;
-        public static final int fh3=0x7f05003e;
-        public static final int flechesbas=0x7f05003f;
-        public static final int flechesdroite=0x7f050047;
-        public static final int flechesgauche=0x7f050043;
-        public static final int flecheshaut=0x7f05003b;
+        public static final int Text01=0x7f05004c;
+        public static final int TextView01=0x7f05004d;
+        public static final int fb1=0x7f05003f;
+        public static final int fb3=0x7f050040;
+        public static final int fb5=0x7f050041;
+        public static final int fd1=0x7f050047;
+        public static final int fd3=0x7f050048;
+        public static final int fd5=0x7f050049;
+        public static final int fg1=0x7f050043;
+        public static final int fg3=0x7f050044;
+        public static final int fg5=0x7f050045;
+        public static final int fh1=0x7f05003b;
+        public static final int fh3=0x7f05003c;
+        public static final int fh5=0x7f05003d;
+        public static final int flechesbas=0x7f05003e;
+        public static final int flechesdroite=0x7f050046;
+        public static final int flechesgauche=0x7f050042;
+        public static final int flecheshaut=0x7f05003a;
         public static final int l0=0x7f050002;
         public static final int l0_c0=0x7f050003;
         public static final int l0_c1=0x7f050004;
@@ -125,6 +125,7 @@ public final class R {
         public static final int l6_c4=0x7f050037;
         public static final int l6_c5=0x7f050038;
         public static final int l6_c6=0x7f050039;
+        public static final int layoutCaseCourante=0x7f05004a;
     }
     public static final class layout {
         public static final int jeu=0x7f030000;

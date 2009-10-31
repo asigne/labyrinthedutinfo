@@ -4,288 +4,280 @@ import Java.*;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class Labyrinthe extends Activity 
 {
-	ImageView fg1;
-    ImageView fg2;
-    ImageView fg3;
-    ImageView fd1;
-    ImageView fd2;
-    ImageView fd3;
-    ImageView fh1;
-    ImageView fh2;
-    ImageView fh3;
-    ImageView fb1;
-    ImageView fb2;
-    ImageView fb3;
-    ImageView imageCourante;
+	ImageView fg1, fg3, fg5, fd1, fd3, fd5, fh1, fh3, fh5, fb1, fb3, fb5, imageCourante;
+	RotateAnimation rotation0, rotation90, rotation180, rotation270;
+    
+	TextView Text01;
+    
     Partie maPartie;
     Plateau monPlateau;
-    Case caseCourante;
-    ImageView TabImageView[][];
+    Case caseCourante;	
+    Coup monCoup;
+    
     int ligne, colonne;
+    String fleche;
     
-    TextView Text01;
-    
-    RotateAnimation rotation0;
-    RotateAnimation rotation90;
-    RotateAnimation rotation180;
-    RotateAnimation rotation270;
- 
-//methode permettant de récupérer la case en fonction du clic sur l'écran    
+    //coordonnées du plateau de jeu
+    int xmin=13, xmax=307;
+	int ymin=86, ymax=380;
+	int tailleCase = 42; //taille d'une case du plateau
+	int tailleFleche = 13; //largeur fleche
+
+
+public void onCreate(Bundle savedInstanceState)
+    {    	    	
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.jeu);   
+         initImageView();
+         
+         Text01 = (TextView) findViewById(R.id.Text01);
+         
+         maPartie=new Partie("Partie1");     
+         monPlateau=maPartie.getMonPlateau();
+         caseCourante=maPartie.getCaseCourante();
+
+         afficheEcranJeu();
+    }  
+
+//methode permettant de gérer les clic sur l'écran   
 public boolean onTouchEvent(MotionEvent event)
 {
 	if (event.getAction() == MotionEvent.ACTION_DOWN)
 		{
 			int x = (int) (event.getX());
 			int y = (int) (event.getY());
-
-  
-			int xmin=13, xmax=307;
-			int ymin=86, ymax=380;
-			int tailleCase = 42;
-			colonne=0;
-			ligne=0;
+			Text01.setText("x:"+x+" y:"+y);
+			
 			if(x>xmin && x<=xmax && y>ymin && y<ymax)
-				{
-					if(x<=xmin+tailleCase)
-						{
-							colonne=0;
-						}
-					else if(x<=xmin+tailleCase*2)
-						{
-							colonne=1;
-						}	
-					else if(x<=xmin+tailleCase*3)
-					    {
-					  		colonne=2;
-					    }
-					else if(x<=xmin+tailleCase*4)
-					    {
-							colonne=3;
-					    }
-					else if(x<=xmin+tailleCase*5)
-						{
-					   		colonne=4;
-					    }
-					else if(x<=xmin+tailleCase*6)
-					    {
-							colonne=5;
-					    }
-					else if(x<=xmin+tailleCase*7)
-					    {
-					    	colonne=6;
-					    }
-
-					if(y<=ymin+tailleCase)
-						{
-							ligne=0;
-						}	
-					else if(y<=ymin+tailleCase*2)
-						{
-							ligne=1;
-						}
-					else if(y<=ymin+tailleCase*3)
-						{
-							ligne=2;
-						}
-					else if(y<=ymin+tailleCase*4)
-						{
-							ligne=3;
-						}
-					else if(y<=ymin+tailleCase*5)
-						{
-							ligne=4;
-						}
-					else if(y<=ymin+tailleCase*6)
-						{
-							ligne=5;
-						}
-					else if(y<=ymin+tailleCase*7)
-						{
-							ligne=6;
-						}	
-					int flag = monPlateau.getCase(ligne, colonne).getFlag();
-					
-					Text01.setText("ligne:"+ligne+" colonne:"+colonne+"    "+flag);
-					//TabImageView[ligne][colonne].setVisibility(4);
-					
-					//appeler la methode permettant de placer un joueur sur une case !
-					
-					return true;
-
-				}
-			return false;
-		}
-	return false;           
-}
-    
-public void onCreate(Bundle savedInstanceState)
-   {    	    	
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.jeu);    
-        
-        fg1 = (ImageView) findViewById(R.id.fg1);
-        fg2 = (ImageView) findViewById(R.id.fg2);
-        fg3 = (ImageView) findViewById(R.id.fg3);
-        fd1 = (ImageView) findViewById(R.id.fd1);
-        fd2 = (ImageView) findViewById(R.id.fd2);
-        fd3 = (ImageView) findViewById(R.id.fd3);
-        fh1 = (ImageView) findViewById(R.id.fh1);
-        fh2 = (ImageView) findViewById(R.id.fh2);
-        fh3 = (ImageView) findViewById(R.id.fh3);
-        fb1 = (ImageView) findViewById(R.id.fb1);
-        fb2 = (ImageView) findViewById(R.id.fb2);
-        fb3 = (ImageView) findViewById(R.id.fb3);   
-        imageCourante = (ImageView) findViewById(R.id.CaseCourante);
-        Text01 = (TextView) findViewById(R.id.Text01);
-        
-        maPartie=new Partie("Partie1");     
-        monPlateau=maPartie.getMonPlateau();
-        caseCourante=maPartie.getCaseCourante();
-
-        afficheEcranJeu();
-        
-        //action sur les fleches du haut
-    	fh1.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierColonne(1, maPartie, "haut");		
-				afficheEcranJeu();
-				lockFleche(fb1);				
+			{
+				pointToCase(x, y);
+				return true;
 			}
-	    });
-	    fh2.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierColonne(3, maPartie, "haut");		
-				afficheEcranJeu();
-				lockFleche(fb2);	
+			else if(x>xmin-tailleFleche && x<=xmax+tailleFleche && y>ymin-tailleFleche && y<ymax+tailleFleche)
+			{
+				pointToFleche(x,y);
+				return true;
 			}
-	    });
-	    fh3.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierColonne(5, maPartie, "haut");		
-				afficheEcranJeu();
-				lockFleche(fb3);	
-			}
-	    });
-	    //action sur les fleches du bas
-	    fb1.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierColonne(1, maPartie, "bas");		
-				afficheEcranJeu();
-				lockFleche(fh1);	
-			}
-	    });
-	    fb2.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierColonne(3, maPartie, "bas");		
-				afficheEcranJeu();
-				lockFleche(fh2);	
-			}
-	    });
-	    fb3.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierColonne(5, maPartie, "bas");		
-				afficheEcranJeu();
-				lockFleche(fh3);	
-			}
-	    });
-	    //action sur les fleches de gauche
-	    fg1.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierLigne(1, maPartie, "gauche");		
-				afficheEcranJeu();
-				lockFleche(fd1);	
-			}
-	    });
-	    fg2.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierLigne(3, maPartie, "gauche");		
-				afficheEcranJeu();
-				lockFleche(fd2);	
-			}
-	    });
-	    fg3.setOnClickListener(new View.OnClickListener()
-
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierLigne(5, maPartie, "gauche");		
-				afficheEcranJeu();
-				lockFleche(fd3);	
-			}
-	    });
-	    //action sur les fleches de droite
-	    fd1.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierLigne(1, maPartie, "droite");		
-				afficheEcranJeu();
-				lockFleche(fg1);	
-			}
-	    });
-	    fd2.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierLigne(3, maPartie, "droite");		
-				afficheEcranJeu();
-				lockFleche(fg2);	
-			}
-	    });
-	    fd3.setOnClickListener(new View.OnClickListener()
-	    {
-			public void onClick(View v) {
-				monPlateau.modifierLigne(5, maPartie, "droite");		
-				afficheEcranJeu();
-				lockFleche(fg3);	
-			}
-	    });
-	    
-	    //action sur l'image courante : la faire tourner de 90° sur la droite
-	    imageCourante.setOnClickListener(new View.OnClickListener()
-	    {	
-	    	public void onClick(View v) 
-	    	{
-	    		caseCourante=maPartie.getCaseCourante();
+			else if(x>240 && y>350)
+			{
+				Text01.setText("balbal");
+				//action sur la caseCourante
+				caseCourante=maPartie.getCaseCourante();
 				caseCourante.rotate(90);
 				int indiceRotation=caseCourante.getRotation();
 				Text01.setText("click"+indiceRotation);
 	    		afficheCaseCourante();
-	    	}
-	    });
-   }
+				return true;
+			}
+		}
+	return false;
+}
 
-	//methode permettant de supprimer la fleche "interdite"
-   public void lockFleche(ImageView fleche){
-		fb1.setVisibility(3);
-		fb2.setVisibility(3);
-		fb3.setVisibility(3);
-		fh1.setVisibility(3);
-		fh2.setVisibility(3);
-		fh3.setVisibility(3);
-		fg1.setVisibility(3);
-		fg2.setVisibility(3);
-		fg3.setVisibility(3);
-		fd1.setVisibility(3);
-		fd2.setVisibility(3);
-		fd3.setVisibility(3);	
-		fleche.setVisibility(4);
-   }
-   
-   //methode permettant d'afficher le plateau et la carte courante
-   public void afficheEcranJeu()
+public void pointToCase(int x, int y)
+{
+	ligne=0; colonne=0;
+	if(x<=xmin+tailleCase)
+		{
+			colonne=0;
+		}
+	else if(x<=xmin+tailleCase*2)
+		{
+			colonne=1;
+		}	
+	else if(x<=xmin+tailleCase*3)
+	    {
+	  		colonne=2;
+	    }
+	else if(x<=xmin+tailleCase*4)
+	    {
+			colonne=3;
+	    }
+	else if(x<=xmin+tailleCase*5)
+		{
+	   		colonne=4;
+	    }
+	else if(x<=xmin+tailleCase*6)
+	    {
+			colonne=5;
+	    }
+	else if(x<=xmin+tailleCase*7)
+	    {
+	    	colonne=6;
+	    }
+
+	if(y<=ymin+tailleCase)
+		{
+			ligne=0;
+		}	
+	else if(y<=ymin+tailleCase*2)
+		{
+			ligne=1;
+		}
+	else if(y<=ymin+tailleCase*3)
+		{
+			ligne=2;
+		}
+	else if(y<=ymin+tailleCase*4)
+		{
+			ligne=3;
+		}
+	else if(y<=ymin+tailleCase*5)
+		{
+			ligne=4;
+		}
+	else if(y<=ymin+tailleCase*6)
+		{
+			ligne=5;
+		}
+	else if(y<=ymin+tailleCase*7)
+		{
+			ligne=6;
+		}	
+	int flag = monPlateau.getCase(ligne, colonne).getFlag();
+	Text01.setText("ligne:"+ligne+" colonne:"+colonne+"    "+flag);
+}
+
+public void pointToFleche(int x, int y)
+{				
+	int modif;
+	pointToCase(x,y);
+	if(x>xmin-tailleFleche && x<xmin)
+	{
+		fleche="gauche";
+	}
+	else if(x>xmax && x<xmax+tailleFleche)
+	{
+		fleche="droite";
+	}
+	else if(y>ymin-tailleFleche && y<ymin)
+	{
+		fleche="haut";
+	}
+	else if(y>ymax && y<ymax+tailleFleche)
+	{
+		fleche="bas";
+	}		
+	
+	if(fleche=="haut" ||fleche=="bas")
+		{
+			modif=colonne;
+		}
+	else
+		{
+			modif=ligne;
+		}	
+	
+	Text01.setText("fleche:"+fleche+" numero:"+ligne+colonne);
+	if(modif==1 || modif==3 || modif==5)
+		{
+			monCoup = new Coup(caseCourante, modif, fleche);
+			maPartie.modifierPlateau(monCoup);
+			lockFleche(fleche,modif);
+			caseCourante=maPartie.getCaseCourante();
+			afficheEcranJeu();	
+		}
+
+}
+ 
+private void initImageView() {
+		fg1 = (ImageView) findViewById(R.id.fg1);
+        fg3 = (ImageView) findViewById(R.id.fg3);
+        fg5 = (ImageView) findViewById(R.id.fg5);
+        fd1 = (ImageView) findViewById(R.id.fd1);
+        fd3 = (ImageView) findViewById(R.id.fd3);
+        fd5 = (ImageView) findViewById(R.id.fd5);
+        fh1 = (ImageView) findViewById(R.id.fh1);
+        fh3 = (ImageView) findViewById(R.id.fh3);
+        fh5 = (ImageView) findViewById(R.id.fh5);
+        fb1 = (ImageView) findViewById(R.id.fb1);
+        fb3 = (ImageView) findViewById(R.id.fb3);
+        fb5 = (ImageView) findViewById(R.id.fb5);   
+        imageCourante = (ImageView) findViewById(R.id.CaseCourante);
+}
+
+public void lockFleche(String fleche, int indice){
+	fb1.setVisibility(3);
+	fb3.setVisibility(3);
+	fb5.setVisibility(3);
+	fh1.setVisibility(3);
+	fh3.setVisibility(3);
+	fh5.setVisibility(3);
+	fg1.setVisibility(3);
+	fg3.setVisibility(3);
+	fg5.setVisibility(3);
+	fd1.setVisibility(3);
+	fd3.setVisibility(3);
+	fd5.setVisibility(3);	
+	if(fleche=="haut")
+		{
+			switch(indice)
+			{
+				case 1:
+					fb1.setVisibility(4);
+					break;
+				case 3:
+					fb3.setVisibility(4);
+					break;
+				case 5:
+					fb5.setVisibility(4);
+					break;
+			}
+		}
+	else if(fleche=="bas")
+		{
+			switch(indice)
+			{
+				case 1:
+					fh1.setVisibility(4);
+					break;
+				case 3:
+					fh3.setVisibility(4);
+					break;
+				case 5:
+					fh5.setVisibility(4);
+					break;
+			}
+		}
+	else if(fleche=="gauche")
+		{
+			switch(indice)
+			{
+				case 1:
+					fd1.setVisibility(4);
+					break;
+				case 3:
+					fd3.setVisibility(4);
+					break;
+				case 5:
+					fd5.setVisibility(4);
+					break;
+			}
+		}
+	else
+		{
+			switch(indice)
+			{
+				case 1:
+					fg1.setVisibility(4);
+					break;
+				case 3:
+					fg3.setVisibility(4);
+					break;
+				case 5:
+					fg5.setVisibility(4);
+					break;
+			}
+		}
+}
+
+//methode permettant d'afficher le plateau et la carte courante
+public void afficheEcranJeu()
    {
 		for(int i=0;i<7;i++)
 		{
@@ -303,8 +295,8 @@ public void onCreate(Bundle savedInstanceState)
 	   afficheCaseCourante();
    }
 
-   // methode initilisant les rotations
-   public void initRotation(int tailleImage)
+// methode initilisant les rotations
+public void initRotation(int tailleImage)
    {
 	   	int centre=tailleImage/2;
 		rotation0 = new RotateAnimation(0, 0, centre, centre);
@@ -325,9 +317,8 @@ public void onCreate(Bundle savedInstanceState)
 		rotation270.setFillAfter(true);  
    }
 
-   
-   //methode permettant d'afficher le plateau 
-   public void affichePlateau2D()
+//methode permettant d'afficher le plateau 
+public void affichePlateau2D()
    {
 		ImageView ICT; //Image en Cours de Traitement
 		int k=0;		// compteur pour selectionner l'id de la case du tableaux
@@ -389,8 +380,8 @@ public void onCreate(Bundle savedInstanceState)
 		}	
    }
    
-   //methode permettant d'afficher la case courante
-   public void afficheCaseCourante()
+//methode permettant d'afficher la case courante
+public void afficheCaseCourante()
    {   
 	   initRotation(80);
 	   
@@ -433,9 +424,9 @@ public void onCreate(Bundle savedInstanceState)
 		
    }
 
-   //fonction permettant de savoir si une case est accessible depuis la postion du joueur
-   // correspondant aux parametres ligne et colonne.
-   public static void fonction(int ligne, int colonne, Partie maPartie)
+//fonction permettant de savoir si une case est accessible depuis la postion du joueur
+// correspondant aux parametres ligne et colonne.
+public static void fonction(int ligne, int colonne, Partie maPartie)
    {
 		Plateau monPlateau=maPartie.getMonPlateau();
 		Case maCase=monPlateau.getCase(ligne, colonne);

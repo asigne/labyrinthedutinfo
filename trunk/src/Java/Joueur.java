@@ -1,14 +1,18 @@
 package Java;
 
+import java.util.ArrayList;
+
 public abstract class Joueur {
 	String nom;
 	Pion pion;
 	Partie partieActuelle;
+	ArrayList<Carte> ListCarte;
 	
 	public Joueur(String nom){
 		this.nom=nom;
 		//pour le pion : a revoir
 		pion = new Pion("couleur");
+		ListCarte = new ArrayList<Carte>();
 	}
 	
 	public void creerServeur(String nomServeur)
@@ -39,4 +43,19 @@ public abstract class Joueur {
 		partieActuelle.modifierPlateau(monCoup);
 		return true;
 	}
+	
+	public void ajouterCarte(Carte newCarte)
+	{
+		ListCarte.add(newCarte);
+	}
+	
+	public void supprPion(Carte oldCarte)
+	{
+		ListCarte.remove(oldCarte);
+	}
+		
+	public ArrayList<Carte> getListCarte() {
+		return ListCarte;
+	}
+	
 }
