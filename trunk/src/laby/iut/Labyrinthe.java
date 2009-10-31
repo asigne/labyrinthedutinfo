@@ -36,7 +36,8 @@ public class Labyrinthe extends Activity
     RotateAnimation rotation90;
     RotateAnimation rotation180;
     RotateAnimation rotation270;
-   
+ 
+//methode permettant de récupérer la case en fonction du clic sur l'écran    
 public boolean onTouchEvent(MotionEvent event)
 {
 	if (event.getAction() == MotionEvent.ACTION_DOWN)
@@ -144,11 +145,9 @@ public void onCreate(Bundle savedInstanceState)
         imageCourante = (ImageView) findViewById(R.id.CaseCourante);
         Text01 = (TextView) findViewById(R.id.Text01);
         
-       
         maPartie=new Partie("Partie1");     
         monPlateau=maPartie.getMonPlateau();
         caseCourante=maPartie.getCaseCourante();
-      
 
         afficheEcranJeu();
         
@@ -254,6 +253,7 @@ public void onCreate(Bundle savedInstanceState)
 			}
 	    });
 	    
+	    //action sur l'image courante : la faire tourner de 90° sur la droite
 	    imageCourante.setOnClickListener(new View.OnClickListener()
 	    {	
 	    	public void onClick(View v) 
@@ -267,6 +267,7 @@ public void onCreate(Bundle savedInstanceState)
 	    });
    }
 
+	//methode permettant de supprimer la fleche "interdite"
    public void lockFleche(ImageView fleche){
 		fb1.setVisibility(3);
 		fb2.setVisibility(3);
@@ -283,6 +284,7 @@ public void onCreate(Bundle savedInstanceState)
 		fleche.setVisibility(4);
    }
    
+   //methode permettant d'afficher le plateau et la carte courante
    public void afficheEcranJeu()
    {
 		for(int i=0;i<7;i++)
@@ -295,13 +297,13 @@ public void onCreate(Bundle savedInstanceState)
 			}	
 		}
 	   
-	   
 	   fonction(0,0, maPartie); 
 	   Text01.setText("afficheecranjeu");
 	   affichePlateau2D();
 	   afficheCaseCourante();
    }
-   
+
+   // methode initilisant les rotations
    public void initRotation(int tailleImage)
    {
 	   	int centre=tailleImage/2;
@@ -324,7 +326,7 @@ public void onCreate(Bundle savedInstanceState)
    }
 
    
-   
+   //methode permettant d'afficher le plateau 
    public void affichePlateau2D()
    {
 		ImageView ICT; //Image en Cours de Traitement
@@ -387,6 +389,7 @@ public void onCreate(Bundle savedInstanceState)
 		}	
    }
    
+   //methode permettant d'afficher la case courante
    public void afficheCaseCourante()
    {   
 	   initRotation(80);
@@ -430,6 +433,8 @@ public void onCreate(Bundle savedInstanceState)
 		
    }
 
+   //fonction permettant de savoir si une case est accessible depuis la postion du joueur
+   // correspondant aux parametres ligne et colonne.
    public static void fonction(int ligne, int colonne, Partie maPartie)
    {
 		Plateau monPlateau=maPartie.getMonPlateau();
