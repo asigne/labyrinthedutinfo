@@ -1,11 +1,16 @@
 package Java;
 
 public class Carte {
-	String nom;
-	int noImage;
 	
-	public Carte(String nom)
+	int identifiant;
+	
+	public Carte(int identifiant)
 	{
-		this.nom=nom;
+		this.identifiant=identifiant;
+	}
+	
+	public String toString()
+	{
+		return (""+this.identifiant);
 	}
 }

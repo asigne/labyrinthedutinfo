@@ -4,14 +4,18 @@ import java.util.ArrayList;
 
 public abstract class Case
 {
-	ArrayList<Pion> ListPion;
-	int rotation;
-	int noImage;
-	boolean tabDroit[];
+	int identifiant; //identifiant pour les cases possédante une image sinon 0
+	ArrayList<Pion> ListPion; //liste des pions situés sur cette case
+	int rotation; //indice de rotation par rapport à la position originale
+	int noImage; //numero de l'image ou 0 sinon
+	boolean tabDroit[]; //tableau contenant les possibilité de sortie de la case
 
-	int entree;
-	int sortie;
-	int flag;
+	//attributs utilisés lors de la recherche de chemin possible
+	int flag; //indique si la case est accessible ou non
+	//pour les attributs entree et sortie les valeurs possibles sont : 1 pour haut, 2 pour droite, 3 pour bas et 4 pour gauche
+	int entree; //indique l'entree de la case
+	int sortie; // indique la sortie de la case
+	
 	
 	public Case(int noImage)
 		{
@@ -25,9 +29,9 @@ public abstract class Case
 	
 	public String toString()
 		{
-			//return this.rotation+" "+this.noImage;
 			return tabDroit[1]+" "+tabDroit[2]+" "+tabDroit[3]+" "+tabDroit[4]+" "+this.rotation+" "+this.flag;
 		}
+	
 	
 	public int getFlag() {
 		return flag;
@@ -36,13 +40,12 @@ public abstract class Case
 	public void setFlag(int flag) {
 		this.flag = flag;
 	}
-	
-	
+		
+	//methode retournant le droit associé au rang fourni
 	public boolean getTabDroit(int rang) {
 		return tabDroit[rang];
 	}
 
-	
 	public int getNoImage()
 		{
 			return this.noImage;
@@ -53,29 +56,29 @@ public abstract class Case
 			return this.ListPion;
 		}
 	
+	//methode permettant de faire tourner la case de 'indice' degrés
+	//l'indice rotation  et les droits de la case sont modifiés
 	public void rotate(int indice)
 	{
-				for(int i=0;i<indice;i=i+90)
+		for(int i=0;i<indice;i=i+90)
+		{
+				tabDroit[0]=tabDroit[4];	//droit temporaire pour l'échange
+				if(rotation<270)
+					{
+						rotation=rotation+90;	//MaJ de rotation
+					}
+				else
+					{
+						rotation=0;				//360° correspond a 0°
+						
+					}	
+				for(int j=4;j>0;j--)	
 				{
-						tabDroit[0]=tabDroit[4];
-						if(rotation<270)
-							{
-								rotation=rotation+90;
-							}
-						else
-							{
-								rotation=0;
-								
-							}	
-						for(int j=4;j>0;j--)
-						{
-							this.tabDroit[j]=this.tabDroit[j-1];
-						}
-					
+					this.tabDroit[j]=this.tabDroit[j-1];	//MaJ des droits
 				}
+		}
 	}
 
-	
 	public int getEntree()
 	{
 		return this.entree;
@@ -86,7 +89,6 @@ public abstract class Case
 		return this.sortie;
 	}
 	
-
 	public void setEntree(int entree) {
 		this.entree = entree;
 	}
