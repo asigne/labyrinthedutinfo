@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_gravity="center_vertical|center_horizontal">
+  
+
+<LinearLayout android:id="@+id/LinearLayout0O1" 
+  android:layout_width="wrap_content" 
+  android:layout_gravity="center_vertical|center_horizontal" android:gravity="center_vertical|center_horizontal" android:orientation="vertical" android:layout_height="fill_parent">
+  
+<ProgressBar android:id="@+id/ProgressBar01" 
+  android:layout_height="wrap_content" 
+  android:layout_width="wrap_content" 
+  android:layout_gravity="center_vertical|center_horizontal" android:indeterminate="true" android:indeterminateOnly="true" android:indeterminateBehavior="repeat">
+</ProgressBar>
+<TextView android:id="@+id/LoadingTextView" 
+  android:layout_width="wrap_content" 
+  android:layout_height="wrap_content" android:layout_gravity="center_vertical|center_horizontal" android:text="Loading...">
+</TextView>
+
+</LinearLayout>
+
+
+</LinearLayout>

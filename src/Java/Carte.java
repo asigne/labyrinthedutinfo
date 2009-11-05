@@ -13,4 +13,10 @@ public class Carte {
 	{
 		return (""+this.identifiant);
 	}
+
+	public int getIdentifiant() {
+		return identifiant;
+	}
+	
+	
 }
