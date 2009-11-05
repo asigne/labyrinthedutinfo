@@ -23,10 +23,10 @@ public class Partie {
 		caseCourante=monPlateau.ListCase.get(0);
 		
 		//creation des cartes
-		/*for(int i=0; i<nbCarte;i++)
+		for(int i=1; i<=nbCarte;i++)
 		{
 			ListCarte.add(new Carte(i));
-		}*/
+		}
 	}
 	
 	
@@ -76,10 +76,12 @@ public class Partie {
 	{
 		//distribution des cartes aux joueurs
 		int numJoueur=0;
+		int carteAleatoire;
 		Carte carteActuelle;
 		while(!ListCarte.isEmpty())
 			{
-				carteActuelle=ListCarte.get(0);
+				carteAleatoire=(int)(Math.random()*ListCarte.size());
+				carteActuelle=ListCarte.get(carteAleatoire);
 				ListJoueur.get(numJoueur).ajouterCarte(carteActuelle);
 				if(numJoueur==ListJoueur.size()-1)
 					{
@@ -87,9 +89,10 @@ public class Partie {
 					}
 				else
 					{
+						//System.out.println(numJoueur);
 						numJoueur++;
 					}
-				ListCarte.remove(0);
+				ListCarte.remove(carteAleatoire);
 			}
 	}
 	
