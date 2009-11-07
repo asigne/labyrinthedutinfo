@@ -4,9 +4,9 @@ import Java.Case;
 
 public class T extends Case
 {	
-	public T(int rotation, int noImage)
+	public T(int identifiant, int rotation, int noImage)
 		{
-			super(noImage);
+			super(identifiant, noImage);
 			this.tabDroit[1]=false;
 			this.tabDroit[2]=true;
 			this.tabDroit[3]=true;

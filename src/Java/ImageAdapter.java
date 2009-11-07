@@ -1,6 +1,5 @@
 package Java;
 
-import laby.iut.R;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,16 @@ import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    Joueur monJoueur;
-    int numCarte;
+    Joueur joueur;
+    int nbCartes, numCarte;
     int i=0;
     
-    public ImageAdapter(Context c, Joueur j1) {
+    int indicePremiereCarte=0x7f020023;
+    
+    public ImageAdapter(Context c, Joueur monJoueur) {
         mContext = c;
-        monJoueur=j1;
+        joueur=monJoueur;
+        nbCartes=monJoueur.getListCarte().size();
    }
     
     public ImageAdapter(Context c) {
@@ -38,38 +40,26 @@ public class ImageAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-    	position=monJoueur.getListCarte().size();
+    	position=joueur.getListCarte().size();
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            if(i<monJoueur.getListCarte().size())
+            if(i<nbCartes)
         	{
 	            imageView.setLayoutParams(new GridView.LayoutParams(90, 140));
 	            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 	            imageView.setPadding(8, 8, 8, 8);
-        		numCarte=(monJoueur.getListCarte().get(i).getIdentifiant()-1);
+        		numCarte=(joueur.getListCarte().get(i).getIdentifiant());
         		i++;
-        		imageView.setImageResource(0x7f020023+numCarte);
+        		imageView.setImageResource(indicePremiereCarte+numCarte);
         	}
-        } else {
+        } 
+        else 
+        {
             imageView = (ImageView) convertView;
         }
         return imageView;
     }
 
-    // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.ua,
-            R.drawable.uf,
-            R.drawable.ua,
-            R.drawable.uf,
-            R.drawable.ua,
-            R.drawable.uf,
-            R.drawable.ua,
-            R.drawable.uf,
-            R.drawable.ua,
-            R.drawable.uf,
-            R.drawable.ua,
-            R.drawable.uf
-    };
-}
+    private Integer[] mThumbIds = new Integer[12];
+	}

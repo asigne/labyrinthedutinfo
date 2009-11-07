@@ -17,9 +17,10 @@ public abstract class Case
 	int sortie; // indique la sortie de la case
 	
 	
-	public Case(int noImage)
+	public Case(int identifiant, int noImage)
 		{
 			this.noImage=noImage;
+			this.identifiant=identifiant;
 			tabDroit=new boolean[5];
 			rotation=0;
 			entree=-1;

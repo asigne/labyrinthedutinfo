@@ -2,6 +2,7 @@ package laby.iut;
 
 import Java.*;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.animation.RotateAnimation;
@@ -10,10 +11,10 @@ import android.widget.TextView;
 
 public class Labyrinthe extends Activity 
 {
-	ImageView fg1, fg3, fg5, fd1, fd3, fd5, fh1, fh3, fh5, fb1, fb3, fb5, imageCourante;
+	ImageView fg1, fg3, fg5, fd1, fd3, fd5, fh1, fh3, fh5, fb1, fb3, fb5, imageCarteCourante;
 	RotateAnimation rotation0, rotation90, rotation180, rotation270;
 	boolean initialisationPlateau;
-    
+    	
 	TextView Text01;
     
     Partie maPartie;
@@ -21,15 +22,21 @@ public class Labyrinthe extends Activity
     Case caseCourante;	
     Coup monCoup;
     
-    
+    Utilisateur j1, j2, j3, j4;
+        
     int ligne, colonne;
     String fleche;
     
-    //coordonnées du plateau de jeu
-    int xmin=13, xmax=307;
-	int ymin=86, ymax=380;
+    //parametre de l'application
+    int xmin=13, xmax=307, ymin=86, ymax=380;//coordonnées du plateau de jeu
 	int tailleCase = 42; //taille d'une case du plateau
 	int tailleFleche = 13; //largeur fleche
+	
+	int indicePremiereCaseTableau=0x7f05000a;
+	int incidePremiereImageCarte=0x7f020023;
+	int indicePremierL=0x7f020006;
+	int indicePremierT=0x7f020010;
+	int indiceI=0x7f020004;
 
 
 public void onCreate(Bundle savedInstanceState)
@@ -43,8 +50,19 @@ public void onCreate(Bundle savedInstanceState)
          maPartie=new Partie("Partie1");     
          monPlateau=maPartie.getMonPlateau();
          caseCourante=maPartie.getCaseCourante();
+         
+         j1=new Utilisateur("j1");
+         j2=new Utilisateur("j2");
+         j3=new Utilisateur("j3");
+         j4=new Utilisateur("j4");
+         
+         maPartie.ajouterJoueur(j1);
+         maPartie.ajouterJoueur(j2);
+         maPartie.lancerPartie();
+
          initPlateau2D();
          afficheCaseCourante(0);
+         afficheCarteCourante();
     }  
 
 //methode permettant de gérer les clic sur l'écran   
@@ -66,7 +84,7 @@ public boolean onTouchEvent(MotionEvent event)
 				actionFleche(x,y);
 				return true;
 			}
-			else if(x>240 && y>350)
+			else if(x>240 && y>400)
 			{
 				//action sur la caseCourante
 				caseCourante=maPartie.getCaseCourante();
@@ -76,25 +94,41 @@ public boolean onTouchEvent(MotionEvent event)
 	    		afficheCaseCourante(150);
 				return true;
 			}
+			else if(x>170 && x<220 && y<480 && y>400)
+			{
+				//action sur la carteCourante
+				actionCarteCourante();
+				return true;
+			}
 		}
 	return false;
 }
 
-
+//recupere les id des ImageView
 private void initImageView() {
-		fg1 = (ImageView) findViewById(R.id.fg1);
-        fg3 = (ImageView) findViewById(R.id.fg3);
-        fg5 = (ImageView) findViewById(R.id.fg5);
-        fd1 = (ImageView) findViewById(R.id.fd1);
-        fd3 = (ImageView) findViewById(R.id.fd3);
-        fd5 = (ImageView) findViewById(R.id.fd5);
-        fh1 = (ImageView) findViewById(R.id.fh1);
-        fh3 = (ImageView) findViewById(R.id.fh3);
-        fh5 = (ImageView) findViewById(R.id.fh5);
-        fb1 = (ImageView) findViewById(R.id.fb1);
-        fb3 = (ImageView) findViewById(R.id.fb3);
-        fb5 = (ImageView) findViewById(R.id.fb5);   
-        imageCourante = (ImageView) findViewById(R.id.CaseCourante);
+	fg1 = (ImageView) findViewById(R.id.fg1);
+    fg3 = (ImageView) findViewById(R.id.fg3);
+    fg5 = (ImageView) findViewById(R.id.fg5);
+    fd1 = (ImageView) findViewById(R.id.fd1);
+    fd3 = (ImageView) findViewById(R.id.fd3);
+    fd5 = (ImageView) findViewById(R.id.fd5);
+    fh1 = (ImageView) findViewById(R.id.fh1);
+    fh3 = (ImageView) findViewById(R.id.fh3);
+    fh5 = (ImageView) findViewById(R.id.fh5);
+    fb1 = (ImageView) findViewById(R.id.fb1);
+    fb3 = (ImageView) findViewById(R.id.fb3);
+    fb5 = (ImageView) findViewById(R.id.fb5);   
+    imageCarteCourante = (ImageView) findViewById(R.id.CarteCourante);
+}
+
+//click sur la carteCourante
+private void actionCarteCourante() {
+	Intent defineIntent = new Intent(this, AffichageCartes.class);
+	Bundle objetbunble = new Bundle();
+	
+	//objetbunble.putString("listeCarte", String.valueOf(j1.getListCarte()));
+	defineIntent.putExtras(objetbunble);
+	startActivity(defineIntent);
 }
 
 //click sur une case du plateau
@@ -326,16 +360,21 @@ public void initRotation(int tailleImage, int duree)
 public void initPlateau2D()
    {
 		int k=0;		// compteur pour selectionner l'id de la case du tableaux
-
+		int noCase;
+		ImageView ICT;
+		
 		for(int ligne=0;ligne<7;ligne++)
 		{
 			for(int colonne=0;colonne<7;colonne++)
 			{
-				afficheICT(k, ligne, colonne, 2000);
+				noCase=indicePremiereCaseTableau+k;
+				ICT = (ImageView) findViewById(noCase);
+				afficheICT(monPlateau.getCase(ligne, colonne), ICT, 2000, 42);
 				k++;
 			}
 		k++;
 		}
+		//afficheICT(k, 1, 1, 2000);
 		initialisationPlateau=true;
    }
    
@@ -343,14 +382,17 @@ public void initPlateau2D()
 public void MaJPlateau(int modif, String sens)
 {
 	int k;		// compteur pour selectionner l'id de la case du tableaux
-	
+	int noCase;
+	ImageView ICT;
 	if(sens=="haut" || sens=="bas")
 		{	
 			k=modif;
 			int colonne=modif;
 			for(int ligne=0;ligne<7;ligne++)
 				{	
-					afficheICT(k, ligne, colonne, 0);
+					noCase=indicePremiereCaseTableau+k;
+					ICT = (ImageView) findViewById(noCase);
+					afficheICT(monPlateau.getCase(ligne, colonne), ICT, 0, 42);
 					k=k+8;
 				}	
 		}
@@ -373,92 +415,53 @@ public void MaJPlateau(int modif, String sens)
 			int ligne=modif;
 			for(int colonne=0;colonne<7;colonne++)
 				{
-					afficheICT(k, ligne, colonne, 0);
+					noCase=indicePremiereCaseTableau+k;
+					ICT = (ImageView) findViewById(noCase);
+					afficheICT(monPlateau.getCase(ligne, colonne), ICT, 0, 42);
 					k++;
 				}
 		}
 }
 
 //methode permettant d'afficher une case sur le plateau
-public void afficheICT(int k, int ligne, int colonne, int duration)
+public void afficheICT(Case caseATraiter, ImageView imageCourante, int duration, int dimensionCase)
 	{
-		//k est le compteur pour selectionner l'id de la case du tableaux
-		ImageView ICT; //Image en Cours de Traitement
-		int noCase;		//indice de la case du tableau en cours de traitement
+		/*description des parametres de la fonction
+		 * caseATraiter permet d'acceder aux attributs de la case en cours de traintement
+		 * ImageView pointe sur l'objet ImageView en cours de traitement
+		 * duration est la valeur pour la durée de la rotation
+		 * dimention est la dimention des cases suivant que l'on traite le plateau 
+		 * 			ou la caseCourante
+		 */
 		int noImage;	//numero de l'image à affecter à la case en cours de traitement
-		Case caseCourante; //case en cours de traitement
-		int noImageCourante;
-		int indiceRotation;
+		int noImageCourante; 
 		
-		initRotation(42,duration);
-		
-		caseCourante = monPlateau.getCase(ligne, colonne);
-		noImageCourante=caseCourante.getNoImage();
-		
-		noCase=0x7f050004+k;
-		ICT = (ImageView) findViewById(noCase);
-		
+		//recuperation du numero de l'image a partir de l'intance de la case en cours de traitement
+		noImageCourante=caseATraiter.getNoImage();
+
 		//selection de l'image a afficher
-		if(monPlateau.getCase(ligne,colonne) instanceof T)
+		if(caseATraiter instanceof T)
 		{
-			noImage=0x7f020010+noImageCourante;
+			noImage=indicePremierT+noImageCourante;
 		}
-		else if(monPlateau.getCase(ligne,colonne) instanceof L)
+		else if(caseATraiter instanceof L)
 		{
-			noImage=0x7f020006+noImageCourante;
+			noImage=indicePremierL+noImageCourante;
 		}
 		else
 		{
-			noImage=0x7f020004;
+			noImage=indiceI;
 		}
 		//affichage de l'image
-		ICT.setImageDrawable(getResources().getDrawable(noImage));
+		imageCourante.setImageDrawable(getResources().getDrawable(noImage));
 		
+		//initialisation des rotations
+		initRotation(dimensionCase,duration);
+				
 		//rotation de l'image
-		indiceRotation=(caseCourante.getRotation());			
+		int indiceRotation;
+		indiceRotation=(caseATraiter.getRotation());			
 		switch(indiceRotation)
-		{
-		case 0:
-			ICT.setAnimation(rotation0);
-			break;
-		case 90:
-			ICT.setAnimation(rotation90);
-			break;
-		case 180:
-			ICT.setAnimation(rotation180);
-			break;
-		case 270:
-			ICT.setAnimation(rotation270);
-			break;
-		}
-	}
-
-//methode permettant d'afficher la case courante
-public void afficheCaseCourante(int duration)
-   {   
-	   initRotation(80,duration);
-	   
-	   int noImage;
-	   Case caseCourante=maPartie.getCaseCourante();
-	   int noImageCaseCourante=caseCourante.getNoImage();
-	   if(maPartie.getCaseCourante() instanceof T)
-		{
-			noImage=0x7f020010+noImageCaseCourante;
-			imageCourante.setImageDrawable(getResources().getDrawable(noImage));
-		}
-		else if(maPartie.getCaseCourante() instanceof L)
-		{
-			noImage=0x7f020006+noImageCaseCourante;
-			imageCourante.setImageDrawable(getResources().getDrawable(noImage));
-		}
-		else
-		{
-			imageCourante.setImageDrawable(getResources().getDrawable(0x7f020004));
-		}
-	   
-	   int indiceRotation=(caseCourante.getRotation());	
-	   //Text01.setText("affiche: "+indiceRotation);
-	   switch(indiceRotation)
 		{
 		case 0:
 			imageCourante.setAnimation(rotation0);
@@ -472,10 +475,29 @@ public void afficheCaseCourante(int duration)
 		case 270:
 			imageCourante.setAnimation(rotation270);
 			break;
-		}	   
-		
+		}	
+	}
+
+//methode permettant d'afficher la case courante
+public void afficheCaseCourante(int duration)
+   {   
+		//recuperation de la case a traiter
+		Case caseATraiter=maPartie.getCaseCourante();
+		//recuperation de l'ImageView a traiter
+		ImageView ICT = (ImageView) findViewById(R.id.CaseCourante);
+		//application de la modificiation
+		afficheICT(caseATraiter, ICT, duration, 80);
    }
 
+//methode permettant d'afficher la carte objectif du joueur
+public void afficheCarteCourante()
+	{
+		Carte carteCourante=j1.getCarteCourante();
+		int noImageCarteCourante=incidePremiereImageCarte+carteCourante.getIdentifiant();
+		Text01.setText(""+j1.getCarteCourante().getIdentifiant());
+		imageCarteCourante.setImageDrawable(getResources().getDrawable(noImageCarteCourante));
+	}
+	
 //fonction permettant de savoir si une case est accessible depuis la postion du joueur
 // correspondant aux parametres ligne et colonne.
 public static void fonction(int ligne, int colonne, Partie maPartie)
