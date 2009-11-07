@@ -58,4 +58,8 @@ public abstract class Joueur {
 		return ListCarte;
 	}
 	
+	public Carte getCarteCourante()
+		{
+			return ListCarte.get(0);
+		}
 }
