@@ -13,8 +13,8 @@ public class L extends Case
 			this.tabDroit[4]=false;
 			this.tabDroit[0]=false;
 			rotate(rotation);
-
-		}
+		}	
+	
 	public String toString()
 		{
 			return "L "+super.toString();

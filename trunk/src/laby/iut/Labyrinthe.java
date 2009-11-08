@@ -1,21 +1,31 @@
 package laby.iut;
 
 import Java.*;
+import android.*;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.animation.RotateAnimation;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class Labyrinthe extends Activity 
 {
 	ImageView fg1, fg3, fg5, fd1, fd3, fd5, fh1, fh3, fh5, fb1, fb3, fb5, imageCarteCourante;
+	ImageView pionBleu, pionRouge, pionVert, pionJaune;
 	RotateAnimation rotation0, rotation90, rotation180, rotation270;
 	boolean initialisationPlateau;
     	
 	TextView Text01;
+    LinearLayout lbleu,lvert, lrouge, ljaune;
+	
     
     Partie maPartie;
     Plateau monPlateau;
@@ -26,23 +36,26 @@ public class Labyrinthe extends Activity
         
     int ligne, colonne;
     String fleche;
+
     
     //parametre de l'application
     int xmin=13, xmax=307, ymin=86, ymax=380;//coordonnées du plateau de jeu
 	int tailleCase = 42; //taille d'une case du plateau
 	int tailleFleche = 13; //largeur fleche
 	
-	int indicePremiereCaseTableau=0x7f05000a;
-	int incidePremiereImageCarte=0x7f020023;
-	int indicePremierL=0x7f020006;
-	int indicePremierT=0x7f020010;
-	int indiceI=0x7f020004;
+	int indicePremiereCaseTableau=R.id.l0_c0;
+	int incidePremiereImageCarte=R.drawable.ca;
+	int indicePremierL=(R.drawable.l);
+	int indicePremierT=(R.drawable.ta)-1;
+	int indiceI=R.drawable.i;
+	int indicePremierPion=R.id.lbleu;
 
 
 public void onCreate(Bundle savedInstanceState)
     {    	    	
          super.onCreate(savedInstanceState);
          setContentView(R.layout.jeu);   
+
          initImageView();
          
          Text01 = (TextView) findViewById(R.id.Text01);
@@ -56,13 +69,18 @@ public void onCreate(Bundle savedInstanceState)
          j3=new Utilisateur("j3");
          j4=new Utilisateur("j4");
          
+         j1.RejoindrePartie(maPartie);
          maPartie.ajouterJoueur(j1);
+         j2.RejoindrePartie(maPartie);
          maPartie.ajouterJoueur(j2);
          maPartie.lancerPartie();
 
          initPlateau2D();
          afficheCaseCourante(0);
          afficheCarteCourante();
+         deplacerPion(j1);
+     	 deplacerPion(j2);
+         //affichePions();              
     }  
 
 //methode permettant de gérer les clic sur l'écran   
@@ -117,8 +135,17 @@ private void initImageView() {
     fh5 = (ImageView) findViewById(R.id.fh5);
     fb1 = (ImageView) findViewById(R.id.fb1);
     fb3 = (ImageView) findViewById(R.id.fb3);
-    fb5 = (ImageView) findViewById(R.id.fb5);   
+    fb5 = (ImageView) findViewById(R.id.fb5); 
+    pionBleu = (ImageView) findViewById(R.id.pbleu);
+    pionRouge = (ImageView) findViewById(R.id.prouge);
+    pionVert = (ImageView) findViewById(R.id.pvert);
+    pionJaune = (ImageView) findViewById(R.id.pjaune);
     imageCarteCourante = (ImageView) findViewById(R.id.CarteCourante);
+    lbleu = (LinearLayout) findViewById(R.id.lbleu);
+    lvert= (LinearLayout) findViewById(R.id.lvert);
+    lrouge = (LinearLayout) findViewById(R.id.lrouge);
+    ljaune = (LinearLayout) findViewById(R.id.ljaune);
+    
 }
 
 //click sur la carteCourante
@@ -194,6 +221,9 @@ public void actionCase(int x, int y)
 		}	
 	int flag = monPlateau.getCase(ligne, colonne).getFlag();
 	Text01.setText("ligne:"+ligne+" colonne:"+colonne+"    "+flag);
+	
+	j1.seDeplacer(ligne, colonne);
+	deplacerPion(j1);
 }
 
 //click sur une fleche autour du plateau
@@ -498,6 +528,100 @@ public void afficheCarteCourante()
 		imageCarteCourante.setImageDrawable(getResources().getDrawable(noImageCarteCourante));
 	}
 	
+public void affichePions()
+	{
+		switch (maPartie.getListJoueur().size())
+		{
+			case 2:
+				//affichePion(pionBleu, maPartie.getListJoueur().get(0)); //pionBleu
+				//affichePion(pionRouge, maPartie.getListJoueur().get(1)); //pionRouge
+			case 3:
+				//affichePion(2); //pionVert
+			case 4:
+				//affichePion(3); //pionJaune
+		}
+	}
+
+public void deplacerPion(Joueur joueurCourant)
+	{
+		int moitiee=tailleCase/2;
+		int quart=tailleCase/4;
+		int posLigne, posColonne, coordX=0, coordY=0;
+		int nbPionCase;
+		int numPion;
+		LinearLayout pionCourant = null;
+		
+		posLigne = joueurCourant.getPosLigne();
+		posColonne =joueurCourant.getPosColonne();
+		numPion=joueurCourant.getPion().getIdentifiant();
+		switch(numPion)
+		{
+			case 0:
+				pionCourant= lbleu;
+				break;
+			case 1:
+				pionCourant= lrouge;
+				break;
+			case 2:
+				pionCourant= lvert;
+				break;
+			case 3:	
+				pionCourant= ljaune;
+				break;
+		}
+		nbPionCase=monPlateau.getCase(posLigne, posColonne).getListPion().size();
+		switch(nbPionCase)
+		{
+			case 1:
+				coordX=posColonne*tailleCase+xmin+quart;
+				coordY=posLigne*tailleCase+ymin-50+quart;   //-50 a cause de la barre avec le nom de l'application
+				break;
+			case 2:
+				deplacerPion(monPlateau.getCase(posLigne, posColonne).getListPion().get(0), ligne, colonne);
+				coordX=posColonne*tailleCase+xmin+moitiee;
+				coordY=posLigne*tailleCase+ymin-50+moitiee;   //-50 a cause de la barre avec le nom de l'application
+				break;
+			case 3:
+				coordX=posColonne*tailleCase+xmin+moitiee;
+				coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+				break;
+			case 4:	
+				coordX=posColonne*tailleCase+xmin;
+				coordY=posLigne*tailleCase+ymin-50+moitiee;
+				break;
+		}
+        pionCourant.setPadding(coordX, coordY, 0, 0);
+	}
+
+public void deplacerPion(Pion pion, int ligne, int colonne)
+{
+	int coordX=0, coordY=0;
+	int numPion;
+	LinearLayout pionCourant=null;
+	
+	numPion=pion.getIdentifiant();
+	switch(numPion)
+	{
+		case 0:
+			pionCourant= lbleu;
+			break;
+		case 1:
+			pionCourant= lrouge;
+			break;
+		case 2:
+			pionCourant= lvert;
+			break;
+		case 3:	
+			pionCourant= ljaune;
+			break;
+	}
+	coordX=colonne*tailleCase+xmin;
+	coordY=ligne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+    pionCourant.setPadding(coordX, coordY, 0, 0);
+}
+
+
+
 //fonction permettant de savoir si une case est accessible depuis la postion du joueur
 // correspondant aux parametres ligne et colonne.
 public static void fonction(int ligne, int colonne, Partie maPartie)
@@ -589,3 +713,4 @@ public static void fonction(int ligne, int colonne, Partie maPartie)
 		   }
    }
 }
+

@@ -7,12 +7,30 @@ public abstract class Joueur {
 	Pion pion;
 	Partie partieActuelle;
 	ArrayList<Carte> ListCarte;
+	int posLigne;
+	int posColonne;
 	
 	public Joueur(String nom){
 		this.nom=nom;
-		//pour le pion : a revoir
-		pion = new Pion("couleur");
+		this.pion=null; 		//pour le pion : a revoir
 		ListCarte = new ArrayList<Carte>();
+		partieActuelle=null;
+	}
+	
+	public Pion getPion() {
+		return pion;
+	}
+
+	public void setPion(Pion pion) {
+		this.pion = pion;
+	}	
+
+	public void seDeplacer(int ligne, int colonne)
+	{
+		partieActuelle.getMonPlateau().getCase(posLigne, posColonne).supprPion(this.pion);		
+		posLigne=ligne;
+		posColonne=colonne;
+		partieActuelle.getMonPlateau().getCase(ligne, colonne).ajouterPion(this.pion);		
 	}
 	
 	public void creerServeur(String nomServeur)
@@ -25,8 +43,7 @@ public abstract class Joueur {
 	{
 		// à etudier
 	}
-	
-	
+		
 	//rejoindre un serveur ou une partie ???
 	public void RejoindreServeur(Serveur monServeur){
 	
@@ -36,6 +53,7 @@ public abstract class Joueur {
 		maPartie.ajouterJoueur(this);
 		partieActuelle=maPartie;
 	}
+	
 	//rejoindre un serveur ou une partie ???
 		
 	public boolean jouer(Coup monCoup)
@@ -49,7 +67,7 @@ public abstract class Joueur {
 		ListCarte.add(newCarte);
 	}
 	
-	public void supprPion(Carte oldCarte)
+	public void supprCarte(Carte oldCarte)
 	{
 		ListCarte.remove(oldCarte);
 	}
@@ -62,4 +80,20 @@ public abstract class Joueur {
 		{
 			return ListCarte.get(0);
 		}
+	
+	public int getPosLigne() {
+		return posLigne;
+	}
+
+	public void setPosLigne(int posLigne) {
+		this.posLigne = posLigne;
+	}
+
+	public int getPosColonne() {
+		return posColonne;
+	}
+
+	public void setPosColonne(int posColonne) {
+		this.posColonne = posColonne;
+	}
 }
