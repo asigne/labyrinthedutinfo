@@ -14,6 +14,7 @@ public class T extends Case
 			this.tabDroit[0]=false;
 			rotate(rotation);
 		}
+	
 	public String toString()
 		{
 			return "T "+super.toString();

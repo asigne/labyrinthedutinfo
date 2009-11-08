@@ -18,7 +18,7 @@ public class Utilisateur extends Joueur {
 	}
 	
 	public void RejoindrePartie(Partie maPartie){
-		maPartie.ajouterJoueur(this);
+		//maPartie.ajouterJoueur(this);
 		partieActuelle=maPartie;
 	}
 	//rejoindre un serveur ou une partie ???

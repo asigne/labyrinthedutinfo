@@ -26,6 +26,7 @@ public abstract class Case
 			entree=-1;
 			sortie=0;
 			flag=0;
+			ListPion = new ArrayList<Pion>();
 		}
 	
 	public String toString()

@@ -9,6 +9,7 @@ public class Partie {
 	Case caseCourante;
 	ArrayList<Carte> ListCarte;
 	ArrayList<Joueur> ListJoueur;
+	//ArrayList<Pion> ListPion;
 	boolean partieFinie;
 	
 	public Partie(String nom)
@@ -17,6 +18,16 @@ public class Partie {
 		partieFinie=false;
 		ListCarte = new ArrayList<Carte>();
 		ListJoueur = new ArrayList<Joueur>();
+		//ListPion = new ArrayList<Pion>();
+		
+		/*
+		//creation des pions
+		ListPion.add(new Pion(0, "bleu"));
+		ListPion.add(new Pion(1, "rouge"));
+		ListPion.add(new Pion(2, "vert"));
+		ListPion.add(new Pion(3, "jaune"));
+		*/
+		
 		
 		//creation du plateau de maniere aleatoire
 		monPlateau=new Plateau();
@@ -35,7 +46,46 @@ public class Partie {
 	public void ajouterJoueur(Joueur newJoueur)
 	{
 		ListJoueur.add(newJoueur);
+		int numJoueur=ListJoueur.size()-1;
+		Pion pion = null;
+		int posX=0, posY=0;
+		
+		Joueur joueurCourant=ListJoueur.get(numJoueur);
+		
+		switch (numJoueur)
+		{
+			case 0:
+				pion= new Pion(0, "bleu");
+				posX=0;
+				posY=0;
+				break;
+			case 1:
+				pion= new Pion(1, "rouge");
+				posX=6;
+				posY=6;
+				break;
+			case 2:
+				pion= new Pion(3, "vert");
+				posX=6;
+				posY=0;
+				break;
+			case 3:
+				pion= new Pion(2, "jaune");
+				posX=0;
+				posY=6;
+				break;
+		}
+		
+		joueurCourant.setPion(pion);
+		joueurCourant.setPosLigne(posX);
+		joueurCourant.setPosColonne(posY);
+		monPlateau.getCase(posX, posY).ajouterPion(pion);
 	}
+	
+	public ArrayList<Joueur> getListJoueur() {
+		return ListJoueur;
+	}
+
 	//suppression d'un joueur
 	public void supprJoueur(Joueur oldJoueur)
 	{

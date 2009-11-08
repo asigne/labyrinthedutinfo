@@ -5,6 +5,8 @@ android:layout_width="fill_parent"
 android:layout_height="fill_parent" 
 xmlns:android="http://schemas.android.com/apk/res/android">
         
+	
+	
 	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@+id/Plateau" android:layout_width="294dp" android:layout_height="294dp" android:layout_x="13dip" android:layout_y="35dip">
 	    
@@ -14,18 +16,23 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		android:layout_width="42dp"
 		android:layout_height="42dp"
 		android:id="@+id/l0_c0">
-
 		</ImageView>
-		
 		<ImageView
 		android:layout_width="42dp"
 		android:layout_height="42dp"
 		android:id="@+id/l0_c1">
-		</ImageView><ImageView android:layout_width="42dp" android:layout_height="42dp" android:id="@+id/l0_c2">
-		</ImageView><ImageView android:layout_width="42dp" android:layout_height="42dp" android:id="@+id/l0_c3">
+		</ImageView>
+		<ImageView 
+		android:layout_width="42dp" 
+		android:layout_height="42dp" 
+		android:id="@+id/l0_c2">
+		</ImageView>
+		<ImageView 
+		android:layout_width="42dp" 
+		android:layout_height="42dp"
+		android:id="@+id/l0_c3">
 		</ImageView>
 				
-		
 		<ImageView
 		android:layout_width="42dp"
 		android:layout_height="42dp"
@@ -42,8 +49,6 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		android:id="@+id/l0_c6">
 		</ImageView>
 	
-
-
 
 </LinearLayout>
 	<LinearLayout
@@ -274,15 +279,49 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		android:id="@+id/l6_c6">
 		</ImageView>
 	</LinearLayout>
-    
-	  
-	</TableLayout>
+</TableLayout>
 
 
 
 
 
+<LinearLayout android:id="@+id/lbleu" android:layout_height="wrap_content" android:layout_width="wrap_content">
+	<ImageView android:id="@+id/pbleu" android:layout_width="21dip" android:layout_height="21dip" android:src="@drawable/pbleu" android:visibility="visible">
+	</ImageView>
+</LinearLayout><LinearLayout 
+	android:id="@+id/ljaune" 
+	android:layout_height="wrap_content" android:layout_width="wrap_content">
+	<ImageView 
+		android:id="@+id/pjaune" 
+		android:layout_width="21dip" 
+		android:layout_height="21dip" 
+		android:src="@drawable/pjaune" 
+		android:visibility="visible">
+	</ImageView>
+</LinearLayout>
+<LinearLayout 
+	android:id="@+id/lrouge" 
+	android:layout_height="wrap_content" android:layout_width="wrap_content">
+	<ImageView 
+		android:id="@+id/prouge" 
+		android:layout_width="21dip" 
+		android:layout_height="21dip" 
+		android:src="@drawable/prouge" 
+		android:visibility="visible">
+	</ImageView>
+</LinearLayout>
 
+<LinearLayout 
+	android:id="@+id/lvert" 
+	android:layout_height="wrap_content" android:layout_width="wrap_content">
+	<ImageView 
+		android:id="@+id/pvert" 
+		android:layout_width="21dip" 
+		android:layout_height="21dip" 
+		android:src="@drawable/pvert" 
+		android:visibility="visible">
+	</ImageView>
+</LinearLayout>
 
 <LinearLayout 
 	android:id="@+id/flecheshaut"
@@ -452,4 +491,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 </LinearLayout>
 
 <TextView android:layout_y="403dip" android:id="@+id/Text01" android:layout_width="wrap_content" android:layout_x="24dip" android:layout_height="wrap_content" android:text="@+id/TextView01"></TextView>
+
+
+
 </AbsoluteLayout>

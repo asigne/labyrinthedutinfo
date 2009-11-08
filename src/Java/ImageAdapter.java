@@ -1,5 +1,6 @@
 package Java;
 
+import laby.iut.R;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ public class ImageAdapter extends BaseAdapter {
     int nbCartes, numCarte;
     int i=0;
     
-    int indicePremiereCarte=0x7f020023;
+    int indicePremiereCarte=R.drawable.ca;
     
     public ImageAdapter(Context c, Joueur monJoueur) {
         mContext = c;
