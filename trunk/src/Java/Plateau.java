@@ -152,6 +152,7 @@ public Case modifierColonne(Coup monCoup)
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
 			PlateauCase[0][colonne]=caseCoup;
+			PlateauCase[0][colonne].setListJoueur(caseTemp.getListJoueur());
 		}
 		else
 		{
@@ -163,6 +164,7 @@ public Case modifierColonne(Coup monCoup)
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
 			PlateauCase[6][colonne]=caseCoup;
+			PlateauCase[6][colonne].setListJoueur(caseTemp.getListJoueur());
 		}
 		return caseTemp;
 	}
@@ -184,6 +186,7 @@ public Case modifierLigne(Coup monCoup)
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
 			PlateauCase[ligne][0]=caseCoup;
+			PlateauCase[ligne][0].setListJoueur(caseTemp.getListJoueur());
 		}
 		else
 		{	
@@ -195,6 +198,7 @@ public Case modifierLigne(Coup monCoup)
 			//attention : a modifier : modifier les methode modifierLigne et modifierColonne pour tenir
 			// compte du nouvel etat de la caseCourante (notemment lors du jeu contre l'IA)
 			PlateauCase[ligne][6]=caseCoup;
+			PlateauCase[ligne][6].setListJoueur(caseTemp.getListJoueur());
 		}
 		return caseTemp;
 	}
