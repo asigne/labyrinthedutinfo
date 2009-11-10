@@ -298,7 +298,7 @@ private void traitementJoueurSurCaseMobile(int indice, String fleche)
 {
 	ArrayList<Joueur> listEnCoursDeTest=null;
 	Joueur JCT;
-	Text01.setText("nbJoueur"+monPlateau.getCase(0, 3).getListJoueur().size()+" "+monPlateau.getCase(1, 3).getListJoueur().size());
+
 	if(fleche=="haut")
 	{	
 		for(int ligne=6; ligne>=0 ; ligne--)
@@ -325,7 +325,7 @@ private void traitementJoueurSurCaseMobile(int indice, String fleche)
 	}
 	else if(fleche=="gauche")
 	{
-		for(int colonne=6;colonne>0;colonne--)
+		for(int colonne=6;colonne>=0;colonne--)
 		{
 			listEnCoursDeTest=monPlateau.getCase(indice, colonne).getListJoueur();
 			for(int i=0;i<listEnCoursDeTest.size();i++)
@@ -337,7 +337,7 @@ private void traitementJoueurSurCaseMobile(int indice, String fleche)
 	}
 	else if(fleche=="droite")
 	{
-		for(int colonne=0;colonne<6;colonne++)
+		for(int colonne=0;colonne<=6;colonne++)
 		{
 			listEnCoursDeTest=monPlateau.getCase(indice, colonne).getListJoueur();
 			for(int i=0;i<listEnCoursDeTest.size();i++)
