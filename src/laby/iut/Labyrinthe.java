@@ -1,5 +1,7 @@
 package laby.iut;
 
+import java.util.ArrayList;
+
 import Java.*;
 import android.*;
 
@@ -26,13 +28,15 @@ public class Labyrinthe extends Activity
 	TextView Text01;
     LinearLayout lbleu,lvert, lrouge, ljaune;
 	
+    String flecheInterdite;
+    int indiceInterdit;
     
     Partie maPartie;
     Plateau monPlateau;
     Case caseCourante;	
     Coup monCoup;
     
-    Utilisateur j1, j2, j3, j4;
+    Utilisateur j1, j2, j3, j4, joueurActif;
         
     int ligne, colonne;
     String fleche;
@@ -70,17 +74,17 @@ public void onCreate(Bundle savedInstanceState)
          j4=new Utilisateur("j4");
          
          j1.RejoindrePartie(maPartie);
-         maPartie.ajouterJoueur(j1);
+         //maPartie.ajouterJoueur(j1);
          j2.RejoindrePartie(maPartie);
-         maPartie.ajouterJoueur(j2);
+         //maPartie.ajouterJoueur(j2);
          maPartie.lancerPartie();
 
          initPlateau2D();
          afficheCaseCourante(0);
          afficheCarteCourante();
-         deplacerPion(j1);
-     	 deplacerPion(j2);
-         //affichePions();              
+         affichePion(j2);
+         affichePion(j1);   
+         joueurActif=j1;
     }  
 
 //methode permettant de gérer les clic sur l'écran   
@@ -159,9 +163,8 @@ private void actionCarteCourante() {
 }
 
 //click sur une case du plateau
-public void actionCase(int x, int y)
+public int CoordToColonne(int x)
 {
-	//int ligne=0, colonne=0;
 	if(x<=xmin+tailleCase)
 		{
 			colonne=0;
@@ -190,7 +193,10 @@ public void actionCase(int x, int y)
 	    {
 	    	colonne=6;
 	    }
-
+	return colonne;
+}
+public int CoordToLigne(int y)
+{
 	if(y<=ymin+tailleCase)
 		{
 			ligne=0;
@@ -218,63 +224,136 @@ public void actionCase(int x, int y)
 	else if(y<=ymin+tailleCase*7)
 		{
 			ligne=6;
+		}		
+	return ligne;
+}
+
+public void actionCase(int x, int y)
+{
+	ligne=CoordToLigne(y);
+	colonne=CoordToColonne(x);
+	if(testCaseAccessible(joueurActif, ligne, colonne))
+		{
+			joueurActif.seDeplacer(ligne, colonne);
+			affichePions();
+		}
+	else
+		{
+			Text01.setText(joueurActif.getNom()+" : déplacement interdit");
 		}	
-	int flag = monPlateau.getCase(ligne, colonne).getFlag();
-	Text01.setText("ligne:"+ligne+" colonne:"+colonne+"    "+flag);
-	
-	j1.seDeplacer(ligne, colonne);
-	deplacerPion(j1);
 }
 
 //click sur une fleche autour du plateau
 public void actionFleche(int x, int y)
-{				
-	int modif;
-	//int ligne=0, colonne=0;
-	actionCase(x,y);
+{		
+	int modif=0;
 	if(x>xmin-tailleFleche && x<xmin)
 	{
 		fleche="gauche";
+		modif=CoordToLigne(y);
 	}
 	else if(x>xmax && x<xmax+tailleFleche)
 	{
 		fleche="droite";
+		modif=CoordToLigne(y);
 	}
 	else if(y>ymin-tailleFleche && y<ymin)
 	{
 		fleche="haut";
+		modif=CoordToColonne(x);;
 	}
 	else if(y>ymax && y<ymax+tailleFleche)
 	{
 		fleche="bas";
+		modif=CoordToColonne(x);;
 	}		
 	
-	if(fleche=="haut" ||fleche=="bas")
-		{
-			modif=colonne;
-		}
-	else
-		{
-			modif=ligne;
-		}	
 	
-	Text01.setText("fleche:"+fleche+" numero:"+ligne+colonne);
-	if(modif==1 || modif==3 || modif==5)
-		{
-			monCoup = new Coup(caseCourante, modif, fleche);
-			maPartie.modifierPlateau(monCoup);
-			lockFleche(fleche,modif);
-			caseCourante=maPartie.getCaseCourante();
-			MaJPlateau(modif, fleche);
-			afficheCaseCourante(0);	
-			testCaseAccessible(0,0); // ligne pour illustrer le role de la methode fonction : 
-														//en considerant que le joureur se trouve en 0,0
-		}
+	if(modif==indiceInterdit && fleche==flecheInterdite)
+	{
+		Text01.setText("actionInterdite");
+	}
+	else
+	{
+		Text01.setText("fleche:"+fleche+" numero:"+ligne+colonne);
+		if(modif==1 || modif==3 || modif==5)
+			{
+				//traitementJoueurSurCaseSortante(modif, fleche);
+				
+				Text01.setText(""+j1.getPosColonne()+" "+j1.getPosLigne());
 
+				monCoup = new Coup(caseCourante, modif, fleche);
+				maPartie.modifierPlateau(monCoup);
+				traitementJoueurSurCaseMobile(modif, fleche);
+				lockFleche(fleche,modif);
+				caseCourante=maPartie.getCaseCourante();
+				MaJPlateau(modif, fleche);
+				afficheCaseCourante(0);	
+				
+			}
+	}
 }
 
+private void traitementJoueurSurCaseMobile(int indice, String fleche)
+{
+	ArrayList<Joueur> listEnCoursDeTest=null;
+	Joueur JCT;
+	Text01.setText("nbJoueur"+monPlateau.getCase(0, 3).getListJoueur().size()+" "+monPlateau.getCase(1, 3).getListJoueur().size());
+	if(fleche=="haut")
+	{	
+		for(int ligne=6; ligne>=0 ; ligne--)
+		{
+			listEnCoursDeTest=monPlateau.getCase(ligne, indice).getListJoueur();
+			for(int i=0;i<listEnCoursDeTest.size();i++)
+			{
+				JCT=listEnCoursDeTest.get(i);
+				JCT.seDeplacer1(ligne, indice);
+			}		
+		}	
+	}
+	else if(fleche=="bas")
+	{
+		for(int ligne=0; ligne<=6 ; ligne++)
+		{
+			listEnCoursDeTest=monPlateau.getCase(ligne, indice).getListJoueur();
+			for(int i=0;i<listEnCoursDeTest.size();i++)
+			{
+				JCT=listEnCoursDeTest.get(i);
+				JCT.seDeplacer1(ligne, indice);
+			}
+		}
+	}
+	else if(fleche=="gauche")
+	{
+		for(int colonne=6;colonne>0;colonne--)
+		{
+			listEnCoursDeTest=monPlateau.getCase(indice, colonne).getListJoueur();
+			for(int i=0;i<listEnCoursDeTest.size();i++)
+			{
+				JCT=listEnCoursDeTest.get(i);
+				JCT.seDeplacer1(indice, colonne);
+			}
+		}
+	}
+	else if(fleche=="droite")
+	{
+		for(int colonne=0;colonne<6;colonne++)
+		{
+			listEnCoursDeTest=monPlateau.getCase(indice, colonne).getListJoueur();
+			for(int i=0;i<listEnCoursDeTest.size();i++)
+			{
+				JCT=listEnCoursDeTest.get(i);
+				JCT.seDeplacer1(indice, colonne);
+			}
+		}
+	}
+	affichePions();
+}
+	
 //methode desactivant la fleche opposée apres un coup
 public void lockFleche(String fleche, int indice){
+	indiceInterdit=indice;
+	
 	fb1.setVisibility(3);
 	fb3.setVisibility(3);
 	fb5.setVisibility(3);
@@ -287,6 +366,7 @@ public void lockFleche(String fleche, int indice){
 	fd1.setVisibility(3);
 	fd3.setVisibility(3);
 	fd5.setVisibility(3);	
+
 	if(fleche=="haut")
 		{
 			switch(indice)
@@ -301,6 +381,7 @@ public void lockFleche(String fleche, int indice){
 					fb5.setVisibility(4);
 					break;
 			}
+			flecheInterdite="bas";
 		}
 	else if(fleche=="bas")
 		{
@@ -316,6 +397,7 @@ public void lockFleche(String fleche, int indice){
 					fh5.setVisibility(4);
 					break;
 			}
+			flecheInterdite="haut";
 		}
 	else if(fleche=="gauche")
 		{
@@ -331,6 +413,7 @@ public void lockFleche(String fleche, int indice){
 					fd5.setVisibility(4);
 					break;
 			}
+			flecheInterdite="droite";
 		}
 	else
 		{
@@ -346,12 +429,15 @@ public void lockFleche(String fleche, int indice){
 					fg5.setVisibility(4);
 					break;
 			}
+			flecheInterdite="gauche";
 		}
 }
 
-//methode permettant d'afficher le plateau et la carte courante
-public void testCaseAccessible(int ligne, int colonne)
+//methode effectuant le test pour connaitre la cases accessibles par un joueur
+public boolean testCaseAccessible(Joueur monJoueur, int ligne, int colonne)
    {
+		int posLigne=monJoueur.getPosLigne();
+		int posColonne=monJoueur.getPosColonne();
 		for(int i=0;i<7;i++)
 		{
 			for(int j=0;j<7;j++)
@@ -362,7 +448,15 @@ public void testCaseAccessible(int ligne, int colonne)
 			}	
 		}
 	   
-	   fonction(ligne, colonne, maPartie); 
+	   fonction(posLigne, posColonne, maPartie); 
+	   if(monPlateau.getCase(ligne, colonne).getFlag()==1)
+		   {
+			   return true;
+		   }
+	   else
+		   {
+			   return false;
+		   }
    }
 
 // methode initilisant les rotations
@@ -386,7 +480,7 @@ public void initRotation(int tailleImage, int duree)
 		rotation270.setFillAfter(true);  
    }
 
-//methode permettant d'afficher le plateau 
+//methode permettant d'afficher le plateau à l'initiation 
 public void initPlateau2D()
    {
 		int k=0;		// compteur pour selectionner l'id de la case du tableaux
@@ -404,7 +498,6 @@ public void initPlateau2D()
 			}
 		k++;
 		}
-		//afficheICT(k, 1, 1, 2000);
 		initialisationPlateau=true;
    }
    
@@ -530,30 +623,24 @@ public void afficheCarteCourante()
 	
 public void affichePions()
 	{
-		switch (maPartie.getListJoueur().size())
+		for(int i=0; i<maPartie.getListJoueur().size();i++)
 		{
-			case 2:
-				//affichePion(pionBleu, maPartie.getListJoueur().get(0)); //pionBleu
-				//affichePion(pionRouge, maPartie.getListJoueur().get(1)); //pionRouge
-			case 3:
-				//affichePion(2); //pionVert
-			case 4:
-				//affichePion(3); //pionJaune
+			affichePion(maPartie.getListJoueur().get(i));
 		}
 	}
 
-public void deplacerPion(Joueur joueurCourant)
+public void affichePion(Joueur joueurCourant)
 	{
 		int moitiee=tailleCase/2;
 		int quart=tailleCase/4;
-		int posLigne, posColonne, coordX=0, coordY=0;
-		int nbPionCase;
+		int posLigne, posColonne, coordX=70, coordY=70;
+		int nbJoueurCase;
 		int numPion;
 		LinearLayout pionCourant = null;
 		
 		posLigne = joueurCourant.getPosLigne();
 		posColonne =joueurCourant.getPosColonne();
-		numPion=joueurCourant.getPion().getIdentifiant();
+		numPion=joueurCourant.getIdentifiant();
 		switch(numPion)
 		{
 			case 0:
@@ -569,58 +656,40 @@ public void deplacerPion(Joueur joueurCourant)
 				pionCourant= ljaune;
 				break;
 		}
-		nbPionCase=monPlateau.getCase(posLigne, posColonne).getListPion().size();
-		switch(nbPionCase)
+		nbJoueurCase=monPlateau.getCase(posLigne, posColonne).getListJoueur().size();
+		if(nbJoueurCase==1)
 		{
-			case 1:
-				coordX=posColonne*tailleCase+xmin+quart;
-				coordY=posLigne*tailleCase+ymin-50+quart;   //-50 a cause de la barre avec le nom de l'application
-				break;
-			case 2:
-				deplacerPion(monPlateau.getCase(posLigne, posColonne).getListPion().get(0), ligne, colonne);
-				coordX=posColonne*tailleCase+xmin+moitiee;
-				coordY=posLigne*tailleCase+ymin-50+moitiee;   //-50 a cause de la barre avec le nom de l'application
-				break;
-			case 3:
-				coordX=posColonne*tailleCase+xmin+moitiee;
-				coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
-				break;
-			case 4:	
-				coordX=posColonne*tailleCase+xmin;
-				coordY=posLigne*tailleCase+ymin-50+moitiee;
-				break;
+			coordX=posColonne*tailleCase+xmin+quart;
+			coordY=posLigne*tailleCase+ymin-50+quart;
+		}
+		else
+		{
+			switch(nbJoueurCase)
+			{
+				case 2:
+					if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
+						{
+						coordX=posColonne*tailleCase+xmin;
+						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+						}
+					else
+						{
+							coordX=posColonne*tailleCase+xmin+moitiee;
+							coordY=posLigne*tailleCase+ymin-50+moitiee;
+						}
+					break;
+				case 3:
+					coordX=posColonne*tailleCase+xmin+moitiee;
+					coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+					break;
+				case 4:	
+					coordX=posColonne*tailleCase+xmin;
+					coordY=posLigne*tailleCase+ymin-50+moitiee;
+					break;
+			}
 		}
         pionCourant.setPadding(coordX, coordY, 0, 0);
 	}
-
-public void deplacerPion(Pion pion, int ligne, int colonne)
-{
-	int coordX=0, coordY=0;
-	int numPion;
-	LinearLayout pionCourant=null;
-	
-	numPion=pion.getIdentifiant();
-	switch(numPion)
-	{
-		case 0:
-			pionCourant= lbleu;
-			break;
-		case 1:
-			pionCourant= lrouge;
-			break;
-		case 2:
-			pionCourant= lvert;
-			break;
-		case 3:	
-			pionCourant= ljaune;
-			break;
-	}
-	coordX=colonne*tailleCase+xmin;
-	coordY=ligne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
-    pionCourant.setPadding(coordX, coordY, 0, 0);
-}
-
-
 
 //fonction permettant de savoir si une case est accessible depuis la postion du joueur
 // correspondant aux parametres ligne et colonne.

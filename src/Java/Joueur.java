@@ -3,36 +3,47 @@ package Java;
 import java.util.ArrayList;
 
 public abstract class Joueur {
+	int identifiant;
 	String nom;
-	Pion pion;
+	//Pion pion;
 	Partie partieActuelle;
 	ArrayList<Carte> ListCarte;
 	int posLigne;
 	int posColonne;
 	
 	public Joueur(String nom){
+		this.identifiant=0;
 		this.nom=nom;
-		this.pion=null; 		//pour le pion : a revoir
+		//this.pion=null; 		//pour le pion : a revoir
 		ListCarte = new ArrayList<Carte>();
 		partieActuelle=null;
-	}
-	
-	public Pion getPion() {
-		return pion;
-	}
-
-	public void setPion(Pion pion) {
-		this.pion = pion;
 	}	
-
+	
 	public void seDeplacer(int ligne, int colonne)
 	{
-		partieActuelle.getMonPlateau().getCase(posLigne, posColonne).supprPion(this.pion);		
+		partieActuelle.getMonPlateau().getCase(posLigne, posColonne).supprJoueur(this);		
+		partieActuelle.getMonPlateau().getCase(ligne, colonne).ajouterJoueur(this);	
 		posLigne=ligne;
-		posColonne=colonne;
-		partieActuelle.getMonPlateau().getCase(ligne, colonne).ajouterPion(this.pion);		
+		posColonne=colonne;			
 	}
 	
+	public void seDeplacer1(int ligne, int colonne)
+	{
+		//partieActuelle.getMonPlateau().getCase(posLigne, posColonne).supprJoueur(this);		
+		//partieActuelle.getMonPlateau().getCase(ligne, colonne).ajouterJoueur(this);	
+		posLigne=ligne;
+		posColonne=colonne;			
+	}
+	
+	public int getIdentifiant() {
+		return identifiant;
+	}
+
+	public void setIdentifiant(int identifiant) {
+		this.identifiant = identifiant;
+	}
+
+
 	public void creerServeur(String nomServeur)
 	{
 		//à etudier 
@@ -50,8 +61,8 @@ public abstract class Joueur {
 	}
 	
 	public void RejoindrePartie(Partie maPartie){
-		maPartie.ajouterJoueur(this);
 		partieActuelle=maPartie;
+		maPartie.ajouterJoueur(this);
 	}
 	
 	//rejoindre un serveur ou une partie ???
@@ -85,15 +96,18 @@ public abstract class Joueur {
 		return posLigne;
 	}
 
-	public void setPosLigne(int posLigne) {
-		this.posLigne = posLigne;
+	public String getNom() {
+		return nom;
 	}
 
 	public int getPosColonne() {
 		return posColonne;
 	}
 
-	public void setPosColonne(int posColonne) {
+	public void setPosition(int posLigne, int posColonne) {
+		
+		this.posLigne = posLigne;
 		this.posColonne = posColonne;
+		partieActuelle.getMonPlateau().getCase(posLigne, posColonne).ajouterJoueur(this);
 	}
 }

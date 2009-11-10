@@ -12,8 +12,8 @@ public class IA extends Joueur {
 	}
 	
 	public void RejoindrePartie(Partie maPartie){
-		maPartie.ajouterJoueur(this);
 		partieActuelle=maPartie;
+		maPartie.ajouterJoueur(this);
 	}
 	//rejoindre un serveur ou une partie ???
 	

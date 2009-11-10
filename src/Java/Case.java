@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class Case
 {
 	int identifiant; //identifiant pour les cases possédante une image sinon 0
-	ArrayList<Pion> ListPion; //liste des pions situés sur cette case
+	//ArrayList<Pion> ListPion; //liste des pions situés sur cette case
 	int rotation; //indice de rotation par rapport à la position originale
 	int noImage; //numero de l'image ou 0 sinon
 	boolean tabDroit[]; //tableau contenant les possibilité de sortie de la case
@@ -17,6 +17,9 @@ public abstract class Case
 	int sortie; // indique la sortie de la case
 	
 	
+	ArrayList<Joueur> ListJoueur;
+	
+	
 	public Case(int identifiant, int noImage)
 		{
 			this.noImage=noImage;
@@ -26,12 +29,19 @@ public abstract class Case
 			entree=-1;
 			sortie=0;
 			flag=0;
-			ListPion = new ArrayList<Pion>();
+			//ListPion = new ArrayList<Pion>();
+			ListJoueur = new ArrayList<Joueur>();
 		}
 	
+	/*
+	public void setListPion(ArrayList<Pion> listPion) {
+		ListPion = listPion;
+	}*/
+
 	public String toString()
 		{
-			return tabDroit[1]+" "+tabDroit[2]+" "+tabDroit[3]+" "+tabDroit[4]+" "+this.rotation+" "+this.flag;
+			//return tabDroit[1]+" "+tabDroit[2]+" "+tabDroit[3]+" "+tabDroit[4]+" "+this.rotation+" "+this.flag;
+			return ""+ListJoueur;
 		}
 	
 	
@@ -53,10 +63,13 @@ public abstract class Case
 			return this.noImage;
 		}
 
+	/*
 	public ArrayList<Pion> getListPion()
 		{
 			return this.ListPion;
 		}
+	*/
+	
 	
 	//methode permettant de faire tourner la case de 'indice' degrés
 	//l'indice rotation  et les droits de la case sont modifiés
@@ -102,7 +115,7 @@ public abstract class Case
 	public int getRotation() {
 		return this.rotation;
 	}
-
+/*
 	public void ajouterPion(Pion newPion)
 	{
 		ListPion.add(newPion);
@@ -112,4 +125,27 @@ public abstract class Case
 	{
 		ListPion.remove(oldPion);
 	}
+*/	
+	public void ajouterJoueur(Joueur newJoueur)
+	{
+		ListJoueur.add(newJoueur);
+	}
+	
+	public void supprJoueur(Joueur oldJoueur)
+	{
+		ListJoueur.remove(oldJoueur);
+	}
+
+	public ArrayList<Joueur> getListJoueur() {
+		return ListJoueur;
+	}
+
+	public void setListJoueur(ArrayList<Joueur> listJoueur) {
+		ListJoueur = listJoueur;
+	}
+	
+	
+	
+	
+
 }
