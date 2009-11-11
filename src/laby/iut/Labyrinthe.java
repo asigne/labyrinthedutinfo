@@ -3,17 +3,14 @@ package laby.iut;
 import java.util.ArrayList;
 
 import Java.*;
-import android.*;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Matrix;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
+import android.view.View;
 import android.view.animation.RotateAnimation;
-import android.widget.GridView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +24,7 @@ public class Labyrinthe extends Activity
     	
 	TextView Text01;
     LinearLayout lbleu,lvert, lrouge, ljaune;
+    Button btnJouer, btnAnnuler;
 	
     String flecheInterdite;
     int indiceInterdit;
@@ -36,11 +34,22 @@ public class Labyrinthe extends Activity
     Case caseCourante;	
     Coup monCoup;
     
-    Utilisateur j1, j2, j3, j4, joueurActif;
+   	//Utilisateur j1, j2, j3, j4;
+   	Joueur joueurActif, ia, j1, j2, j3, j4;
+   	//IA ia;
+   	
+   	int sauvModif;
+	Case sauvCaseCourante, sauvCaseSortante;
+	String sauvFleche;
+	String sauvFlecheInterdite;
+    int sauvIndiceInterdit;
+   	
         
-    int ligne, colonne;
+    //int ligne, colonne;
     String fleche;
 
+    boolean plateauModif, jeuFait, premiereModif=true;
+    
     
     //parametre de l'application
     int xmin=13, xmax=307, ymin=86, ymax=380;//coordonnées du plateau de jeu
@@ -60,32 +69,119 @@ public void onCreate(Bundle savedInstanceState)
          super.onCreate(savedInstanceState);
          setContentView(R.layout.jeu);   
 
-         initImageView();
+         initDesID();
+                  
+         maPartie=new Partie("Partie1"); 			//creation de la partie     
+         monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
+         caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
+         //sauvCaseSortante= new Case(0,0);
          
-         Text01 = (TextView) findViewById(R.id.Text01);
-         
-         maPartie=new Partie("Partie1");     
-         monPlateau=maPartie.getMonPlateau();
-         caseCourante=maPartie.getCaseCourante();
-         
-         j1=new Utilisateur("j1");
-         j2=new Utilisateur("j2");
+         j1=new Utilisateur("j1");					//creation du joueur
+         ia=new IA("Ordinateur");					//creation de l'IA
+         j2=new Utilisateur("j2");					
          j3=new Utilisateur("j3");
          j4=new Utilisateur("j4");
          
-         j1.RejoindrePartie(maPartie);
-         //maPartie.ajouterJoueur(j1);
-         j2.RejoindrePartie(maPartie);
-         //maPartie.ajouterJoueur(j2);
-         maPartie.lancerPartie();
+         
+         j1.RejoindrePartie(maPartie);				//ajout du joueur à la partie
+         ia.RejoindrePartie(maPartie);				//ajout de l'IA à la partie
+         
+         //j2.RejoindrePartie(maPartie);
+         //j3.RejoindrePartie(maPartie);
+         //j4.RejoindrePartie(maPartie);
+         
+         maPartie.lancerPartie();					//lancement de la partie
 
-         initPlateau2D();
-         afficheCaseCourante(0);
-         afficheCarteCourante();
-         affichePion(j2);
-         affichePion(j1);   
+         initPlateau2D();							//initialisation de l'affichage du plateau en 2D
+         affichePions();   							//affichage des pions sur le plateau
+         afficheCaseCourante(0);					//affichage de la case courante
+         afficheCarteCourante();					//affichage de la carte courante du joueur
+         actionFleche(185, 78);
+       
          joueurActif=j1;
+         Text01.setText(""+joueurActif.getListCarte().size());   
+         /*
+         if(!maPartie.getPartieFinie())			//tant que partie n'est pas finie;
+         	{
+	         //initPlateau2D();							//initialisation de l'affichage du plateau en 2D
+	         affichePions();   							//affichage des pions sur le plateau
+	         //afficheCaseCourante(0);					//affichage de la case courante
+	         //afficheCarteCourante();
+        	 while(!jeuFait)
+        	 {
+        		 
+        	 }
+        	 jeuFait=false;
+        	 
+             joueurActif.testCarteTrouvee();
+             joueurActif.testJoueurGagnant();
+             Text01.setText("a j1 de jouer");
+             if(maPartie.getPartieFinie())
+             {
+            	 Text01.setText("Partie Finie : j1 a gagné");
+            	 //break;
+             }
+         	 
+        	 joueurActif=ia;       	 
+        	 //jeu de l'IA
+        	 monCoup=ia.rechercheMeilleurCoup(caseCourante, monPlateau);//creer son coup : la modification du plateau a effectuer
+        	 ia.modifierPlateau(monCoup); 								//modification du plateau en fonction du coup généré
+        	 ia.seDeplacer();											//deplacement du joueur;
+        	 
+             joueurActif.testCarteTrouvee();
+             joueurActif.testJoueurGagnant();      	 
+             if(maPartie.getPartieFinie())
+             {
+            	 Text01.setText("Partie Finie : IA a gagné");
+            	 //break;
+             } 
+        	 joueurActif=j1;
+         }*/
+        jouer();
+         
+         
+         btnJouer.setOnClickListener(new View.OnClickListener()
+         {
+             public void onClick(View v)
+             {
+            	 if(plateauModif)
+            	 	{
+            		 	premiereModif=false;
+            			//Text01.setText(monPlateau.getCase(joueurActif.getPosLigne(), joueurActif.getPosColonne()).getIdentifiant()+"   "+joueurActif.getCarteObjectif().getIdentifiant());
+            		 	joueurActif.testCarteTrouvee();
+            		 	if(maPartie.getPartieFinie())
+	            		 	{
+	            		 		//partie finie
+	            		 	}
+            		 	//joueurActif.testJoueurGagnant();
+            		 	//Text01.setText("a j1 de jouer");
+            		 	jeuFait=true;
+            		 	//Text01.setText("A l'IA de jouer"); 
+            			afficheCarteCourante();
+            			affichePions();	
+            	 	}
+            	 else
+	            	 {
+	            		Text01.setText("Vous devez obligatoirement modifier le plateau"); 
+	            	 }
+             }
+         }); 
+         
+         btnAnnuler.setOnClickListener(new View.OnClickListener()
+         {
+             public void onClick(View v)
+             {
+            	 Text01.setText("Vous avez annulé votre derniere modification de plateau"); 
+            	 annulerDernierCoup();
+            	 btnAnnuler.setVisibility(4);
+             }
+         });
     }  
+
+public void jouer()
+{
+	
+}
 
 //methode permettant de gérer les clic sur l'écran   
 public boolean onTouchEvent(MotionEvent event)
@@ -96,14 +192,24 @@ public boolean onTouchEvent(MotionEvent event)
 			int y = (int) (event.getY());
 			Text01.setText("x:"+x+" y:"+y);
 			
+			//gestion du click en fonction des coordonnées
 			if(x>xmin && x<=xmax && y>ymin && y<ymax)
 			{
+				//action sur une case du plateau
 				actionCase(x, y);
 				return true;
 			}
 			else if(x>xmin-tailleFleche && x<=xmax+tailleFleche && y>ymin-tailleFleche && y<ymax+tailleFleche)
 			{
-				actionFleche(x,y);
+				//action sur une fleche
+				if(!plateauModif)
+				{		
+					plateauModif=actionFleche(x,y);
+				}
+				else
+				{
+					Text01.setText("Vous avez deja modifier le plateau");
+				}
 				return true;
 			}
 			else if(x>240 && y>400)
@@ -126,8 +232,8 @@ public boolean onTouchEvent(MotionEvent event)
 	return false;
 }
 
-//recupere les id des ImageView
-private void initImageView() {
+//recupere les ID des différents objets graphiques
+public  void initDesID() {
 	fg1 = (ImageView) findViewById(R.id.fg1);
     fg3 = (ImageView) findViewById(R.id.fg3);
     fg5 = (ImageView) findViewById(R.id.fg5);
@@ -149,22 +255,26 @@ private void initImageView() {
     lvert= (LinearLayout) findViewById(R.id.lvert);
     lrouge = (LinearLayout) findViewById(R.id.lrouge);
     ljaune = (LinearLayout) findViewById(R.id.ljaune);
+    Text01 = (TextView) findViewById(R.id.Text01);
+    btnJouer = (Button) findViewById(R.id.Jouer);
+    btnAnnuler = (Button) findViewById(R.id.Annuler);
     
 }
 
 //click sur la carteCourante
-private void actionCarteCourante() {
+public void actionCarteCourante() {
 	Intent defineIntent = new Intent(this, AffichageCartes.class);
-	Bundle objetbunble = new Bundle();
+	//Bundle objetbunble = new Bundle();
 	
 	//objetbunble.putString("listeCarte", String.valueOf(j1.getListCarte()));
-	defineIntent.putExtras(objetbunble);
+	//defineIntent.putExtra("aaa", j1.getListCarte());
 	startActivity(defineIntent);
 }
 
 //click sur une case du plateau
 public int CoordToColonne(int x)
 {
+	int colonne=0;
 	if(x<=xmin+tailleCase)
 		{
 			colonne=0;
@@ -197,6 +307,7 @@ public int CoordToColonne(int x)
 }
 public int CoordToLigne(int y)
 {
+	int ligne=0;
 	if(y<=ymin+tailleCase)
 		{
 			ligne=0;
@@ -228,13 +339,13 @@ public int CoordToLigne(int y)
 	return ligne;
 }
 
+//click sur une case du plateau
 public void actionCase(int x, int y)
 {
-	ligne=CoordToLigne(y);
-	colonne=CoordToColonne(x);
-	if(testCaseAccessible(joueurActif, ligne, colonne))
+	int ligne=CoordToLigne(y);
+	int colonne=CoordToColonne(x);
+	if(joueurActif.seDeplacer(ligne, colonne))
 		{
-			joueurActif.seDeplacer(ligne, colonne);
 			affichePions();
 		}
 	else
@@ -244,7 +355,7 @@ public void actionCase(int x, int y)
 }
 
 //click sur une fleche autour du plateau
-public void actionFleche(int x, int y)
+public boolean actionFleche(int x, int y)
 {		
 	int modif=0;
 	if(x>xmin-tailleFleche && x<xmin)
@@ -275,26 +386,88 @@ public void actionFleche(int x, int y)
 	}
 	else
 	{
-		Text01.setText("fleche:"+fleche+" numero:"+ligne+colonne);
 		if(modif==1 || modif==3 || modif==5)
-			{
-				//traitementJoueurSurCaseSortante(modif, fleche);
+			{				
+				btnAnnuler.setVisibility(0);
+				sauvModif=modif;
+				sauvFleche=fleche;
+				sauvFlecheInterdite=flecheInterdite;
+				sauvIndiceInterdit=indiceInterdit;
 				
-				Text01.setText(""+j1.getPosColonne()+" "+j1.getPosLigne());
-
-				monCoup = new Coup(caseCourante, modif, fleche);
-				maPartie.modifierPlateau(monCoup);
+				
+				monCoup=((Utilisateur) joueurActif).genererCoup(caseCourante, modif, fleche);
+				joueurActif.modifierPlateau(monCoup);
 				traitementJoueurSurCaseMobile(modif, fleche);
 				lockFleche(fleche,modif);
 				caseCourante=maPartie.getCaseCourante();
+				sauvCaseSortante=caseCourante.sauvCase();
 				MaJPlateau(modif, fleche);
 				afficheCaseCourante(0);	
-				
+				return true;
 			}
 	}
+	return false;
 }
 
-private void traitementJoueurSurCaseMobile(int indice, String fleche)
+public void annulerDernierCoup()
+{
+	if(sauvFleche=="haut")
+	{
+		fleche="bas";
+	}
+	else if(sauvFleche=="bas")
+	{
+		fleche="haut";
+	}
+	else if(sauvFleche=="gauche")
+	{
+		fleche="droite";
+	}
+	else if(sauvFleche=="droite")
+	{
+		fleche="gauche";
+	}
+	
+	if(sauvFlecheInterdite=="haut")
+	{
+		flecheInterdite="bas";
+	}
+	else if(sauvFlecheInterdite=="bas")
+	{
+		flecheInterdite="haut";
+	}
+	else if(sauvFlecheInterdite=="gauche")
+	{
+		flecheInterdite="droite";
+	}
+	else if(sauvFlecheInterdite=="droite")
+	{
+		flecheInterdite="gauche";
+	}
+	Text01.setText(""+sauvModif);
+	monCoup=((Utilisateur) joueurActif).genererCoup(sauvCaseSortante, sauvModif, fleche);
+	//monCoup = new Coup(caseCourante, modif, fleche);
+	joueurActif.modifierPlateau(monCoup);
+	traitementJoueurSurCaseMobile(sauvModif, fleche);
+	caseCourante=maPartie.getCaseCourante();
+	MaJPlateau(sauvModif, fleche);
+	afficheCaseCourante(0);	
+	if(premiereModif)
+	{
+		unlockFleche();
+	}
+	else
+	{
+		lockFleche(flecheInterdite, sauvModif);
+	}
+	
+	plateauModif=false;
+}
+
+
+
+//deplacement des joueurs sur les case mobiles en mouvement
+public void traitementJoueurSurCaseMobile(int indice, String fleche)
 {
 	ArrayList<Joueur> listEnCoursDeTest=null;
 	Joueur JCT;
@@ -307,7 +480,7 @@ private void traitementJoueurSurCaseMobile(int indice, String fleche)
 			for(int i=0;i<listEnCoursDeTest.size();i++)
 			{
 				JCT=listEnCoursDeTest.get(i);
-				JCT.seDeplacer1(ligne, indice);
+				JCT.modifPosition(ligne, indice);
 			}		
 		}	
 	}
@@ -319,7 +492,7 @@ private void traitementJoueurSurCaseMobile(int indice, String fleche)
 			for(int i=0;i<listEnCoursDeTest.size();i++)
 			{
 				JCT=listEnCoursDeTest.get(i);
-				JCT.seDeplacer1(ligne, indice);
+				JCT.modifPosition(ligne, indice);
 			}
 		}
 	}
@@ -331,7 +504,7 @@ private void traitementJoueurSurCaseMobile(int indice, String fleche)
 			for(int i=0;i<listEnCoursDeTest.size();i++)
 			{
 				JCT=listEnCoursDeTest.get(i);
-				JCT.seDeplacer1(indice, colonne);
+				JCT.modifPosition(indice, colonne);
 			}
 		}
 	}
@@ -343,7 +516,7 @@ private void traitementJoueurSurCaseMobile(int indice, String fleche)
 			for(int i=0;i<listEnCoursDeTest.size();i++)
 			{
 				JCT=listEnCoursDeTest.get(i);
-				JCT.seDeplacer1(indice, colonne);
+				JCT.modifPosition(indice, colonne);
 			}
 		}
 	}
@@ -415,7 +588,7 @@ public void lockFleche(String fleche, int indice){
 			}
 			flecheInterdite="droite";
 		}
-	else
+	else if(fleche=="droite")
 		{
 			switch(indice)
 			{
@@ -433,31 +606,22 @@ public void lockFleche(String fleche, int indice){
 		}
 }
 
-//methode effectuant le test pour connaitre la cases accessibles par un joueur
-public boolean testCaseAccessible(Joueur monJoueur, int ligne, int colonne)
-   {
-		int posLigne=monJoueur.getPosLigne();
-		int posColonne=monJoueur.getPosColonne();
-		for(int i=0;i<7;i++)
-		{
-			for(int j=0;j<7;j++)
-			{
-				monPlateau.getCase(i,j).setFlag(0);
-				monPlateau.getCase(i,j).setEntree(-1);
-				monPlateau.getCase(i,j).setSortie(0);
-			}	
-		}
-	   
-	   fonction(posLigne, posColonne, maPartie); 
-	   if(monPlateau.getCase(ligne, colonne).getFlag()==1)
-		   {
-			   return true;
-		   }
-	   else
-		   {
-			   return false;
-		   }
-   }
+public void unlockFleche(){
+	fb1.setVisibility(3);
+	fb3.setVisibility(3);
+	fb5.setVisibility(3);
+	fh1.setVisibility(3);
+	fh3.setVisibility(3);
+	fh5.setVisibility(3);
+	fg1.setVisibility(3);
+	fg3.setVisibility(3);
+	fg5.setVisibility(3);
+	fd1.setVisibility(3);
+	fd3.setVisibility(3);
+	fd5.setVisibility(3);
+	indiceInterdit=0;
+	flecheInterdite="";
+}
 
 // methode initilisant les rotations
 public void initRotation(int tailleImage, int duree)
@@ -601,6 +765,24 @@ public void afficheICT(Case caseATraiter, ImageView imageCourante, int duration,
 		}	
 	}
 
+public void affichePlateau()
+{
+	int noCase;
+	ImageView ICT;
+	int k=0;
+	
+	for(int ligne=0; ligne<7;ligne++)
+	{
+		for(int colonne=0; colonne<7;colonne++)
+		{	
+			noCase=indicePremiereCaseTableau+k;
+			ICT = (ImageView) findViewById(noCase);
+			afficheICT(monPlateau.getCase(ligne, colonne), ICT, 0, 42);
+			k++;
+		}
+		k++;
+	}
+}
 //methode permettant d'afficher la case courante
 public void afficheCaseCourante(int duration)
    {   
@@ -615,12 +797,12 @@ public void afficheCaseCourante(int duration)
 //methode permettant d'afficher la carte objectif du joueur
 public void afficheCarteCourante()
 	{
-		Carte carteCourante=j1.getCarteCourante();
+		Carte carteCourante=j1.getCarteObjectif();
 		int noImageCarteCourante=incidePremiereImageCarte+carteCourante.getIdentifiant();
-		Text01.setText(""+j1.getCarteCourante().getIdentifiant());
 		imageCarteCourante.setImageDrawable(getResources().getDrawable(noImageCarteCourante));
 	}
-	
+
+//methode permettant de mettre a jour la position des joueurs
 public void affichePions()
 	{
 		for(int i=0; i<maPartie.getListJoueur().size();i++)
@@ -629,6 +811,7 @@ public void affichePions()
 		}
 	}
 
+//methode permettant de mettre a jour la position d'un joueur
 public void affichePion(Joueur joueurCourant)
 	{
 		int moitiee=tailleCase/2;
@@ -645,27 +828,35 @@ public void affichePion(Joueur joueurCourant)
 		{
 			case 0:
 				pionCourant= lbleu;
+				lbleu.setVisibility(0);
 				break;
 			case 1:
 				pionCourant= lrouge;
+				lrouge.setVisibility(0);
 				break;
 			case 2:
 				pionCourant= lvert;
+				lvert.setVisibility(0);
 				break;
 			case 3:	
 				pionCourant= ljaune;
+				ljaune.setVisibility(0);
 				break;
 		}
 		nbJoueurCase=monPlateau.getCase(posLigne, posColonne).getListJoueur().size();
-		if(nbJoueurCase==1)
+		/*if(nbJoueurCase==1)
 		{
 			coordX=posColonne*tailleCase+xmin+quart;
 			coordY=posLigne*tailleCase+ymin-50+quart;
 		}
 		else
-		{
+		{*/
 			switch(nbJoueurCase)
 			{
+				case 1:
+					coordX=posColonne*tailleCase+xmin+quart;
+					coordY=posLigne*tailleCase+ymin-50+quart;
+					break;
 				case 2:
 					if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
 						{
@@ -679,107 +870,54 @@ public void affichePion(Joueur joueurCourant)
 						}
 					break;
 				case 3:
-					coordX=posColonne*tailleCase+xmin+moitiee;
-					coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+					if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
+					{
+						coordX=posColonne*tailleCase+xmin;
+						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+					}
+					else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(1)))
+					{
+						coordX=posColonne*tailleCase+xmin+moitiee;
+						coordY=posLigne*tailleCase+ymin-50+moitiee;
+					}
+					else
+					{
+						coordX=posColonne*tailleCase+xmin+moitiee;
+						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+					}
 					break;
-				case 4:	
-					coordX=posColonne*tailleCase+xmin;
-					coordY=posLigne*tailleCase+ymin-50+moitiee;
+				case 4:
+					if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
+					{
+						coordX=posColonne*tailleCase+xmin;
+						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+					}
+					else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(1)))
+					{
+						coordX=posColonne*tailleCase+xmin+moitiee;
+						coordY=posLigne*tailleCase+ymin-50+moitiee;
+					}
+					else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(2)))
+					{
+						coordX=posColonne*tailleCase+xmin+moitiee;
+						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
+					}
+					else
+					{
+						coordX=posColonne*tailleCase+xmin;
+						coordY=posLigne*tailleCase+ymin-50+moitiee;
+					}
 					break;
 			}
-		}
         pionCourant.setPadding(coordX, coordY, 0, 0);
 	}
 
-//fonction permettant de savoir si une case est accessible depuis la postion du joueur
-// correspondant aux parametres ligne et colonne.
-public static void fonction(int ligne, int colonne, Partie maPartie)
-   {
-		Plateau monPlateau=maPartie.getMonPlateau();
-		Case maCase=monPlateau.getCase(ligne, colonne);
-		int sortie=maCase.getSortie();
-		int entree=maCase.getEntree();
-		int L1=0, C1=0, S=0, E=0;
-		boolean Ok = false;
-		
-		monPlateau.getCase(ligne, colonne).setFlag(1);
 
-	   
-	   for(int i=maCase.getSortie()+1;i<5;i++)
-	   {
-		   if(sortie!=entree)
-			   {
-			   		switch(i)
-				   		{
-					   		case 1: //haut
-					   			if(ligne>0 && maCase.getTabDroit(1)==true &&
-					   					monPlateau.getCase(ligne-1, colonne).getTabDroit(3)==true &&
-					   					monPlateau.getCase(ligne-1, colonne).getFlag()==0)
-					   				{
-					   					L1=-1;
-					   					C1=0;
-					   					S=1;
-					   					E=3;
-					   					Ok=true;
-					   				}	
-					   			break;
-					   			
-					   		case 2: //droite
-					   			if(colonne<6 && maCase.getTabDroit(2)==true &&
-					   					monPlateau.getCase(ligne, colonne+1).getTabDroit(4)==true &&
-					   					monPlateau.getCase(ligne, colonne+1).getFlag()==0)
-					   				{
-					   					L1=0;
-					   					C1=1;
-					   					S=2;
-					   					E=4;
-					   					Ok=true;
-					   				}		   			
-					   			break;
-					   			
-					   		case 3: //bas
-					   			if(ligne<6 && maCase.getTabDroit(3)==true &&
-					   					monPlateau.getCase(ligne+1, colonne).getTabDroit(1)==true &&
-					   					monPlateau.getCase(ligne+1, colonne).getFlag()==0)
-					   				{
-					   					L1=1;
-					   					C1=0;
-					   					S=3;
-					   					E=1;
-					   					Ok=true;
-					   				}
-					   			break;
-					   			
-					   		case 4: //gauche
-					   			if(colonne>0 && maCase.getTabDroit(4)==true &&
-					   					monPlateau.getCase(ligne, colonne-1).getTabDroit(2)==true &&
-					   					monPlateau.getCase(ligne, colonne-1).getFlag()==0)
-					   				{
-					   					L1=0;
-					   					C1=-1;
-					   					S=4;
-					   					E=2;
-					   					Ok=true;
-					   				}	
-					   			break;
-				   		}
-				   if(Ok==true)
-				   		{
-					   		monPlateau.getCase(ligne, colonne).setSortie(S);
-					   		ligne=ligne+L1;
-					   		colonne=colonne+C1;
-					   		monPlateau.getCase(ligne, colonne).setEntree(E);
-					   		monPlateau.getCase(ligne, colonne).setFlag(1);
-					   		
-					   		fonction(ligne,colonne, maPartie);
-					   		
-					   		ligne=ligne-L1;
-					   		colonne=colonne-C1;
-					   		
-				   		}
-			   }
-		   
-		   }
-   }
+public void afficheEcran()
+{
+	affichePlateau();
+	afficheCarteCourante();
+	afficheCaseCourante(0);
+	affichePions();	
 }
-
+}
