@@ -3,13 +3,13 @@ package Java;
 import java.util.ArrayList;
 
 public class Partie {
-	int nbCarte=24;
-	String nom;
-	Plateau monPlateau;
-	Case caseCourante;
-	ArrayList<Carte> ListCarte;
-	ArrayList<Joueur> ListJoueur;
-	boolean partieFinie;
+	int nbCarte=24; //nb de cartes a distribuer aux joueurs
+	String nom;		//nom de la partie
+	Plateau monPlateau;	//plateau de la partie
+	Case caseCourante;	//caseCourante de la partie
+	ArrayList<Carte> ListCarte;	//liste des cartes à distribuer
+	ArrayList<Joueur> ListJoueur;	// liste des joueurs de la partie
+	boolean partieFinie;	//si true partie finie sinon false
 	
 	public Partie(String nom)
 	{
@@ -22,22 +22,28 @@ public class Partie {
 		monPlateau=new Plateau();
 		
 		//détermination de la caseCourante
-		caseCourante=monPlateau.ListCase.get(0);
+		caseCourante=monPlateau.ListCase.get(0); // derniere case non placée sur le plateau
 		
-		//creation des cartes
+		//creation des cartes à distribuer
 		for(int i=0; i<nbCarte;i++)
 		{
 			ListCarte.add(new Carte(i));
 		}
 	}
 	
+	public boolean getPartieFinie() {
+		return partieFinie;
+	}
+
+	public void setPartieFinie(boolean partieFinie) {
+		this.partieFinie = partieFinie;
+	}
+
 	//ajout d'un joueur
 	public void ajouterJoueur(Joueur newJoueur)
 	{
 		int numJoueur=ListJoueur.size();
-		ListJoueur.add(newJoueur);
-		//int numJoueur=ListJoueur.size()-1;
-		
+		ListJoueur.add(newJoueur);		
 		Joueur joueurCourant=ListJoueur.get(numJoueur);
 		
 		joueurCourant.setIdentifiant(numJoueur);
@@ -47,19 +53,18 @@ public class Partie {
 				joueurCourant.setPosition(0, 0);
 				break;
 			case 1:
-				joueurCourant.setPosition(0, 3);
+				joueurCourant.setPosition(6, 6);
 				break;
 			case 2:
-				joueurCourant.setPosition(6, 0);
-				break;
-			case 3:
 				joueurCourant.setPosition(0, 6);
 				break;
+			case 3:
+				joueurCourant.setPosition(6, 0);
+				break;
 		}
-		//monPlateau.getCase(posX, posY).ajouterJoueur(joueurCourant);
-		//monPlateau.getCase(posX, posY).ajouterPion(pion);
 	}
 	
+	//retourne la liste des joueurs de la partie
 	public ArrayList<Joueur> getListJoueur() {
 		return ListJoueur;
 	}
@@ -96,13 +101,7 @@ public class Partie {
 		}
 		
 	}
-	
-	/*//renvoie la liste de carte
-	public ArrayList<Carte> getListCarte() {
-		return ListCarte;
-	}*/
-
-	
+		
 	//lancer la partie
 	public void lancerPartie()
 	{
@@ -117,7 +116,7 @@ public class Partie {
 	}
 	
 	//distribution des cartes aux joueurs
-	private void distribuerCarte() {
+	public void distribuerCarte() {
 		int numJoueur=0;
 		int carteAleatoire;
 		Carte carteActuelle;
@@ -137,7 +136,15 @@ public class Partie {
 					}
 				ListCarte.remove(carteAleatoire); //suppression de la carte courante de la liste
 			}
+		for(int i=0; i<ListJoueur.size();i++)
+		{
+			ListJoueur.get(i).ajouterCarte(new Carte(24+ListJoueur.get(i).getIdentifiant()));
+			ListJoueur.get(i).setCarteObjectif(ListJoueur.get(i).getListCarte().get(0));
+		}
 	}
+	
+	
+	
 }
 
 	

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public abstract class Case
 {
 	int identifiant; //identifiant pour les cases possédante une image sinon 0
-	//ArrayList<Pion> ListPion; //liste des pions situés sur cette case
 	int rotation; //indice de rotation par rapport à la position originale
 	int noImage; //numero de l'image ou 0 sinon
 	boolean tabDroit[]; //tableau contenant les possibilité de sortie de la case
@@ -18,8 +17,7 @@ public abstract class Case
 	
 	
 	ArrayList<Joueur> ListJoueur;
-	
-	
+
 	public Case(int identifiant, int noImage)
 		{
 			this.noImage=noImage;
@@ -29,15 +27,37 @@ public abstract class Case
 			entree=-1;
 			sortie=0;
 			flag=0;
-			//ListPion = new ArrayList<Pion>();
 			ListJoueur = new ArrayList<Joueur>();
 		}
 	
-	/*
-	public void setListPion(ArrayList<Pion> listPion) {
-		ListPion = listPion;
-	}*/
-
+	public Case sauvCase()
+		{
+			Case sauvCase; 
+			if(this instanceof L)
+			{
+				sauvCase=new L(0,0,0);
+			}
+			else if(this instanceof T)
+			{
+				sauvCase=new T(0,0,0);
+			}
+			else
+			{
+				sauvCase=new I(0);
+			}
+			
+			sauvCase.noImage=this.noImage;
+			sauvCase.identifiant=this.identifiant;
+			sauvCase.tabDroit=this.tabDroit;
+			sauvCase.rotation=this.rotation;
+			sauvCase.entree=this.entree;
+			sauvCase.sortie=this.sortie;
+			sauvCase.flag=this.flag;
+			sauvCase.ListJoueur=this.ListJoueur;	
+			return sauvCase;
+		}
+	
+	
 	public String toString()
 		{
 			//return tabDroit[1]+" "+tabDroit[2]+" "+tabDroit[3]+" "+tabDroit[4]+" "+this.rotation+" "+this.flag;
@@ -62,14 +82,6 @@ public abstract class Case
 		{
 			return this.noImage;
 		}
-
-	/*
-	public ArrayList<Pion> getListPion()
-		{
-			return this.ListPion;
-		}
-	*/
-	
 	
 	//methode permettant de faire tourner la case de 'indice' degrés
 	//l'indice rotation  et les droits de la case sont modifiés
@@ -115,17 +127,7 @@ public abstract class Case
 	public int getRotation() {
 		return this.rotation;
 	}
-/*
-	public void ajouterPion(Pion newPion)
-	{
-		ListPion.add(newPion);
-	}
-	
-	public void supprPion(Pion oldPion)
-	{
-		ListPion.remove(oldPion);
-	}
-*/	
+
 	public void ajouterJoueur(Joueur newJoueur)
 	{
 		ListJoueur.add(newJoueur);
@@ -143,9 +145,10 @@ public abstract class Case
 	public void setListJoueur(ArrayList<Joueur> listJoueur) {
 		ListJoueur = listJoueur;
 	}
-	
-	
-	
+
+	public int getIdentifiant() {
+		return identifiant;
+	}	
 	
 
 }

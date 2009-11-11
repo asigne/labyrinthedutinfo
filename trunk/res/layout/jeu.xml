@@ -5,8 +5,15 @@ android:layout_width="fill_parent"
 android:layout_height="fill_parent" 
 xmlns:android="http://schemas.android.com/apk/res/android">
         
-	
-	
+	<TextView 
+		android:layout_y="0dip" 
+		android:id="@+id/Text01" 
+		android:layout_width="320dip" 
+		android:layout_x="0dip" 
+		android:layout_height="wrap_content" 
+		android:text="@+id/TextView01">
+	</TextView>
+		
 	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@+id/Plateau" android:layout_width="294dp" android:layout_height="294dp" android:layout_x="13dip" android:layout_y="35dip">
 	    
@@ -285,41 +292,52 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 
 
 
-<LinearLayout android:id="@+id/lbleu" android:layout_height="wrap_content" android:layout_width="wrap_content">
-	<ImageView android:id="@+id/pbleu" android:layout_width="21dip" android:layout_height="21dip" android:src="@drawable/pbleu" android:visibility="visible">
+<LinearLayout 
+	android:visibility="invisible"
+	android:id="@+id/lbleu" 
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content">
+	<ImageView 
+		android:id="@+id/pbleu" 
+		android:layout_width="21dip" 
+		android:layout_height="21dip" 
+		android:src="@drawable/pbleu" >
 	</ImageView>
 </LinearLayout><LinearLayout 
+	android:visibility="invisible"
 	android:id="@+id/ljaune" 
-	android:layout_height="wrap_content" android:layout_width="wrap_content">
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content">
 	<ImageView 
 		android:id="@+id/pjaune" 
 		android:layout_width="21dip" 
 		android:layout_height="21dip" 
-		android:src="@drawable/pjaune" 
-		android:visibility="visible">
+		android:src="@drawable/pjaune" >
 	</ImageView>
 </LinearLayout>
 <LinearLayout 
+	android:visibility="invisible"
 	android:id="@+id/lrouge" 
-	android:layout_height="wrap_content" android:layout_width="wrap_content">
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content">
 	<ImageView 
 		android:id="@+id/prouge" 
 		android:layout_width="21dip" 
 		android:layout_height="21dip" 
-		android:src="@drawable/prouge" 
-		android:visibility="visible">
+		android:src="@drawable/prouge">
 	</ImageView>
 </LinearLayout>
 
 <LinearLayout 
+	android:visibility="invisible"
 	android:id="@+id/lvert" 
-	android:layout_height="wrap_content" android:layout_width="wrap_content">
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content">
 	<ImageView 
 		android:id="@+id/pvert" 
 		android:layout_width="21dip" 
 		android:layout_height="21dip" 
-		android:src="@drawable/pvert" 
-		android:visibility="visible">
+		android:src="@drawable/pvert" >
 	</ImageView>
 </LinearLayout>
 
@@ -490,8 +508,21 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 	</ImageView>
 </LinearLayout>
 
-<TextView android:layout_y="403dip" android:id="@+id/Text01" android:layout_width="wrap_content" android:layout_x="24dip" android:layout_height="wrap_content" android:text="@+id/TextView01"></TextView>
-
-
-
+<Button 
+	android:layout_width="wrap_content" 
+	android:id="@+id/Jouer" 
+	android:text="@+string/Jouer" 
+	android:layout_height="wrap_content" 
+	android:layout_y="365dip" 
+	android:layout_x="25dip">
+</Button>
+<Button 
+	android:visibility="invisible"
+	android:layout_width="wrap_content" 
+	android:id="@+id/Annuler" 
+	android:text="@+string/Annuler" 
+	android:layout_height="wrap_content" 
+	android:layout_y="365dip" 
+	android:layout_x="100dip">
+</Button>
 </AbsoluteLayout>
