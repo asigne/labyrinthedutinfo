@@ -41,9 +41,9 @@ public class Plateau {
 			
 			//creation des cases fixes
 			PlateauBool[0][0]=true;		PlateauCase[0][0]=new L(24,90,7);	//bleu
-			PlateauBool[0][6]=true;		PlateauCase[0][6]=new L(27,180,10);	//vert
-			PlateauBool[6][0]=true;		PlateauCase[6][0]=new L(25,0,8);	//jaune
-			PlateauBool[6][6]=true;		PlateauCase[6][6]=new L(26,270,9);	//rouge
+			PlateauBool[0][6]=true;		PlateauCase[0][6]=new L(26,180,10);	//vert
+			PlateauBool[6][0]=true;		PlateauCase[6][0]=new L(27,0,8);	//jaune
+			PlateauBool[6][6]=true;		PlateauCase[6][6]=new L(25,270,9);	//rouge
 			
 			PlateauBool[0][2]=true;		PlateauCase[0][2]=new T(6,0,1);		//casque
 			PlateauBool[0][4]=true;		PlateauCase[0][4]=new T(7,0,2);		//chandelier
@@ -98,13 +98,13 @@ public void creationListeCase()
 	for(int i=0;i<comptLimage;i++)
 	{
 		rotationAleatoire=rotationAleatoire();
-		ListCase.add(new L(i+1,rotationAleatoire,i+1));	
+		ListCase.add(new L(i,rotationAleatoire,i+1));	
 	}
 	//creation des 6 'T' avec images
 	for(int i=0;i<comptTimage;i++)
 	{
 		rotationAleatoire=rotationAleatoire();
-		ListCase.add(new T(i+7,rotationAleatoire,i+13));	// i+13 car il y a les 13 cases fixes avant
+		ListCase.add(new T(i+18,rotationAleatoire,i+13));	// i+13 car il y a les 13 cases fixes avant
 	}
 }
 	

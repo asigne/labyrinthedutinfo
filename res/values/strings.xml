@@ -2,5 +2,8 @@
 <resources>
     <string name="hello">Hello World, HelloGridView!</string>
     <string name="app_name">Labyrinthe</string>
-<string name="retour">Retour</string>
+
+<string name="Annuler">Annuler</string>
+
+<string name="Jouer">Jouer</string>
 </resources>

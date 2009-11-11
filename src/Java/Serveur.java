@@ -1,7 +1,5 @@
 package Java;
 
-import java.util.ArrayList;
-
 public class Serveur {
 	String nom;
 	Partie ListPartie[];

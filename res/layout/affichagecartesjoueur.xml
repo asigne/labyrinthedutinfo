@@ -12,13 +12,6 @@
 
 
 </GridView>
-<Button 
-	android:text="@+id/retour" 
-	android:id="@+id/retour" 
-	android:layout_width="100dip" 
-	android:layout_height="40dip" 
-	android:layout_y="380dip" 
-	android:layout_x="110dip">
-</Button>
+
 <TextView android:layout_x="20dip" android:layout_y="397dip" android:id="@+id/TextView01" android:text="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 </AbsoluteLayout>
