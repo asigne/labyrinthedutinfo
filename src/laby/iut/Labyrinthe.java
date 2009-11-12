@@ -43,13 +43,15 @@ public class Labyrinthe extends Activity
 	String sauvFleche;
 	String sauvFlecheInterdite;
     int sauvIndiceInterdit;
+    int sauvPosLigne, sauvPosColonne;
+	
    	
         
     //int ligne, colonne;
     String fleche;
 
-    boolean plateauModif, jeuFait, premiereModif=true;
-    
+    boolean deplacement=false, jeuFait, premiereModif=true;
+    boolean plateauModif=false;
     
     //parametre de l'application
     int xmin=13, xmax=307, ymin=86, ymax=380;//coordonnées du plateau de jeu
@@ -84,21 +86,20 @@ public void onCreate(Bundle savedInstanceState)
          
          
          j1.RejoindrePartie(maPartie);				//ajout du joueur à la partie
-         ia.RejoindrePartie(maPartie);				//ajout de l'IA à la partie
+         //ia.RejoindrePartie(maPartie);				//ajout de l'IA à la partie
          
-         //j2.RejoindrePartie(maPartie);
-         //j3.RejoindrePartie(maPartie);
-         //j4.RejoindrePartie(maPartie);
+         j2.RejoindrePartie(maPartie);
+         j3.RejoindrePartie(maPartie);
+         j4.RejoindrePartie(maPartie);
          
          maPartie.lancerPartie();					//lancement de la partie
 
          initPlateau2D();							//initialisation de l'affichage du plateau en 2D
          affichePions();   							//affichage des pions sur le plateau
          afficheCaseCourante(0);					//affichage de la case courante
-         afficheCarteCourante();					//affichage de la carte courante du joueur
-         actionFleche(185, 78);
        
          joueurActif=j1;
+         afficheCarteCourante();					//affichage de la carte courante du joueur
          Text01.setText(""+joueurActif.getListCarte().size());   
          /*
          if(!maPartie.getPartieFinie())			//tant que partie n'est pas finie;
@@ -148,17 +149,28 @@ public void onCreate(Bundle savedInstanceState)
             	 	{
             		 	premiereModif=false;
             			//Text01.setText(monPlateau.getCase(joueurActif.getPosLigne(), joueurActif.getPosColonne()).getIdentifiant()+"   "+joueurActif.getCarteObjectif().getIdentifiant());
+            		 	Text01.setText("Jeu validé : au joueur suivant");
             		 	joueurActif.testCarteTrouvee();
             		 	if(maPartie.getPartieFinie())
 	            		 	{
 	            		 		//partie finie
+            		 			Text01.setText("Partie Gagnée par : "+joueurActif.getNom());
+		            		 	
 	            		 	}
-            		 	//joueurActif.testJoueurGagnant();
-            		 	//Text01.setText("a j1 de jouer");
-            		 	jeuFait=true;
-            		 	//Text01.setText("A l'IA de jouer"); 
-            			afficheCarteCourante();
-            			affichePions();	
+            		 	else
+            		 		{
+		            		 	//joueurActif.testJoueurGagnant();
+		            		 	//Text01.setText("a j1 de jouer");
+		            		 	jeuFait=true;
+		            		 	//Text01.setText("A l'IA de jouer"); 
+		            			afficheCarteCourante();
+		            			affichePions();	
+		            		   	joueurActif=maPartie.joueurSuivant(joueurActif);
+		            		   	deplacement=false;
+		            			Text01.setText("A "+joueurActif.getNom()+" de jouer !");
+		            			plateauModif=false;
+		            			afficheCarteCourante();
+            		 		}
             	 	}
             	 else
 	            	 {
@@ -190,43 +202,45 @@ public boolean onTouchEvent(MotionEvent event)
 		{
 			int x = (int) (event.getX());
 			int y = (int) (event.getY());
-			Text01.setText("x:"+x+" y:"+y);
-			
-			//gestion du click en fonction des coordonnées
-			if(x>xmin && x<=xmax && y>ymin && y<ymax)
+			//Text01.setText("x:"+x+" y:"+y);
+			if(!maPartie.getPartieFinie())
 			{
-				//action sur une case du plateau
-				actionCase(x, y);
-				return true;
-			}
-			else if(x>xmin-tailleFleche && x<=xmax+tailleFleche && y>ymin-tailleFleche && y<ymax+tailleFleche)
-			{
-				//action sur une fleche
-				if(!plateauModif)
-				{		
-					plateauModif=actionFleche(x,y);
-				}
-				else
+				//gestion du click en fonction des coordonnées
+				if(x>xmin && x<=xmax && y>ymin && y<ymax)
 				{
-					Text01.setText("Vous avez deja modifier le plateau");
+					//action sur une case du plateau
+					actionCase(x, y);
+					return true;
 				}
-				return true;
-			}
-			else if(x>240 && y>400)
-			{
-				//action sur la caseCourante
-				caseCourante=maPartie.getCaseCourante();
-				caseCourante.rotate(90);
-				int indiceRotation=caseCourante.getRotation();
-				Text01.setText("click"+indiceRotation);
-	    		afficheCaseCourante(150);
-				return true;
-			}
-			else if(x>170 && x<220 && y<480 && y>400)
-			{
-				//action sur la carteCourante
-				actionCarteCourante();
-				return true;
+				else if(x>xmin-tailleFleche && x<=xmax+tailleFleche && y>ymin-tailleFleche && y<ymax+tailleFleche)
+				{
+					//action sur une fleche
+					if(!plateauModif)
+					{		
+						actionFleche(x,y);
+					}
+					else
+					{
+						Text01.setText("Vous avez deja modifier le plateau");
+					}
+					return true;
+				}
+				else if(x>240 && y>400)
+				{
+					//action sur la caseCourante
+					caseCourante=maPartie.getCaseCourante();
+					caseCourante.rotate(90);
+					int indiceRotation=caseCourante.getRotation();
+					Text01.setText("click"+indiceRotation);
+		    		afficheCaseCourante(150);
+					return true;
+				}
+				else if(x>170 && x<220 && y<480 && y>400)
+				{
+					//action sur la carteCourante
+					actionCarteCourante();
+					return true;
+				}
 			}
 		}
 	return false;
@@ -342,126 +356,154 @@ public int CoordToLigne(int y)
 //click sur une case du plateau
 public void actionCase(int x, int y)
 {
-	int ligne=CoordToLigne(y);
-	int colonne=CoordToColonne(x);
-	if(joueurActif.seDeplacer(ligne, colonne))
-		{
-			affichePions();
-		}
+	if(plateauModif)
+	{
+		int ligne=CoordToLigne(y);
+		int colonne=CoordToColonne(x);
+		if(joueurActif.seDeplacer(ligne, colonne))
+			{
+				deplacement=true;
+				affichePions();
+			}
+		else
+			{
+				Text01.setText(joueurActif.getNom()+" : déplacement interdit");
+			}
+	}
 	else
-		{
-			Text01.setText(joueurActif.getNom()+" : déplacement interdit");
-		}	
+	{
+		Text01.setText("vous devez modifier le plateau avant de vous deplacer");
+	}
 }
 
 //click sur une fleche autour du plateau
 public boolean actionFleche(int x, int y)
-{		
-	int modif=0;
-	if(x>xmin-tailleFleche && x<xmin)
+{	
+	if(!deplacement)
 	{
-		fleche="gauche";
-		modif=CoordToLigne(y);
-	}
-	else if(x>xmax && x<xmax+tailleFleche)
-	{
-		fleche="droite";
-		modif=CoordToLigne(y);
-	}
-	else if(y>ymin-tailleFleche && y<ymin)
-	{
-		fleche="haut";
-		modif=CoordToColonne(x);;
-	}
-	else if(y>ymax && y<ymax+tailleFleche)
-	{
-		fleche="bas";
-		modif=CoordToColonne(x);;
-	}		
-	
-	
-	if(modif==indiceInterdit && fleche==flecheInterdite)
-	{
-		Text01.setText("actionInterdite");
+		int modif=0;
+		if(x>xmin-tailleFleche && x<xmin)
+		{
+			fleche="gauche";
+			modif=CoordToLigne(y);
+		}
+		else if(x>xmax && x<xmax+tailleFleche)
+		{
+			fleche="droite";
+			modif=CoordToLigne(y);
+		}
+		else if(y>ymin-tailleFleche && y<ymin)
+		{
+			fleche="haut";
+			modif=CoordToColonne(x);;
+		}
+		else if(y>ymax && y<ymax+tailleFleche)
+		{
+			fleche="bas";
+			modif=CoordToColonne(x);;
+		}		
+		
+		
+		if(modif==indiceInterdit && fleche==flecheInterdite)
+		{
+			Text01.setText("actionInterdite");
+		}
+		else
+		{
+			if(modif==1 || modif==3 || modif==5)
+				{				
+					btnAnnuler.setVisibility(0);
+					sauvModif=modif;
+					sauvFleche=fleche;
+					sauvFlecheInterdite=flecheInterdite;
+					sauvIndiceInterdit=indiceInterdit;
+					sauvPosLigne=joueurActif.getPosLigne();
+					sauvPosColonne=joueurActif.getPosColonne();
+					
+					
+					monCoup=((Utilisateur) joueurActif).genererCoup(caseCourante, modif, fleche);
+					joueurActif.modifierPlateau(monCoup);
+					traitementJoueurSurCaseMobile(modif, fleche);
+					lockFleche(fleche,modif);
+					caseCourante=maPartie.getCaseCourante();
+					sauvCaseSortante=caseCourante.sauvCase();
+					MaJPlateau(modif, fleche);
+					afficheCaseCourante(0);	
+					plateauModif=true;
+					return true;
+				}
+		}
 	}
 	else
 	{
-		if(modif==1 || modif==3 || modif==5)
-			{				
-				btnAnnuler.setVisibility(0);
-				sauvModif=modif;
-				sauvFleche=fleche;
-				sauvFlecheInterdite=flecheInterdite;
-				sauvIndiceInterdit=indiceInterdit;
-				
-				
-				monCoup=((Utilisateur) joueurActif).genererCoup(caseCourante, modif, fleche);
-				joueurActif.modifierPlateau(monCoup);
-				traitementJoueurSurCaseMobile(modif, fleche);
-				lockFleche(fleche,modif);
-				caseCourante=maPartie.getCaseCourante();
-				sauvCaseSortante=caseCourante.sauvCase();
-				MaJPlateau(modif, fleche);
-				afficheCaseCourante(0);	
-				return true;
-			}
+		Text01.setText("nous ne pouvez pas modifier le plateau apres avoir");
 	}
+	//deplacement=false; //ligne pas sur
 	return false;
 }
 
 public void annulerDernierCoup()
 {
-	if(sauvFleche=="haut")
+	if(sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne())
 	{
-		fleche="bas";
-	}
-	else if(sauvFleche=="bas")
-	{
-		fleche="haut";
-	}
-	else if(sauvFleche=="gauche")
-	{
-		fleche="droite";
-	}
-	else if(sauvFleche=="droite")
-	{
-		fleche="gauche";
-	}
-	
-	if(sauvFlecheInterdite=="haut")
-	{
-		flecheInterdite="bas";
-	}
-	else if(sauvFlecheInterdite=="bas")
-	{
-		flecheInterdite="haut";
-	}
-	else if(sauvFlecheInterdite=="gauche")
-	{
-		flecheInterdite="droite";
-	}
-	else if(sauvFlecheInterdite=="droite")
-	{
-		flecheInterdite="gauche";
-	}
-	Text01.setText(""+sauvModif);
-	monCoup=((Utilisateur) joueurActif).genererCoup(sauvCaseSortante, sauvModif, fleche);
-	//monCoup = new Coup(caseCourante, modif, fleche);
-	joueurActif.modifierPlateau(monCoup);
-	traitementJoueurSurCaseMobile(sauvModif, fleche);
-	caseCourante=maPartie.getCaseCourante();
-	MaJPlateau(sauvModif, fleche);
-	afficheCaseCourante(0);	
-	if(premiereModif)
-	{
-		unlockFleche();
+		if(sauvFleche=="haut")
+		{
+			fleche="bas";
+		}
+		else if(sauvFleche=="bas")
+		{
+			fleche="haut";
+		}
+		else if(sauvFleche=="gauche")
+		{
+			fleche="droite";
+		}
+		else if(sauvFleche=="droite")
+		{
+			fleche="gauche";
+		}
+		
+		if(sauvFlecheInterdite=="haut")
+		{
+			flecheInterdite="bas";
+		}
+		else if(sauvFlecheInterdite=="bas")
+		{
+			flecheInterdite="haut";
+		}
+		else if(sauvFlecheInterdite=="gauche")
+		{
+			flecheInterdite="droite";
+		}
+		else if(sauvFlecheInterdite=="droite")
+		{
+			flecheInterdite="gauche";
+		}
+		Text01.setText(""+sauvModif);
+		monCoup=((Utilisateur) joueurActif).genererCoup(sauvCaseSortante, sauvModif, fleche);
+		//monCoup = new Coup(caseCourante, modif, fleche);
+		joueurActif.modifierPlateau(monCoup);
+		traitementJoueurSurCaseMobile(sauvModif, fleche);
+		caseCourante=maPartie.getCaseCourante();
+		MaJPlateau(sauvModif, fleche);
+		afficheCaseCourante(0);	
+		if(premiereModif)
+		{
+			unlockFleche();
+		}
+		else
+		{
+			lockFleche(flecheInterdite, sauvModif);
+		}
+		
+		plateauModif=false;
 	}
 	else
 	{
-		lockFleche(flecheInterdite, sauvModif);
+		Text01.setText("Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
+		//"Vous ne pouvez pas annuler la modification tant que votre joueur ne se trouve pas ou il était c'est à dire: 
+		//		"Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
 	}
-	
-	plateauModif=false;
 }
 
 
@@ -797,7 +839,7 @@ public void afficheCaseCourante(int duration)
 //methode permettant d'afficher la carte objectif du joueur
 public void afficheCarteCourante()
 	{
-		Carte carteCourante=j1.getCarteObjectif();
+		Carte carteCourante=joueurActif.getCarteObjectif();
 		int noImageCarteCourante=incidePremiereImageCarte+carteCourante.getIdentifiant();
 		imageCarteCourante.setImageDrawable(getResources().getDrawable(noImageCarteCourante));
 	}
