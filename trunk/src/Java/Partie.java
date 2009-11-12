@@ -68,6 +68,20 @@ public class Partie {
 	public ArrayList<Joueur> getListJoueur() {
 		return ListJoueur;
 	}
+	
+	public Joueur joueurSuivant(Joueur joueurActif)
+	{
+		int indiceJoueurCourant;
+		indiceJoueurCourant=ListJoueur.indexOf(joueurActif);
+		if(indiceJoueurCourant==ListJoueur.size()-1)
+		{
+			return ListJoueur.get(0);
+		}
+		else
+		{
+			return ListJoueur.get(indiceJoueurCourant+1);
+		}
+	}
 
 	//suppression d'un joueur
 	public void supprJoueur(Joueur oldJoueur)
@@ -136,6 +150,8 @@ public class Partie {
 					}
 				ListCarte.remove(carteAleatoire); //suppression de la carte courante de la liste
 			}
+		
+		
 		for(int i=0; i<ListJoueur.size();i++)
 		{
 			ListJoueur.get(i).ajouterCarte(new Carte(24+ListJoueur.get(i).getIdentifiant()));
