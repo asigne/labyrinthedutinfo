@@ -46,16 +46,12 @@ public abstract class Joueur {
 		{
 			return ListCarte.get(0);
 		}
-	public void setCarteObjectif(Carte carteObjectif)
-	{
-		this.carteObjectif=carteObjectif;
-	}
 	public void modifCarteObjectif()
 		{
 			if(this.getListCarte().size()>1)
 			{
-				this.supprCarte(carteObjectif);
-				this.setCarteObjectif(this.getListCarte().get(0));
+				this.supprCarte(this.getListCarte().get(0));
+				//this.setCarteObjectif(this.getListCarte().get(0));
 			}
 			else
 			{

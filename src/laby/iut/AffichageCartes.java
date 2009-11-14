@@ -37,13 +37,13 @@ public class AffichageCartes extends Activity {
         
         j1=new Utilisateur("j1");
         j2=new Utilisateur("j2");
-					        //j3=new Utilisateur("j3");
+        j3=new Utilisateur("j3");
 				       		//j4=new Utilisateur("j4");
         partie1 = new Partie("partie1");
         
         j1.RejoindrePartie(partie1);	
         j2.RejoindrePartie(partie1);
-						    
+        j3.RejoindrePartie(partie1);				    
               
         partie1.lancerPartie();
           

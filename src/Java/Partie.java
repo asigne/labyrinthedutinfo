@@ -155,7 +155,7 @@ public class Partie {
 		for(int i=0; i<ListJoueur.size();i++)
 		{
 			ListJoueur.get(i).ajouterCarte(new Carte(24+ListJoueur.get(i).getIdentifiant()));
-			ListJoueur.get(i).setCarteObjectif(ListJoueur.get(i).getListCarte().get(0));
+			//ListJoueur.get(i).setCarteObjectif(ListJoueur.get(i).getListCarte().get(0));
 		}
 	}
 	
