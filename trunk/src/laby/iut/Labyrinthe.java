@@ -78,11 +78,11 @@ public void onCreate(Bundle savedInstanceState)
          caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
          //sauvCaseSortante= new Case(0,0);
          
-         j1=new Utilisateur("j1");					//creation du joueur
+         j1=new Utilisateur("Bleu");					//creation du joueur
          ia=new IA("Ordinateur");					//creation de l'IA
-         j2=new Utilisateur("j2");					
-         j3=new Utilisateur("j3");
-         j4=new Utilisateur("j4");
+         j2=new Utilisateur("Rouge");					
+         j3=new Utilisateur("Vert");
+         j4=new Utilisateur("Jaune");
          
          
          j1.RejoindrePartie(maPartie);				//ajout du joueur à la partie
@@ -149,13 +149,12 @@ public void onCreate(Bundle savedInstanceState)
             	 	{
             		 	premiereModif=false;
             			//Text01.setText(monPlateau.getCase(joueurActif.getPosLigne(), joueurActif.getPosColonne()).getIdentifiant()+"   "+joueurActif.getCarteObjectif().getIdentifiant());
-            		 	Text01.setText("Jeu validé : au joueur suivant");
+            		 	//Text01.setText("Jeu validé : au joueur suivant");
             		 	joueurActif.testCarteTrouvee();
             		 	if(maPartie.getPartieFinie())
 	            		 	{
 	            		 		//partie finie
             		 			Text01.setText("Partie Gagnée par : "+joueurActif.getNom());
-		            		 	
 	            		 	}
             		 	else
             		 		{
@@ -167,6 +166,7 @@ public void onCreate(Bundle savedInstanceState)
 		            			affichePions();	
 		            		   	joueurActif=maPartie.joueurSuivant(joueurActif);
 		            		   	deplacement=false;
+		            		   	btnAnnuler.setVisibility(4);
 		            			Text01.setText("A "+joueurActif.getNom()+" de jouer !");
 		            			plateauModif=false;
 		            			afficheCarteCourante();
@@ -183,9 +183,10 @@ public void onCreate(Bundle savedInstanceState)
          {
              public void onClick(View v)
              {
-            	 Text01.setText("Vous avez annulé votre derniere modification de plateau"); 
-            	 annulerDernierCoup();
-            	 btnAnnuler.setVisibility(4);
+            	 if(!maPartie.getPartieFinie())
+            	 {
+            		 annulerDernierCoup();
+            	 }
              }
          });
     }  
@@ -206,7 +207,7 @@ public boolean onTouchEvent(MotionEvent event)
 			if(!maPartie.getPartieFinie())
 			{
 				//gestion du click en fonction des coordonnées
-				if(x>xmin && x<=xmax && y>ymin && y<ymax)
+				if(x>xmin && x<=xmax && y>ymin && y<ymax && plateauModif==true)
 				{
 					//action sur une case du plateau
 					actionCase(x, y);
@@ -230,8 +231,8 @@ public boolean onTouchEvent(MotionEvent event)
 					//action sur la caseCourante
 					caseCourante=maPartie.getCaseCourante();
 					caseCourante.rotate(90);
-					int indiceRotation=caseCourante.getRotation();
-					Text01.setText("click"+indiceRotation);
+					//int indiceRotation=caseCourante.getRotation();
+					//Text01.setText("click"+indiceRotation);
 		    		afficheCaseCourante(150);
 					return true;
 				}
@@ -382,22 +383,22 @@ public boolean actionFleche(int x, int y)
 	if(!deplacement)
 	{
 		int modif=0;
-		if(x>xmin-tailleFleche && x<xmin)
+		if(x>xmin-tailleFleche && x<xmin+tailleCase)
 		{
 			fleche="gauche";
 			modif=CoordToLigne(y);
 		}
-		else if(x>xmax && x<xmax+tailleFleche)
+		else if(x>xmax-tailleCase && x<xmax+tailleFleche)
 		{
 			fleche="droite";
 			modif=CoordToLigne(y);
 		}
-		else if(y>ymin-tailleFleche && y<ymin)
+		else if(y>ymin-tailleFleche && y<ymin+tailleCase)
 		{
 			fleche="haut";
 			modif=CoordToColonne(x);;
 		}
-		else if(y>ymax && y<ymax+tailleFleche)
+		else if(y>ymax-tailleCase && y<ymax+tailleFleche)
 		{
 			fleche="bas";
 			modif=CoordToColonne(x);;
@@ -436,7 +437,7 @@ public boolean actionFleche(int x, int y)
 	}
 	else
 	{
-		Text01.setText("nous ne pouvez pas modifier le plateau apres avoir");
+		Text01.setText("nous ne pouvez pas modifier le plateau apres avoir deplace votre pion");
 	}
 	//deplacement=false; //ligne pas sur
 	return false;
@@ -497,13 +498,14 @@ public void annulerDernierCoup()
 		}
 		
 		plateauModif=false;
+		deplacement=false;
+		Text01.setText("Vous avez annulé votre derniere modification de plateau"); 
+		btnAnnuler.setVisibility(4);
 	}
 	else
 	{
-		Text01.setText("Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
-		//"Vous ne pouvez pas annuler la modification tant que votre joueur ne se trouve pas ou il était c'est à dire: 
-		//		"Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
-	}
+		Text01.setText("Vous ne pouvez pas annuler la modification tant que votre joueur ne se trouve pas ou il était c'est à dire: Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
+	}	
 }
 
 
