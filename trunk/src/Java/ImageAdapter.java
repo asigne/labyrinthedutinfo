@@ -11,15 +11,15 @@ import android.widget.ImageView;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     Joueur joueur;
-    int nbCartes, numCarte;
+    int nbCartes, numCarte, taille;
     int i=0;
     
     int indicePremiereCarte=R.drawable.ca;
     
-    public ImageAdapter(Context c, Joueur monJoueur) {
+    public ImageAdapter(Context c, Joueur monJoueur, int nbCartes) {
         mContext = c;
         joueur=monJoueur;
-        nbCartes=monJoueur.getListCarte().size();
+        this.nbCartes=nbCartes;
    }
     
     public ImageAdapter(Context c) {
@@ -61,6 +61,5 @@ public class ImageAdapter extends BaseAdapter {
         }
         return imageView;
     }
-
-    private Integer[] mThumbIds = new Integer[12];
+    private Integer[] mThumbIds = new Integer[13];
 	}

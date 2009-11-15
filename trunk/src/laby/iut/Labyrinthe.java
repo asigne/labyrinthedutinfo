@@ -9,10 +9,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class Labyrinthe extends Activity 
@@ -22,8 +25,9 @@ public class Labyrinthe extends Activity
 	RotateAnimation rotation0, rotation90, rotation180, rotation270;
 	boolean initialisationPlateau;
     	
-	TextView Text01;
+	TextView Text01, textInfo, textJoueurActif;
     LinearLayout lbleu,lvert, lrouge, ljaune;
+    TableLayout lPlateau;
     Button btnJouer, btnAnnuler;
 	
     String flecheInterdite;
@@ -54,7 +58,7 @@ public class Labyrinthe extends Activity
     boolean plateauModif=false;
     
     //parametre de l'application
-    int xmin=13, xmax=307, ymin=86, ymax=380;//coordonnées du plateau de jeu
+    int xmin=13, xmax=307, ymin=61, ymax=355;//coordonnées du plateau de jeu
 	int tailleCase = 42; //taille d'une case du plateau
 	int tailleFleche = 13; //largeur fleche
 	
@@ -69,7 +73,9 @@ public class Labyrinthe extends Activity
 public void onCreate(Bundle savedInstanceState)
     {    	    	
          super.onCreate(savedInstanceState);
-         setContentView(R.layout.jeu);   
+         setFullscreen();
+         //requestWindowFeature(Window.FEATURE_NO_TITLE); 
+         setContentView(R.layout.jeu1);   
 
          initDesID();
                   
@@ -95,51 +101,19 @@ public void onCreate(Bundle savedInstanceState)
          maPartie.lancerPartie();					//lancement de la partie
 
          initPlateau2D();							//initialisation de l'affichage du plateau en 2D
+         
+         //lbleu.setPadding(10, 10, 0, 0);
+         
          affichePions();   							//affichage des pions sur le plateau
          afficheCaseCourante(0);					//affichage de la case courante
        
          joueurActif=j1;
-         afficheCarteCourante();					//affichage de la carte courante du joueur
-         Text01.setText(""+joueurActif.getListCarte().size());   
-         /*
-         if(!maPartie.getPartieFinie())			//tant que partie n'est pas finie;
-         	{
-	         //initPlateau2D();							//initialisation de l'affichage du plateau en 2D
-	         affichePions();   							//affichage des pions sur le plateau
-	         //afficheCaseCourante(0);					//affichage de la case courante
-	         //afficheCarteCourante();
-        	 while(!jeuFait)
-        	 {
-        		 
-        	 }
-        	 jeuFait=false;
-        	 
-             joueurActif.testCarteTrouvee();
-             joueurActif.testJoueurGagnant();
-             Text01.setText("a j1 de jouer");
-             if(maPartie.getPartieFinie())
-             {
-            	 Text01.setText("Partie Finie : j1 a gagné");
-            	 //break;
-             }
-         	 
-        	 joueurActif=ia;       	 
-        	 //jeu de l'IA
-        	 monCoup=ia.rechercheMeilleurCoup(caseCourante, monPlateau);//creer son coup : la modification du plateau a effectuer
-        	 ia.modifierPlateau(monCoup); 								//modification du plateau en fonction du coup généré
-        	 ia.seDeplacer();											//deplacement du joueur;
-        	 
-             joueurActif.testCarteTrouvee();
-             joueurActif.testJoueurGagnant();      	 
-             if(maPartie.getPartieFinie())
-             {
-            	 Text01.setText("Partie Finie : IA a gagné");
-            	 //break;
-             } 
-        	 joueurActif=j1;
-         }*/
-        jouer();
+         //affichage de la carte courante du joueur
+         afficheCarteCourante();
+        
          
+         textJoueurActif.setText("");
+         textInfo.setText("");
          
          btnJouer.setOnClickListener(new View.OnClickListener()
          {
@@ -148,33 +122,34 @@ public void onCreate(Bundle savedInstanceState)
             	 if(plateauModif)
             	 	{
             		 	premiereModif=false;
-            			//Text01.setText(monPlateau.getCase(joueurActif.getPosLigne(), joueurActif.getPosColonne()).getIdentifiant()+"   "+joueurActif.getCarteObjectif().getIdentifiant());
-            		 	//Text01.setText("Jeu validé : au joueur suivant");
+            			//textInfo.setText(monPlateau.getCase(joueurActif.getPosLigne(), joueurActif.getPosColonne()).getIdentifiant()+"   "+joueurActif.getCarteObjectif().getIdentifiant());
+            		 	//textInfo.setText("Jeu validé : au joueur suivant");
             		 	joueurActif.testCarteTrouvee();
             		 	if(maPartie.getPartieFinie())
 	            		 	{
 	            		 		//partie finie
-            		 			Text01.setText("Partie Gagnée par : "+joueurActif.getNom());
+            		 			textInfo.setText("Partie Gagnée par : "+joueurActif.getNom());
 	            		 	}
             		 	else
             		 		{
 		            		 	//joueurActif.testJoueurGagnant();
-		            		 	//Text01.setText("a j1 de jouer");
+		            		 	//textInfo.setText("a j1 de jouer");
 		            		 	jeuFait=true;
-		            		 	//Text01.setText("A l'IA de jouer"); 
+		            		 	//textInfo.setText("A l'IA de jouer"); 
 		            			afficheCarteCourante();
 		            			affichePions();	
 		            		   	joueurActif=maPartie.joueurSuivant(joueurActif);
 		            		   	deplacement=false;
 		            		   	btnAnnuler.setVisibility(4);
-		            			Text01.setText("A "+joueurActif.getNom()+" de jouer !");
+		            			textJoueurActif.setText("A "+joueurActif.getNom()+" de jouer !");
+		            			textInfo.setText("");
 		            			plateauModif=false;
 		            			afficheCarteCourante();
             		 		}
             	 	}
             	 else
 	            	 {
-	            		Text01.setText("Vous devez obligatoirement modifier le plateau"); 
+	            		textInfo.setText("Vous devez obligatoirement modifier le plateau"); 
 	            	 }
              }
          }); 
@@ -191,11 +166,6 @@ public void onCreate(Bundle savedInstanceState)
          });
     }  
 
-public void jouer()
-{
-	
-}
-
 //methode permettant de gérer les clic sur l'écran   
 public boolean onTouchEvent(MotionEvent event)
 {
@@ -203,7 +173,7 @@ public boolean onTouchEvent(MotionEvent event)
 		{
 			int x = (int) (event.getX());
 			int y = (int) (event.getY());
-			//Text01.setText("x:"+x+" y:"+y);
+			//textInfo.setText("x:"+x+" y:"+y);
 			if(!maPartie.getPartieFinie())
 			{
 				//gestion du click en fonction des coordonnées
@@ -222,21 +192,17 @@ public boolean onTouchEvent(MotionEvent event)
 					}
 					else
 					{
-						Text01.setText("Vous avez deja modifier le plateau");
+						textInfo.setText("Vous avez déjà modifier le plateau");
 					}
 					return true;
 				}
 				else if(x>240 && y>400)
 				{
 					//action sur la caseCourante
-					caseCourante=maPartie.getCaseCourante();
-					caseCourante.rotate(90);
-					//int indiceRotation=caseCourante.getRotation();
-					//Text01.setText("click"+indiceRotation);
-		    		afficheCaseCourante(150);
+					actionCaseCourante();
 					return true;
 				}
-				else if(x>170 && x<220 && y<480 && y>400)
+				else if(x>180 && x<230 && y<480 && y>400)
 				{
 					//action sur la carteCourante
 					actionCarteCourante();
@@ -270,9 +236,13 @@ public  void initDesID() {
     lvert= (LinearLayout) findViewById(R.id.lvert);
     lrouge = (LinearLayout) findViewById(R.id.lrouge);
     ljaune = (LinearLayout) findViewById(R.id.ljaune);
-    Text01 = (TextView) findViewById(R.id.Text01);
+    //Text01 = (TextView) findViewById(R.id.textInfo);
+    textInfo = (TextView) findViewById(R.id.textInfo);
+    textJoueurActif = (TextView) findViewById(R.id.textJoueurActif);
     btnJouer = (Button) findViewById(R.id.Jouer);
     btnAnnuler = (Button) findViewById(R.id.Annuler);
+    
+    //lPlateau = (TableLayout) findViewById(R.id.Plateau);
     
 }
 
@@ -284,6 +254,15 @@ public void actionCarteCourante() {
 	//objetbunble.putString("listeCarte", String.valueOf(j1.getListCarte()));
 	//defineIntent.putExtra("aaa", j1.getListCarte());
 	startActivity(defineIntent);
+}
+
+//click sur la caseCourante
+public void actionCaseCourante() {
+	caseCourante=maPartie.getCaseCourante();
+	caseCourante.rotate(90);
+	//int indiceRotation=caseCourante.getRotation();
+	//textInfo.setText("click"+indiceRotation);
+	afficheCaseCourante(150);
 }
 
 //click sur une case du plateau
@@ -368,12 +347,12 @@ public void actionCase(int x, int y)
 			}
 		else
 			{
-				Text01.setText(joueurActif.getNom()+" : déplacement interdit");
+				textInfo.setText("Déplacement interdit");
 			}
 	}
 	else
 	{
-		Text01.setText("vous devez modifier le plateau avant de vous deplacer");
+		textInfo.setText("Vous devez modifier le plateau avant de vous deplacer");
 	}
 }
 
@@ -407,7 +386,7 @@ public boolean actionFleche(int x, int y)
 		
 		if(modif==indiceInterdit && fleche==flecheInterdite)
 		{
-			Text01.setText("actionInterdite");
+			textInfo.setText("Action Interdite !");
 		}
 		else
 		{
@@ -427,6 +406,8 @@ public boolean actionFleche(int x, int y)
 					traitementJoueurSurCaseMobile(modif, fleche);
 					lockFleche(fleche,modif);
 					caseCourante=maPartie.getCaseCourante();
+					sauvPosLigne=joueurActif.getPosLigne();
+					sauvPosColonne=joueurActif.getPosColonne();
 					sauvCaseSortante=caseCourante.sauvCase();
 					MaJPlateau(modif, fleche);
 					afficheCaseCourante(0);	
@@ -437,7 +418,7 @@ public boolean actionFleche(int x, int y)
 	}
 	else
 	{
-		Text01.setText("nous ne pouvez pas modifier le plateau apres avoir deplace votre pion");
+		textInfo.setText("Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !");
 	}
 	//deplacement=false; //ligne pas sur
 	return false;
@@ -445,7 +426,7 @@ public boolean actionFleche(int x, int y)
 
 public void annulerDernierCoup()
 {
-	if(sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne())
+	if(!deplacement || (sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne())) //attention condition modifiée peut poser pb
 	{
 		if(sauvFleche=="haut")
 		{
@@ -480,7 +461,7 @@ public void annulerDernierCoup()
 		{
 			flecheInterdite="gauche";
 		}
-		Text01.setText(""+sauvModif);
+		//textInfo.setText(""+sauvModif);
 		monCoup=((Utilisateur) joueurActif).genererCoup(sauvCaseSortante, sauvModif, fleche);
 		//monCoup = new Coup(caseCourante, modif, fleche);
 		joueurActif.modifierPlateau(monCoup);
@@ -494,17 +475,18 @@ public void annulerDernierCoup()
 		}
 		else
 		{
-			lockFleche(flecheInterdite, sauvModif);
+			lockFleche(flecheInterdite, sauvIndiceInterdit);
 		}
 		
 		plateauModif=false;
 		deplacement=false;
-		Text01.setText("Vous avez annulé votre derniere modification de plateau"); 
+		textInfo.setText("Vous avez annulé votre dernière modification de plateau"); 
 		btnAnnuler.setVisibility(4);
 	}
 	else
 	{
-		Text01.setText("Vous ne pouvez pas annuler la modification tant que votre joueur ne se trouve pas ou il était c'est à dire: Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
+		textInfo.setText("Vous ne pouvez pas annuler la modification tant que votre joueur ne se " +
+				"trouve pas où il était avant celle-ci, c'est à dire: Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
 	}	
 }
 
@@ -730,7 +712,7 @@ public void MaJPlateau(int modif, String sens)
 	else
 		{
 		k=0;
-		Text01.setText(""+modif+""+sens);
+		//textInfo.setText(""+modif+""+sens);
 		switch(modif)
 			{
 				case 1:
@@ -888,71 +870,65 @@ public void affichePion(Joueur joueurCourant)
 				break;
 		}
 		nbJoueurCase=monPlateau.getCase(posLigne, posColonne).getListJoueur().size();
-		/*if(nbJoueurCase==1)
+
+		switch(nbJoueurCase)
 		{
-			coordX=posColonne*tailleCase+xmin+quart;
-			coordY=posLigne*tailleCase+ymin-50+quart;
+			case 1:
+				coordX=posColonne*tailleCase+xmin+quart;
+				coordY=posLigne*tailleCase+ymin+quart;
+				break;
+			case 2:
+				if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
+					{
+					coordX=posColonne*tailleCase+xmin;
+					coordY=posLigne*tailleCase+ymin;   //-50 a cause de la barre avec le nom de l'application
+					}
+				else
+					{
+						coordX=posColonne*tailleCase+xmin+moitiee;
+						coordY=posLigne*tailleCase+ymin+moitiee;
+					}
+				break;
+			case 3:
+				if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
+				{
+					coordX=posColonne*tailleCase+xmin;
+					coordY=posLigne*tailleCase+ymin;   //-50 a cause de la barre avec le nom de l'application
+				}
+				else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(1)))
+				{
+					coordX=posColonne*tailleCase+xmin+moitiee;
+					coordY=posLigne*tailleCase+ymin+moitiee;
+				}
+				else
+				{
+					coordX=posColonne*tailleCase+xmin+moitiee;
+					coordY=posLigne*tailleCase+ymin;   //-50 a cause de la barre avec le nom de l'application
+				}
+				break;
+			case 4:
+				if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
+				{
+					coordX=posColonne*tailleCase+xmin;
+					coordY=posLigne*tailleCase+ymin;   //-50 a cause de la barre avec le nom de l'application
+				}
+				else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(1)))
+				{
+					coordX=posColonne*tailleCase+xmin+moitiee;
+					coordY=posLigne*tailleCase+ymin+moitiee;
+				}
+				else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(2)))
+				{
+					coordX=posColonne*tailleCase+xmin+moitiee;
+					coordY=posLigne*tailleCase+ymin;   //-50 a cause de la barre avec le nom de l'application
+				}
+				else
+				{
+					coordX=posColonne*tailleCase+xmin;
+					coordY=posLigne*tailleCase+ymin+moitiee;
+				}
+				break;
 		}
-		else
-		{*/
-			switch(nbJoueurCase)
-			{
-				case 1:
-					coordX=posColonne*tailleCase+xmin+quart;
-					coordY=posLigne*tailleCase+ymin-50+quart;
-					break;
-				case 2:
-					if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
-						{
-						coordX=posColonne*tailleCase+xmin;
-						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
-						}
-					else
-						{
-							coordX=posColonne*tailleCase+xmin+moitiee;
-							coordY=posLigne*tailleCase+ymin-50+moitiee;
-						}
-					break;
-				case 3:
-					if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
-					{
-						coordX=posColonne*tailleCase+xmin;
-						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
-					}
-					else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(1)))
-					{
-						coordX=posColonne*tailleCase+xmin+moitiee;
-						coordY=posLigne*tailleCase+ymin-50+moitiee;
-					}
-					else
-					{
-						coordX=posColonne*tailleCase+xmin+moitiee;
-						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
-					}
-					break;
-				case 4:
-					if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(0)))
-					{
-						coordX=posColonne*tailleCase+xmin;
-						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
-					}
-					else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(1)))
-					{
-						coordX=posColonne*tailleCase+xmin+moitiee;
-						coordY=posLigne*tailleCase+ymin-50+moitiee;
-					}
-					else if(joueurCourant.equals(monPlateau.getCase(posLigne, posColonne).getListJoueur().get(2)))
-					{
-						coordX=posColonne*tailleCase+xmin+moitiee;
-						coordY=posLigne*tailleCase+ymin-50;   //-50 a cause de la barre avec le nom de l'application
-					}
-					else
-					{
-						coordX=posColonne*tailleCase+xmin;
-						coordY=posLigne*tailleCase+ymin-50+moitiee;
-					}
-					break;
-			}
         pionCourant.setPadding(coordX, coordY, 0, 0);
 	}
 
@@ -964,4 +940,12 @@ public void afficheEcran()
 	afficheCaseCourante(0);
 	affichePions();	
 }
+
+public void setFullscreen() { 
+    requestWindowFeature(Window.FEATURE_NO_TITLE); 
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+            WindowManager.LayoutParams.FLAG_FULLSCREEN); 
+} 
+
 }
+
