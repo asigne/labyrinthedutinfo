@@ -48,16 +48,16 @@ public abstract class Joueur {
 		}
 	public void modifCarteObjectif()
 		{
-			if(this.getListCarte().size()>1)
+			if(this.getListCarte().size()>0)
 			{
 				this.supprCarte(this.getListCarte().get(0));
 				//this.setCarteObjectif(this.getListCarte().get(0));
 			}
-			else
-			{
-				partieActuelle.setPartieFinie(true);
-				//this.setCarteObjectif(new Carte(this.getIdentifiant()+24));
-			}
+//			else
+//			{
+//				partieActuelle.setPartieFinie(true);
+//				//this.setCarteObjectif(new Carte(this.getIdentifiant()+24));
+//			}
 		}
 	
 	
@@ -90,6 +90,7 @@ public abstract class Joueur {
 			return false;
 		}	
 	}
+	
 	public void modifPosition(int ligne, int colonne)
 	{
 		posLigne=ligne;
@@ -113,12 +114,15 @@ public abstract class Joueur {
 	
 	public void testCarteTrouvee()
 	{
-		Case maCase = partieActuelle.getMonPlateau().getCase(posLigne, posColonne);
-		if(maCase.getIdentifiant()==this.getCarteObjectif().getIdentifiant())
-		{
-			//carte trouvée !!!
-			modifCarteObjectif();
-		}
+		if(!this.getListCarte().isEmpty())
+			{
+				Case maCase = partieActuelle.getMonPlateau().getCase(posLigne, posColonne);
+				if(maCase.getIdentifiant()==this.getCarteObjectif().getIdentifiant())
+					{
+						//carte trouvée !!!
+						modifCarteObjectif();
+					}
+			}
 	}
 	
 	public void testJoueurGagnant()
@@ -132,33 +136,38 @@ public abstract class Joueur {
 	//methode effectuant le test pour connaitre la cases accessibles par un joueur
 	
 	public boolean testCaseAccessible(int ligne, int colonne)
-	   {
+		{
 			Plateau monPlateau=partieActuelle.getMonPlateau();
-			//int posLigne=monJoueur.getPosLigne();
-			//int posColonne=monJoueur.getPosColonne();
-			
-			for(int i=0;i<7;i++)
-			{
-				for(int j=0;j<7;j++)
-				{
-					monPlateau.getCase(i,j).setFlag(0);
-					monPlateau.getCase(i,j).setEntree(-1);
-					monPlateau.getCase(i,j).setSortie(0);
-				}	
-			}
-		   
-		   fonction(posLigne, posColonne); 
-		   if(monPlateau.getCase(ligne, colonne).getFlag()==1)
+			if(monPlateau.getCase(ligne, colonne).getFlag()==1)
 			   {
 				   return true;
 			   }
-		   else
+			else
 			   {
 				   return false;
 			   }
 	   }
 	
-
+	public void testCasesAccessibles()
+	{
+		Plateau monPlateau=partieActuelle.getMonPlateau();
+		//int posLigne=monJoueur.getPosLigne();
+		//int posColonne=monJoueur.getPosColonne();
+		
+		for(int i=0;i<7;i++)
+		{
+			for(int j=0;j<7;j++)
+			{
+				monPlateau.getCase(i,j).setFlag(0);
+				monPlateau.getCase(i,j).setEntree(-1);
+				monPlateau.getCase(i,j).setSortie(0);
+			}	
+		}
+	   
+	   fonction(posLigne, posColonne); 
+	}
+	
+	
 	//fonction permettant de savoir si une case est accessible depuis la postion du joueur
 	// correspondant aux parametres ligne et colonne.
 	public void fonction(int ligne, int colonne)

@@ -1,5 +1,7 @@
 package Java;
 
+import java.util.ArrayList;
+
 import laby.iut.R;
 import android.content.Context;
 import android.view.View;
@@ -9,17 +11,20 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
+    private Integer[] mThumbIds;
     private Context mContext;
-    Joueur joueur;
+    ArrayList<Integer> listeCarte;
     int nbCartes, numCarte, taille;
     int i=0;
     
     int indicePremiereCarte=R.drawable.ca;
     
-    public ImageAdapter(Context c, Joueur monJoueur, int nbCartes) {
+    public ImageAdapter(Context c, ArrayList<Integer> listeCarte) {
         mContext = c;
-        joueur=monJoueur;
-        this.nbCartes=nbCartes;
+        this.listeCarte = new ArrayList<Integer>();
+        this.listeCarte = listeCarte;
+        nbCartes=this.listeCarte.size();
+        mThumbIds = new Integer[nbCartes];
    }
     
     public ImageAdapter(Context c) {
@@ -41,7 +46,7 @@ public class ImageAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-    	position=joueur.getListCarte().size();
+    	position=listeCarte.size();
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
@@ -50,7 +55,7 @@ public class ImageAdapter extends BaseAdapter {
 	            imageView.setLayoutParams(new GridView.LayoutParams(90, 140));
 	            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 	            imageView.setPadding(8, 8, 8, 8);
-        		numCarte=(joueur.getListCarte().get(i).getIdentifiant());
+        		numCarte=(listeCarte.get(i));
         		i++;
         		imageView.setImageResource(indicePremiereCarte+numCarte);
         	}
@@ -61,5 +66,4 @@ public class ImageAdapter extends BaseAdapter {
         }
         return imageView;
     }
-    private Integer[] mThumbIds = new Integer[13];
-	}
+}

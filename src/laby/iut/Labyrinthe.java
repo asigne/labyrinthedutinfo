@@ -1,5 +1,4 @@
 package laby.iut;
-
 import java.util.ArrayList;
 
 import Java.*;
@@ -84,25 +83,23 @@ public void onCreate(Bundle savedInstanceState)
          caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
          //sauvCaseSortante= new Case(0,0);
          
-         j1=new Utilisateur("Bleu");					//creation du joueur
-         ia=new IA("Ordinateur");					//creation de l'IA
-         j2=new Utilisateur("Rouge");					
-         j3=new Utilisateur("Vert");
-         j4=new Utilisateur("Jaune");
+         				//creation des joueurs
+         j1=new Utilisateur("Bleu");				
+         ia=new IA("Ordinateur");					
+         j2=new Utilisateur("Rouge");				
+         j3=new Utilisateur("Vert");				
+         j4=new Utilisateur("Jaune");				
          
-         
-         j1.RejoindrePartie(maPartie);				//ajout du joueur à la partie
-         //ia.RejoindrePartie(maPartie);				//ajout de l'IA à la partie
-         
+         				//ajout des joueurs a la partie
+         j1.RejoindrePartie(maPartie);				
+         //ia.RejoindrePartie(maPartie);			
          j2.RejoindrePartie(maPartie);
-         j3.RejoindrePartie(maPartie);
-         j4.RejoindrePartie(maPartie);
+         //j3.RejoindrePartie(maPartie);
+         //j4.RejoindrePartie(maPartie);
          
          maPartie.lancerPartie();					//lancement de la partie
 
          initPlateau2D();							//initialisation de l'affichage du plateau en 2D
-         
-         //lbleu.setPadding(10, 10, 0, 0);
          
          affichePions();   							//affichage des pions sur le plateau
          afficheCaseCourante(0);					//affichage de la case courante
@@ -112,8 +109,8 @@ public void onCreate(Bundle savedInstanceState)
          afficheCarteCourante();
         
          
-         textJoueurActif.setText("");
-         textInfo.setText("");
+         textJoueurActif.setText("A "+joueurActif.getNom()+" de jouer !");
+         textInfo.setText("Commencez par modifier le plateau puis déplacez votre pion");
          
          btnJouer.setOnClickListener(new View.OnClickListener()
          {
@@ -125,6 +122,8 @@ public void onCreate(Bundle savedInstanceState)
             			//textInfo.setText(monPlateau.getCase(joueurActif.getPosLigne(), joueurActif.getPosColonne()).getIdentifiant()+"   "+joueurActif.getCarteObjectif().getIdentifiant());
             		 	//textInfo.setText("Jeu validé : au joueur suivant");
             		 	joueurActif.testCarteTrouvee();
+            		 	joueurActif.testJoueurGagnant();
+            		 	
             		 	if(maPartie.getPartieFinie())
 	            		 	{
 	            		 		//partie finie
@@ -132,7 +131,7 @@ public void onCreate(Bundle savedInstanceState)
 	            		 	}
             		 	else
             		 		{
-		            		 	//joueurActif.testJoueurGagnant();
+		            		 	
 		            		 	//textInfo.setText("a j1 de jouer");
 		            		 	jeuFait=true;
 		            		 	//textInfo.setText("A l'IA de jouer"); 
@@ -142,10 +141,11 @@ public void onCreate(Bundle savedInstanceState)
 		            		   	deplacement=false;
 		            		   	btnAnnuler.setVisibility(4);
 		            			textJoueurActif.setText("A "+joueurActif.getNom()+" de jouer !");
-		            			textInfo.setText("");
+		            			textInfo.setText("Commencez par modifier le plateau puis déplacez votre pion");
 		            			plateauModif=false;
 		            			afficheCarteCourante();
             		 		}
+            		 	
             	 	}
             	 else
 	            	 {
@@ -248,11 +248,23 @@ public  void initDesID() {
 
 //click sur la carteCourante
 public void actionCarteCourante() {
-	Intent defineIntent = new Intent(this, AffichageCartes.class);
-	//Bundle objetbunble = new Bundle();
 	
-	//objetbunble.putString("listeCarte", String.valueOf(j1.getListCarte()));
+	ArrayList<Integer> listeCarte= new ArrayList<Integer>();
+	for(int i=0; i<joueurActif.getListCarte().size(); i++)
+	{
+		listeCarte.add(joueurActif.getListCarte().get(i).getIdentifiant());
+	}
+
+	
+	Intent defineIntent = new Intent(this, AffichageCartes.class);
+	Bundle objetbundle = new Bundle();
+	
+	
+	objetbundle.putIntegerArrayList("listeCarte",listeCarte);
+	//objetbundle.putString("aaa", "1");
+	defineIntent.putExtras(objetbundle);
 	//defineIntent.putExtra("aaa", j1.getListCarte());
+	//defineIntent.putExtra("listeCarte", listeCarte);
 	startActivity(defineIntent);
 }
 
@@ -347,7 +359,7 @@ public void actionCase(int x, int y)
 			}
 		else
 			{
-				textInfo.setText("Déplacement interdit");
+				textInfo.setText("Déplacement interdit11111");
 			}
 	}
 	else
@@ -380,7 +392,7 @@ public boolean actionFleche(int x, int y)
 		else if(y>ymax-tailleCase && y<ymax+tailleFleche)
 		{
 			fleche="bas";
-			modif=CoordToColonne(x);;
+			modif=CoordToColonne(x);
 		}		
 		
 		
@@ -412,6 +424,7 @@ public boolean actionFleche(int x, int y)
 					MaJPlateau(modif, fleche);
 					afficheCaseCourante(0);	
 					plateauModif=true;
+					joueurActif.testCasesAccessibles();
 					return true;
 				}
 		}
@@ -823,8 +836,18 @@ public void afficheCaseCourante(int duration)
 //methode permettant d'afficher la carte objectif du joueur
 public void afficheCarteCourante()
 	{
-		Carte carteCourante=joueurActif.getCarteObjectif();
-		int noImageCarteCourante=incidePremiereImageCarte+carteCourante.getIdentifiant();
+		Carte carteCourante;
+		int noImageCarteCourante;
+		if(!joueurActif.getListCarte().isEmpty())
+			{
+				carteCourante=joueurActif.getCarteObjectif();
+				
+			}
+		else
+			{
+				carteCourante=new Carte(24+joueurActif.getIdentifiant());
+			}
+		noImageCarteCourante=incidePremiereImageCarte+carteCourante.getIdentifiant();
 		imageCarteCourante.setImageDrawable(getResources().getDrawable(noImageCarteCourante));
 	}
 
