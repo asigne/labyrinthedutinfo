@@ -1,6 +1,9 @@
 package Java;
 
-public class Carte {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Carte implements Serializable{
 	
 	int identifiant;
 	

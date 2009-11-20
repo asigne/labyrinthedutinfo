@@ -3,6 +3,7 @@ package Java;
 import java.util.ArrayList;
 
 import laby.iut.R;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class ImageAdapter extends BaseAdapter {
+
+public class ImageAdapter extends BaseAdapter{
     private Integer[] mThumbIds;
     private Context mContext;
     ArrayList<Integer> listeCarte;

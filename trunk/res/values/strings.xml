@@ -6,4 +6,8 @@
 <string name="Annuler">Annuler</string>
 
 <string name="Jouer">Jouer</string>
+
+<string name="listregle">Choisissez le type de règle</string>
+<string name="listdifficulte">Choisissez la difficulté</string>
+
 </resources>

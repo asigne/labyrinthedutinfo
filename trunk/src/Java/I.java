@@ -2,6 +2,7 @@ package Java;
 
 import Java.Case;
 
+@SuppressWarnings("serial")
 public class I extends Case
 {
 	public I(int rotation)

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout
+	android:id="@+id/AbsoluteLayout01" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android">	
+	
+	<TableLayout 
+		android:id="@+id/TableLayout01" 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+	>
+		<TextView  
+			android:textSize="35dp"
+			android:layout_marginTop="10dip"
+			android:layout_marginBottom="50dip"
+		    android:layout_height="wrap_content" 
+		    android:text="Partie Solo"
+		    android:layout_width="wrap_content" 
+		    android:gravity="center"
+		/>
+		
+		<TextView  
+			android:textSize="20dp"
+		    android:layout_height="wrap_content" 
+		    android:layout_width="wrap_content" 
+		    android:text="Pseudo"
+		/><EditText
+		    android:id="@+id/editpseudo"
+		    android:textSize="20dp"
+		    android:layout_width="200sp" 
+		    android:layout_height="wrap_content"
+		    android:singleLine="True"
+		/>
+		
+		<TextView
+	        android:textSize="20sp"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" 
+	        android:text="Type de règles"
+    	/><Spinner 
+	        android:id="@+id/regle"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	       	android:prompt="@string/listregle"
+		/>
+		
+		<TextView
+	        android:textSize="20sp"
+	    	android:layout_height="wrap_content" 
+	     	android:layout_width="wrap_content" 
+	        android:text="Difficulté "
+	  	/>
+	  	
+	  	<Spinner 
+        android:id="@+id/difficulte"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="true"
+        android:prompt="@string/listdifficulte"
+   />
+	  	
+  	</TableLayout>
+  	
+  	<Button
+		android:id="@+id/jouer"
+		android:text="Jouer" 
+		android:layout_width="320dp" 
+		android:layout_height="80dp" 
+		android:layout_x="0dp"
+		android:layout_y="380dp"
+		android:textSize="25sp" 
+	/>
+
+</AbsoluteLayout>

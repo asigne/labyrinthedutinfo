@@ -1,0 +1,17 @@
+<resources>
+    <string-array name="regle">
+        <item>Normal</item>
+        <item>Enfant</item>
+    </string-array>
+        <string-array name="difficulte">
+        <item>Facile</item>
+        <item>Moyen</item>
+        <item>Difficile</item>
+    </string-array>
+            <string-array name="nbjoueur">
+        <item>Facile</item>
+        <item>Moyen</item>
+        <item>Difficile</item>
+    </string-array>
+</resources>
+

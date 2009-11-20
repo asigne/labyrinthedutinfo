@@ -2,7 +2,7 @@ package Java;
 
 import java.util.ArrayList;
 
-public abstract class Joueur {
+public abstract class Joueur{
 	int posLigneInit, posColonneInit;	
 	int identifiant;
 	String nom;

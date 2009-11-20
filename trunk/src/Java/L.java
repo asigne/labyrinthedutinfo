@@ -2,6 +2,7 @@ package Java;
 
 import Java.Case;
 
+@SuppressWarnings("serial")
 public class L extends Case
 {
 	public L(int identifiant, int rotation, int noImage)

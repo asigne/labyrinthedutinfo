@@ -1,8 +1,10 @@
 package Java;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Plateau {
+@SuppressWarnings("serial")
+public class Plateau implements Serializable{
 	boolean PlateauBool[][]; //plateau de booleen
 	Case PlateauCase[][];			//plateau des Cases
 	ArrayList<Case> ListCase;	//liste de toutes les cases mobiles
