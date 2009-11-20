@@ -1,8 +1,10 @@
 package Java;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Case
+@SuppressWarnings("serial")
+public abstract class Case implements Serializable
 {
 	int identifiant; //identifiant pour les cases possédante une image sinon 0
 	int rotation; //indice de rotation par rapport à la position originale

@@ -1,8 +1,13 @@
 package Java;
 
+/*import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;*/
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Partie {
+@SuppressWarnings("serial")
+public class Partie implements Serializable{
 	int nbCarte=24; //nb de cartes a distribuer aux joueurs
 	String nom;		//nom de la partie
 	Plateau monPlateau;	//plateau de la partie
@@ -159,9 +164,6 @@ public class Partie {
 			//ListJoueur.get(i).setCarteObjectif(ListJoueur.get(i).getListCarte().get(0));
 		}
 	}
-	
-	
-	
 }
 
 	

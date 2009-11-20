@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout 
+	android:id="@+id/AbsoluteLayout01" 
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	
+<TableLayout 
+		android:id="@+id/TableLayout01" 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+	>
+			<TextView 
+				android:textSize="35sp" 
+				android:layout_height="wrap_content" 
+				android:text="Type de Partie" 
+				android:layout_width="wrap_content" 
+				android:gravity="center"
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="50dip"
+			/>
+			
+			<Button
+				android:id="@+id/newSolo" 
+				android:text="Nouvelle partie contre l'ordinateur" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:gravity="center"
+				android:textSize="23sp" 
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="10dip"
+			/>
+			
+			<Button 
+				android:id="@+id/newMulti" 
+				android:text="Créer une partie Multijoueurs" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:gravity="center"
+				android:textSize="23sp" 
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="10dip"
+			/>
+			
+			<Button 
+				android:id="@+id/RejMulti" 
+				android:text="Rejoindre une partie Multijoueurs" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:gravity="center"
+				android:textSize="23sp" 
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="10dip"
+			/>
+	</TableLayout>
+</AbsoluteLayout>

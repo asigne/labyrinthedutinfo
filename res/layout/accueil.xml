@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+<TableLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_height="fill_parent"
+android:layout_width="fill_parent"
+>
+<TableRow
+android:gravity="center"
+android:layout_marginBottom="50dip" android:layout_margin="50dip">
+<TextView  
+	android:textSize="24sp"
+    android:layout_height="wrap_content" 
+    android:text="Labyrinthe"
+    android:layout_width="wrap_content" 
+    android:layout_gravity="center"/>
+    </TableRow>
+<TableRow
+android:gravity="center"
+>
+  	
+<Button
+	android:id="@+id/nouvelle"
+	android:text="Nouvelle Partie" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    />
+<Button
+	android:id="@+id/charger"
+	android:text="Charger Partie" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    />
+
+</TableRow>
+<TableRow
+android:gravity="center"
+>
+<Button
+	android:id="@+id/parametres"
+	android:text="Parametre" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    />
+<Button
+	android:id="@+id/apropos"
+	android:text="A propos" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    />
+</TableRow>
+<TableRow
+android:gravity="center"
+>
+<Button
+	android:id="@+id/aide"
+	android:text="Aide" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    />
+<Button
+	android:id="@+id/quitter"
+	android:text="Quitter" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    />
+</TableRow>
+</TableLayout>
+
+

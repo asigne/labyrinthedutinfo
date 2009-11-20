@@ -18,7 +18,7 @@ public class AffichageCartes extends Activity {
     	
     	super.onCreate(savedInstanceState);
     	setFullscreen();
-        setContentView(R.layout.affichagecartesjoueur);
+        setContentView(R.layout.affichagecartes);
         TextView nbCartesRestantes = (TextView) findViewById(R.id.nbCartesRestantes);
 
         
