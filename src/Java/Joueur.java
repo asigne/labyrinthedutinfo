@@ -112,7 +112,7 @@ public abstract class Joueur{
 	
 	
 	
-	public void testCarteTrouvee()
+	public boolean testCarteTrouvee()
 	{
 		if(!this.getListCarte().isEmpty())
 			{
@@ -121,8 +121,10 @@ public abstract class Joueur{
 					{
 						//carte trouvée !!!
 						modifCarteObjectif();
+						return true;
 					}
 			}
+		return false;
 	}
 	
 	public void testJoueurGagnant()
