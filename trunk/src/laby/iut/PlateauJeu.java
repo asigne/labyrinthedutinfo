@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+//import java.lang.Thread;
 import Java.*;
 
 import android.app.Activity;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+//import android.os.Vibrator;
 
 public class PlateauJeu extends Activity 
 {
@@ -32,12 +34,10 @@ public class PlateauJeu extends Activity
 	ImageView pionBleu, pionRouge, pionVert, pionJaune;
 	RotateAnimation rotation0, rotation90, rotation180, rotation270;
 	boolean initialisationPlateau;
-    	
 	TextView Text01, textInfo, textJoueurActif;
     LinearLayout lbleu,lvert, lrouge, ljaune;
     TableLayout lPlateau;
-    Button btnJouer, btnAnnuler;
-	
+    Button btnJouer, btnAnnuler; 
     String flecheInterdite;
     int indiceInterdit;
     
@@ -45,6 +45,8 @@ public class PlateauJeu extends Activity
     Plateau monPlateau;
     Case caseCourante;	
     Coup monCoup;
+    
+	boolean ctrouve=false;
     
    	//Utilisateur j1, j2, j3, j4;
    	Joueur joueurActif, ia, j1, j2, j3, j4;
@@ -128,9 +130,16 @@ public void onCreate(Bundle savedInstanceState)
          afficheCarteCourante();
          
          //WriteSettings(this, maPartie);
-         
-         textJoueurActif.setText("A "+joueurActif.getNom()+" de jouer !");
-         textInfo.setText("Commencez par modifier le plateau puis déplacez votre pion");
+		CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
+		int duration = Toast.LENGTH_SHORT;
+		Context context = getApplicationContext();
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
+		
+		text = "Commencez par modifier le plateau puis déplacez votre pion";
+		duration = Toast.LENGTH_LONG;
+		toast = Toast.makeText(context, text , duration);
+		toast.show();
          
          btnJouer.setOnClickListener(new View.OnClickListener()
          {
@@ -139,7 +148,7 @@ public void onCreate(Bundle savedInstanceState)
             	 tourDejeu();
              }
             	 
-            	 
+          
             	 
          }); 
          
@@ -382,12 +391,22 @@ public void actionCase(int x, int y)
 			}
 		else
 			{
-				textInfo.setText("Déplacement interdit11111");
+				CharSequence text = "Deplacement interdit";
+				int duration = Toast.LENGTH_SHORT;
+				Context context = getApplicationContext();
+			    Toast toast = Toast.makeText(context, text, duration);
+				toast.show();
+				
 			}
 	}
 	else
 	{
-		textInfo.setText("Vous devez modifier le plateau avant de vous deplacer");
+		CharSequence text = "Vous devez modifier le plateau avant de vous deplacer";
+		int duration = Toast.LENGTH_LONG;
+		Context context = getApplicationContext();
+	    Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
+		//textInfo.setText("Vous devez modifier le plateau avant de vous deplacer");
 	}
 }
 
@@ -422,7 +441,11 @@ public boolean actionFleche(int x, int y)
 		
 		if(modif==indiceInterdit && fleche==flecheInterdite)
 		{
-			textInfo.setText("Action Interdite !");
+			CharSequence text = "Action interdite";
+			int duration = Toast.LENGTH_SHORT;
+			Context context = getApplicationContext();
+		    Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
 		}
 		else
 		{
@@ -460,7 +483,11 @@ public boolean actionFleche(int x, int y)
 	}
 	else
 	{
-		textInfo.setText("Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !");
+		CharSequence text = "Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !";
+		int duration = Toast.LENGTH_SHORT;
+		Context context = getApplicationContext();
+	    Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
 	}
 	return false;
 }
@@ -468,9 +495,8 @@ public boolean actionFleche(int x, int y)
 //permet d'annuler la derniere modification du plateau
 public void annulerDernierCoup()
 {
-	if(!deplacement || (sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne())) 
-	// le joueur ne peut pas annuler s'il a déplacé son pion
-	{
+		joueurActif.setPosition(sauvPosLigne,sauvPosColonne);
+
 		if(sauvFleche=="haut")
 		{
 			fleche="bas";
@@ -528,14 +554,13 @@ public void annulerDernierCoup()
 		
 		plateauModif=false;
 		deplacement=false;
-		textInfo.setText("Vous avez annulé votre dernière modification de plateau"); 
+		CharSequence text = "Déplacement annulé";
+		int duration = Toast.LENGTH_SHORT;
+		Context context = getApplicationContext();
+	    Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
 		btnAnnuler.setVisibility(4);	//rend invisible le bouton annuler
-	}
-	else
-	{
-		textInfo.setText("Vous ne pouvez pas annuler la modification tant que votre joueur ne se " +
-				"trouve pas où il était avant, Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
-	}	
+
 }
 
 //deplacement des joueurs sur les case mobiles en mouvement
@@ -1008,13 +1033,26 @@ public void tourDejeu(){
 	if(plateauModif)
 		{
 	 	premiereModif=false;
-	 	joueurActif.testCarteTrouvee();
+	 	ctrouve=joueurActif.testCarteTrouvee();
 	 	joueurActif.testJoueurGagnant();
+	 	
+	 	if(ctrouve==true){
+ 			CharSequence text = "Carte trouvée!!!";
+ 			int duration = Toast.LENGTH_SHORT;
+ 			Context context = getApplicationContext();
+ 			Toast toast = Toast.makeText(context, text, duration);
+ 			toast.show();	 		
+	 	}
+	 	
 	 	
 	 	if(maPartie.getPartieFinie())
 		 	{
 		 		//partie finie
-	 			textInfo.setText("Partie Gagnée par : "+joueurActif.getNom());
+	 			CharSequence text = "Partie Gagnée par : "+joueurActif.getNom();
+	 			int duration = Toast.LENGTH_SHORT;
+	 			Context context = getApplicationContext();
+	 			Toast toast = Toast.makeText(context, text, duration);
+	 			toast.show();
 		 	}
 		else
 			{
@@ -1023,8 +1061,17 @@ public void tourDejeu(){
 			joueurActif=maPartie.joueurSuivant(joueurActif);
 			deplacement=false;
 			btnAnnuler.setVisibility(4);
-			textJoueurActif.setText("A "+joueurActif.getNom()+" de jouer !");
-			textInfo.setText("Commencez par modifier le plateau puis déplacez votre pion");
+			
+			CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
+			int duration = Toast.LENGTH_SHORT;
+			Context context = getApplicationContext();
+		    Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+			
+			text = "Commencez par modifier le plateau puis déplacez votre pion";
+			duration = Toast.LENGTH_LONG;
+			toast = Toast.makeText(context, text, duration);
+			toast.show();
 			afficheCarteCourante();
 			plateauModif=false;
 			if(joueurActif instanceof IA)
@@ -1036,7 +1083,11 @@ public void tourDejeu(){
 		}
 	else
 		{
-			textInfo.setText("Vous devez obligatoirement modifier le plateau"); 
+			CharSequence text = "Vous devez obligatoirement modifier le plateau";
+			int duration = Toast.LENGTH_LONG;
+			Context context = getApplicationContext();
+		    Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
 		}
 }	
 

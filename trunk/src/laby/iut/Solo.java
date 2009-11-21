@@ -1,6 +1,7 @@
 package laby.iut;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class Solo extends Activity {
 
@@ -46,12 +48,22 @@ public class Solo extends Activity {
         		{   
         			editPseudo = (EditText) findViewById(R.id.editpseudo);
         			pseudo = editPseudo.getEditableText().toString();
-        			lancerPartie();
+        			if (pseudo.length()==0 || pseudo.length()>10){
+        				CharSequence text = "pseudo entre 1 et 10caracteres";
+        				int duration = Toast.LENGTH_SHORT;
+        				Context context = getApplicationContext();
+        				Toast toast = Toast.makeText(context, text, duration);
+        				toast.show();
+        			}
+        			else{
+        				lancerPartie();
+        			}
         		}		
         });
     }
     
     public void lancerPartie() {
+   	
 		//creation de l'intent
 		Intent defineIntent = new Intent(this, PlateauJeu.class);
 		
@@ -60,7 +72,7 @@ public class Solo extends Activity {
 		
 		objetbundle.putString("pseudo", pseudo);
 		defineIntent.putExtras(objetbundle);
-		
+				
 		//lancement de la nouvelle activity
 		startActivity(defineIntent);
 	}
