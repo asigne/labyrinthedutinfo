@@ -414,20 +414,10 @@ public void actionCase(int x, int y)
 		 			CharSequence text = "Carte trouvée!";
 		 	        notif(text,Toast.LENGTH_LONG,0,0,0);
 		 			
-<<<<<<< .mine
-		 			text = "Appuyé sur <JOUER> pour finir votre tour et piocher un autre carte";
+		 	        text = "Appuyer sur <JOUER> pour finir le tour";
 		 	        notif(text,Toast.LENGTH_LONG);
-		 		}
-=======
-		 			CharSequence text1 = "Appuyer sur <JOUER> pour finir le tour";
-		 			int duration1 = Toast.LENGTH_LONG;
-		 			Toast toast1 = Toast.makeText(context, text1, duration1);
-		 			
-		 			toast.setGravity(0,0,0);
-		 			toast.show();	 
-		 			toast1.show();	 
 			 	}
->>>>>>> .r22
+
 			}
 		else
 			{
