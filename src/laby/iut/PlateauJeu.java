@@ -62,6 +62,8 @@ public class PlateauJeu extends Activity
     int sauvIndiceInterdit;
     int sauvPosLigne, sauvPosColonne;
 	
+    
+    TextView tJ1, tJ2, tJ3, tJ4;
    	
         
     //int ligne, colonne;
@@ -125,12 +127,13 @@ public void onCreate(Bundle savedInstanceState)
          //j4.RejoindrePartie(maPartie);
          
          maPartie.lancerPartie();					//lancement de la partie
-
+         
          initPlateau2D();							//initialisation de l'affichage du plateau en 2D
          
          affichePions();   							//affichage des pions sur le plateau
          afficheCaseCourante(0);					//affichage de la case courante
-       
+         afficheScores();
+         
          joueurActif=j1;
          //affichage de la carte courante du joueur
          afficheCarteCourante();
@@ -283,6 +286,12 @@ public  void initDesID() {
     
     //lPlateau = (TableLayout) findViewById(R.id.Plateau);
     
+    tJ1 = (TextView) findViewById(R.id.textJ1);
+    tJ2 = (TextView) findViewById(R.id.textJ2);
+    tJ3 = (TextView) findViewById(R.id.textJ3);
+    tJ4 = (TextView) findViewById(R.id.textJ4);
+    
+    
 }
 
 //click sur la carteCourante
@@ -411,7 +420,7 @@ public void actionCase(int x, int y)
 		 			int duration = Toast.LENGTH_LONG;
 		 			Toast toast = Toast.makeText(context, text, duration);
 		 			
-		 			CharSequence text1 = "Appuyé sur <JOUER> pour finir votre tour et piocher un autre carte";
+		 			CharSequence text1 = "Appuyer sur <JOUER> pour finir le tour";
 		 			int duration1 = Toast.LENGTH_LONG;
 		 			Toast toast1 = Toast.makeText(context, text1, duration1);
 		 			
@@ -1058,6 +1067,31 @@ public void affichePion(Joueur joueurCourant)
 	}
 
 
+public void afficheScores()
+{
+	Joueur JCT; //joueur en Cours de Traitement
+	for(int i=0; i<maPartie.getListJoueur().size();i++)
+	{
+		JCT=maPartie.getListJoueur().get(i);
+		switch(i)
+		{
+		case 0:
+			tJ1.setText(JCT.getNom()+" : "+JCT.getListCarte().size());
+			break;
+		case 1:
+			tJ2.setText(JCT.getNom()+" : "+JCT.getListCarte().size());		
+			break;
+		case 2:
+			tJ3.setText(JCT.getNom()+" : "+JCT.getListCarte().size());
+			break;
+		case 3:
+			tJ4.setText(JCT.getNom()+" : "+JCT.getListCarte().size());
+			break;
+		}
+	}	
+}
+
+
 /*public void afficheEcran()
 {
 	affichePlateau();
@@ -1097,6 +1131,7 @@ public void tourDejeu(){
 			{
 			afficheCarteCourante();
 			affichePions();	
+			afficheScores();
 			joueurActif=maPartie.joueurSuivant(joueurActif);
 			deplacement=false;
 			btnAnnuler.setVisibility(4);
@@ -1130,11 +1165,15 @@ public void tourDejeu(){
 		}
 }	
 
+
+
 public void setFullscreen() { 
     requestWindowFeature(Window.FEATURE_NO_TITLE); 
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
             WindowManager.LayoutParams.FLAG_FULLSCREEN); 
 } 
+
+
 
 }
 
