@@ -86,9 +86,21 @@ public class PlateauJeu extends Activity
 	int indicePremierPion=R.id.lbleu;
 
 	String pseudo, regle, difficulte;
-	
-	
-	
+//genere une notif avec le texte "text", la durée "duration" 
+//et coordonnée par defaut(en bas du plateau)	
+public void notif(CharSequence text,int duration){
+	Context context = getApplicationContext();
+	Toast toast = Toast.makeText(context, text, duration);
+	toast.show();	
+}
+//genere une notif avec le texte "text", la durée "duration" 
+//et coordonnée g(gravity),x(xoffset),y(yoffset)	
+public void notif(CharSequence text,int duration,int g,int x, int y){
+	Context context = getApplicationContext();
+	Toast toast = Toast.makeText(context, text, duration);
+	toast.setGravity(g,x,y);
+	toast.show();	
+}
 
 public void onCreate(Bundle savedInstanceState)
     {    	    	
@@ -100,19 +112,16 @@ public void onCreate(Bundle savedInstanceState)
   		 Bundle objetParametre  = this.getIntent().getExtras(); 
   		 pseudo = objetParametre.getString("pseudo");
   		 regle = objetParametre.getString("regle");
-  		 difficulte = objetParametre.getString("difficulte");
-          
- 
+  		 difficulte = objetParametre.getString("difficulte");     
          
          initDesID();
-         
-                           
+                               
          maPartie=new Partie("Partie1", regle, difficulte); 			//creation de la partie     
          monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
          caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
          
          
-         				//creation des joueurs
+         //creation des joueurs
          j1=new Utilisateur(pseudo);				
          //ia=new IA("Ordinateur");					
          j2=new Utilisateur("Rouge");				
@@ -139,27 +148,19 @@ public void onCreate(Bundle savedInstanceState)
          afficheCarteCourante();
          
          //WriteSettings(this, maPartie);
-		CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
-		int duration = Toast.LENGTH_SHORT;
-		Context context = getApplicationContext();
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.setGravity(0,0,0);
-		toast.show();
+
+         CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
+         notif(text,Toast.LENGTH_SHORT,0,0,0);
 		
-		text = "Commencez par modifier le plateau puis déplacez votre pion";
-		duration = Toast.LENGTH_LONG;
-		toast = Toast.makeText(context, text , duration);
-		toast.show();
+         text = "Commencez par modifier le plateau puis déplacez votre pion";
+         notif(text,Toast.LENGTH_LONG);
          
          btnJouer.setOnClickListener(new View.OnClickListener()
          {
         	 public void onClick(View v)
              {       			
             	 tourDejeu();
-             }
-            	 
-          
-            	 
+             }            	 
          }); 
          
          btnAnnuler.setOnClickListener(new View.OnClickListener()
@@ -193,7 +194,6 @@ public void WriteSettings(Context context, Partie data){
        	catch (Exception e) {       
                 Toast.makeText(context, "Settings not saved",Toast.LENGTH_SHORT).show(); 
         } 
-       	
         finally { 
            try { 
                  oos.close(); 
@@ -204,9 +204,6 @@ public void WriteSettings(Context context, Partie data){
           } 
         } 
    }
-
-
-
 
 //methode permettant de gérer les clic sur l'écran   
 public boolean onTouchEvent(MotionEvent event)
@@ -284,8 +281,7 @@ public  void initDesID() {
     btnJouer = (Button) findViewById(R.id.Jouer);
     btnAnnuler = (Button) findViewById(R.id.Annuler);
     
-    //lPlateau = (TableLayout) findViewById(R.id.Plateau);
-    
+    //lPlateau = (TableLayout) findViewById(R.id.Plateau);   
     tJ1 = (TextView) findViewById(R.id.textJ1);
     tJ2 = (TextView) findViewById(R.id.textJ2);
     tJ3 = (TextView) findViewById(R.id.textJ3);
@@ -414,12 +410,15 @@ public void actionCase(int x, int y)
 			 	ctrouve=joueurActif.testCarteTrouvee();	 	
 			 	if(ctrouve==true){
 			 		ctrouve=false;
-		 			Context context = getApplicationContext();
 			 		
 		 			CharSequence text = "Carte trouvée!";
-		 			int duration = Toast.LENGTH_LONG;
-		 			Toast toast = Toast.makeText(context, text, duration);
+		 	        notif(text,Toast.LENGTH_LONG,0,0,0);
 		 			
+<<<<<<< .mine
+		 			text = "Appuyé sur <JOUER> pour finir votre tour et piocher un autre carte";
+		 	        notif(text,Toast.LENGTH_LONG);
+		 		}
+=======
 		 			CharSequence text1 = "Appuyer sur <JOUER> pour finir le tour";
 		 			int duration1 = Toast.LENGTH_LONG;
 		 			Toast toast1 = Toast.makeText(context, text1, duration1);
@@ -428,24 +427,18 @@ public void actionCase(int x, int y)
 		 			toast.show();	 
 		 			toast1.show();	 
 			 	}
+>>>>>>> .r22
 			}
 		else
 			{
 				CharSequence text = "Deplacement interdit";
-				int duration = Toast.LENGTH_SHORT;
-				Context context = getApplicationContext();
-			    Toast toast = Toast.makeText(context, text, duration);
-				toast.show();
-				
+		        notif(text,Toast.LENGTH_SHORT);
 			}
 	}
 	else
 	{
 		CharSequence text = "Vous devez modifier le plateau avant de vous deplacer";
-		int duration = Toast.LENGTH_LONG;
-		Context context = getApplicationContext();
-	    Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
+        notif(text,Toast.LENGTH_LONG);
 		//textInfo.setText("Vous devez modifier le plateau avant de vous deplacer");
 	}
 }
@@ -482,10 +475,7 @@ public boolean actionFleche(int x, int y)
 		if(modif==indiceInterdit && fleche==flecheInterdite)
 		{
 			CharSequence text = "Action interdite";
-			int duration = Toast.LENGTH_SHORT;
-			Context context = getApplicationContext();
-		    Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
+	         notif(text,Toast.LENGTH_SHORT);
 		}
 		else
 		{
@@ -524,10 +514,7 @@ public boolean actionFleche(int x, int y)
 	else
 	{
 		CharSequence text = "Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !";
-		int duration = Toast.LENGTH_SHORT;
-		Context context = getApplicationContext();
-	    Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
+        notif(text,Toast.LENGTH_SHORT);
 	}
 	return false;
 }
@@ -596,10 +583,7 @@ public void annulerDernierCoup()
 			plateauModif=false;
 			deplacement=false;
 			CharSequence text = "Déplacement annulé";
-			int duration = Toast.LENGTH_SHORT;
-			Context context = getApplicationContext();
-		    Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
+	         notif(text,Toast.LENGTH_SHORT);
 			btnAnnuler.setVisibility(4);	//rend invisible le bouton annuler
 		}
 		else
@@ -932,7 +916,6 @@ public void affichePlateau()
 	}
 }*/
 
-
 //methode permettant d'afficher la case courante
 public void afficheCaseCourante(int duration)
    {   
@@ -1066,7 +1049,6 @@ public void affichePion(Joueur joueurCourant)
         pionCourant.setPadding(coordX, coordY, 0, 0);
 	}
 
-
 public void afficheScores()
 {
 	Joueur JCT; //joueur en Cours de Traitement
@@ -1109,23 +1091,15 @@ public void tourDejeu(){
 	 	
 	 	if(ctrouve==true){
  			CharSequence text = "BRAVO!!!";	
- 			int duration = Toast.LENGTH_SHORT;
- 			Context context = getApplicationContext();
- 			Toast toast = Toast.makeText(context, text, duration);
- 			toast.setGravity(0, 0, 0);
- 			toast.show();	 	
+ 	        notif(text,Toast.LENGTH_SHORT,0,0,0);	
 			joueurActif.modifCarteObjectif();
-	 	}
-	 	
+	 	} 	
 	 	
 	 	if(maPartie.getPartieFinie())
 		 	{
 		 		//partie finie
 	 			CharSequence text = "Partie Gagnée par : "+joueurActif.getNom();
-	 			int duration = Toast.LENGTH_SHORT;
-	 			Context context = getApplicationContext();
-	 			Toast toast = Toast.makeText(context, text, duration);
-	 			toast.show();
+	 	        notif(text,Toast.LENGTH_SHORT);
 		 	}
 		else
 			{
@@ -1137,15 +1111,11 @@ public void tourDejeu(){
 			btnAnnuler.setVisibility(4);
 			
 			CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
-			int duration = Toast.LENGTH_SHORT;
-			Context context = getApplicationContext();
-		    Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
+	        notif(text,Toast.LENGTH_SHORT,0,0,0);
 			
 			text = "Commencez par modifier le plateau puis déplacez votre pion";
-			duration = Toast.LENGTH_LONG;
-			toast = Toast.makeText(context, text, duration);
-			toast.show();
+			notif(text,Toast.LENGTH_LONG);
+
 			afficheCarteCourante();
 			plateauModif=false;
 			if(joueurActif instanceof IA)
@@ -1158,10 +1128,7 @@ public void tourDejeu(){
 	else
 		{
 			CharSequence text = "Vous devez obligatoirement modifier le plateau";
-			int duration = Toast.LENGTH_LONG;
-			Context context = getApplicationContext();
-		    Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
+			notif(text,Toast.LENGTH_LONG);
 		}
 }	
 
