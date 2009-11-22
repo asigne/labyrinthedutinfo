@@ -20,7 +20,7 @@ public class Serveur {
 	}
 		
 	
-	public void creerPartie(String nomPartie)
+	/*public void creerPartie(String nomPartie)
 	{
 		if(nbPartie<nbPartieMax)
 			{
@@ -31,5 +31,5 @@ public class Serveur {
 			{
 				//erreur trop de partie sur le serveur
 			}
-	}
+	}*/
 }

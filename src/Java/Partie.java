@@ -15,13 +15,17 @@ public class Partie implements Serializable{
 	ArrayList<Carte> ListCarte;	//liste des cartes à distribuer
 	ArrayList<Joueur> ListJoueur;	// liste des joueurs de la partie
 	boolean partieFinie;	//si true partie finie sinon false
+	String regle="";
+	String difficulte="";
 	
-	public Partie(String nom)
+	public Partie(String nom, String regle, String difficulte)
 	{
 		this.nom=nom;
 		partieFinie=false;
 		ListCarte = new ArrayList<Carte>();
 		ListJoueur = new ArrayList<Joueur>();
+		this.regle=regle;
+		this.difficulte=difficulte;
 		
 		//creation du plateau de maniere aleatoire
 		monPlateau=new Plateau();
@@ -164,6 +168,27 @@ public class Partie implements Serializable{
 			//ListJoueur.get(i).setCarteObjectif(ListJoueur.get(i).getListCarte().get(0));
 		}
 	}
+
+	
+
+	public String getDifficulte() {
+		return difficulte;
+	}
+
+	
+	public boolean partieEnfant()
+	{
+		if(this.regle.equals("Enfant"))
+			{
+				return true;
+			}
+		else
+			{
+				return false;
+			}
+	}
+
+
 }
 
 	

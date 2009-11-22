@@ -80,7 +80,7 @@ public class PlateauJeu extends Activity
 	int indiceI=R.drawable.i;
 	int indicePremierPion=R.id.lbleu;
 
-	String pseudo;
+	String pseudo, regle, difficulte;
 	
 	
 	
@@ -91,17 +91,20 @@ public void onCreate(Bundle savedInstanceState)
          setFullscreen();
          setContentView(R.layout.jeu);   
 
-         initDesID();
-                           
-         maPartie=new Partie("Partie1"); 			//creation de la partie     
-         monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
-         caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
-         
          // récuperation du pseudo et des parametres de la partie
- 		Bundle objetParametre  = this.getIntent().getExtras(); 
- 		pseudo = objetParametre.getString("pseudo");
+  		 Bundle objetParametre  = this.getIntent().getExtras(); 
+  		 pseudo = objetParametre.getString("pseudo");
+  		 regle = objetParametre.getString("regle");
+  		 difficulte = objetParametre.getString("difficulte");
+          
  
          
+         initDesID();
+         
+                           
+         maPartie=new Partie("Partie1", regle, difficulte); 			//creation de la partie     
+         monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
+         caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
          
          
          				//creation des joueurs
@@ -281,23 +284,30 @@ public  void initDesID() {
 //click sur la carteCourante
 public void actionCarteCourante() {
 	//recuperation de la liste des identifiants des cartes
-	ArrayList<Integer> listeCarte= new ArrayList<Integer>();
-	for(int i=0; i<joueurActif.getListCarte().size(); i++)
-	{
-		listeCarte.add(joueurActif.getListCarte().get(i).getIdentifiant());
-	}
-
-	//creation de l'intent
-	Intent defineIntent = new Intent(this, AffichageCartes.class);
-	//creation de l'objet Bundle
-	Bundle objetbundle = new Bundle();
-	
-	//ajout de la liste de carte au bundle
-	objetbundle.putIntegerArrayList("listeCarte",listeCarte);
-	//ajout du bundle à l'intent
-	defineIntent.putExtras(objetbundle);
-	//lancement de la nouvelle activity
-	startActivity(defineIntent);
+		if(maPartie.partieEnfant())
+			{	
+				ArrayList<Integer> listeCarte= new ArrayList<Integer>();
+				for(int i=0; i<joueurActif.getListCarte().size(); i++)
+				{
+					listeCarte.add(joueurActif.getListCarte().get(i).getIdentifiant());
+				}
+			
+				//creation de l'intent
+				Intent defineIntent = new Intent(this, AffichageCartes.class);
+				//creation de l'objet Bundle
+				Bundle objetbundle = new Bundle();
+				
+				//ajout de la liste de carte au bundle
+				objetbundle.putIntegerArrayList("listeCarte",listeCarte);
+				//ajout du bundle à l'intent
+				defineIntent.putExtras(objetbundle);
+				//lancement de la nouvelle activity
+				startActivity(defineIntent);
+			}
+		else
+			{
+				textJoueurActif.setText("notification pas le droit");
+			}
 }
 
 //click sur la caseCourante : 
@@ -495,72 +505,78 @@ public boolean actionFleche(int x, int y)
 //permet d'annuler la derniere modification du plateau
 public void annulerDernierCoup()
 {
-		joueurActif.setPosition(sauvPosLigne,sauvPosColonne);
-
-		if(sauvFleche=="haut")
+	if(!deplacement || (sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne()))
+		// le joueur ne peut pas annuler s'il a déplacé son pion
 		{
-			fleche="bas";
+			if(sauvFleche=="haut")
+			{
+				fleche="bas";
+			}
+			else if(sauvFleche=="bas")
+			{
+				fleche="haut";
+			}
+			else if(sauvFleche=="gauche")
+			{
+				fleche="droite";
+			}
+			else if(sauvFleche=="droite")
+			{
+				fleche="gauche";
+			}
+			
+			if(sauvFlecheInterdite=="haut")
+			{
+				flecheInterdite="bas";
+			}
+			else if(sauvFlecheInterdite=="bas")
+			{
+				flecheInterdite="haut";
+			}
+			else if(sauvFlecheInterdite=="gauche")
+			{
+				flecheInterdite="droite";
+			}
+			else if(sauvFlecheInterdite=="droite")
+			{
+				flecheInterdite="gauche";
+			}
+			//creation de la modification du plateau
+			monCoup=((Utilisateur) joueurActif).genererCoup(sauvCaseSortante, sauvModif, fleche);
+			//modification du plateau
+			joueurActif.modifierPlateau(monCoup);
+			//deplacement des joueurs situes sur les cases mobiles concernées
+			traitementJoueurSurCaseMobile(sauvModif, fleche);
+			//recuperation de la nouvelle caseCourante
+			caseCourante=maPartie.getCaseCourante();
+			//affichage du nouveau plateau
+			MaJPlateau(sauvModif, fleche);
+			//affichage de la nouvelle carteCourante
+			afficheCaseCourante(0);	
+			
+			if(premiereModif) //si la premiere modif est annulée
+			{
+				unlockFleche(); //deverrouillage de toutes les flechs
+			}
+			else //sinon reverrouillage de la fleche precedent la modification du plateau
+			{
+				lockFleche(flecheInterdite, sauvIndiceInterdit);
+			}
+			
+			plateauModif=false;
+			deplacement=false;
+			CharSequence text = "Déplacement annulé";
+			int duration = Toast.LENGTH_SHORT;
+			Context context = getApplicationContext();
+		    Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+			btnAnnuler.setVisibility(4);	//rend invisible le bouton annuler
 		}
-		else if(sauvFleche=="bas")
+		else
 		{
-			fleche="haut";
+		textInfo.setText("Vous ne pouvez pas annuler la modification tant que votre joueur ne se " +
+					"trouve pas où il était avant, Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
 		}
-		else if(sauvFleche=="gauche")
-		{
-			fleche="droite";
-		}
-		else if(sauvFleche=="droite")
-		{
-			fleche="gauche";
-		}
-		
-		if(sauvFlecheInterdite=="haut")
-		{
-			flecheInterdite="bas";
-		}
-		else if(sauvFlecheInterdite=="bas")
-		{
-			flecheInterdite="haut";
-		}
-		else if(sauvFlecheInterdite=="gauche")
-		{
-			flecheInterdite="droite";
-		}
-		else if(sauvFlecheInterdite=="droite")
-		{
-			flecheInterdite="gauche";
-		}
-		//creation de la modification du plateau
-		monCoup=((Utilisateur) joueurActif).genererCoup(sauvCaseSortante, sauvModif, fleche);
-		//modification du plateau
-		joueurActif.modifierPlateau(monCoup);
-		//deplacement des joueurs situes sur les cases mobiles concernées
-		traitementJoueurSurCaseMobile(sauvModif, fleche);
-		//recuperation de la nouvelle caseCourante
-		caseCourante=maPartie.getCaseCourante();
-		//affichage du nouveau plateau
-		MaJPlateau(sauvModif, fleche);
-		//affichage de la nouvelle carteCourante
-		afficheCaseCourante(0);	
-		
-		if(premiereModif) //si la premiere modif est annulée
-		{
-			unlockFleche(); //deverrouillage de toutes les flechs
-		}
-		else //sinon reverrouillage de la fleche precedent la modification du plateau
-		{
-			lockFleche(flecheInterdite, sauvIndiceInterdit);
-		}
-		
-		plateauModif=false;
-		deplacement=false;
-		CharSequence text = "Déplacement annulé";
-		int duration = Toast.LENGTH_SHORT;
-		Context context = getApplicationContext();
-	    Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
-		btnAnnuler.setVisibility(4);	//rend invisible le bouton annuler
-
 }
 
 //deplacement des joueurs sur les case mobiles en mouvement

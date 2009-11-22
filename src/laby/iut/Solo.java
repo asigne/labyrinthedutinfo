@@ -20,7 +20,7 @@ public class Solo extends Activity {
 	ArrayAdapter aRegle, aDifficulte;
 	Button lancerPartie;
 	EditText editPseudo;
-	String pseudo;
+	String pseudo, regle, difficulte;
     
     public void onCreate(Bundle savedInstanceState) {  
 		super.onCreate(savedInstanceState);
@@ -47,9 +47,11 @@ public class Solo extends Activity {
         	public void onClick(View v)
         		{   
         			editPseudo = (EditText) findViewById(R.id.editpseudo);
+        			regle = (String) sRegle.getSelectedItem();
+        			difficulte = (String) sDifficulte.getSelectedItem();
         			pseudo = editPseudo.getEditableText().toString();
         			if (pseudo.length()==0 || pseudo.length()>10){
-        				CharSequence text = "pseudo entre 1 et 10caracteres";
+        				CharSequence text = "pseudo entre 1 et 10 caracteres";
         				int duration = Toast.LENGTH_SHORT;
         				Context context = getApplicationContext();
         				Toast toast = Toast.makeText(context, text, duration);
@@ -71,6 +73,8 @@ public class Solo extends Activity {
 		Bundle objetbundle = new Bundle();
 		
 		objetbundle.putString("pseudo", pseudo);
+		objetbundle.putString("regle", regle);
+		objetbundle.putString("difficulte", difficulte);
 		defineIntent.putExtras(objetbundle);
 				
 		//lancement de la nouvelle activity
