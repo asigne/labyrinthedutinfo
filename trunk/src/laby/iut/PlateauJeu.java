@@ -140,7 +140,7 @@ public void onCreate(Bundle savedInstanceState)
 		int duration = Toast.LENGTH_SHORT;
 		Context context = getApplicationContext();
 		Toast toast = Toast.makeText(context, text, duration);
-		toast.setGravity(30,0,0);
+		toast.setGravity(0,0,0);
 		toast.show();
 		
 		text = "Commencez par modifier le plateau puis déplacez votre pion";
