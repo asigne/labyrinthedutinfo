@@ -2,6 +2,7 @@ package laby.iut;
 //import java.io.BufferedOutputStream;
 //import java.io.File;
 //import java.io.FileNotFoundException;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 //import java.io.ObjectInputStream;
@@ -27,6 +28,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 //import android.os.Vibrator;
+
+import Java.Joueur;
 
 public class PlateauJeu extends Activity 
 {
@@ -137,6 +140,7 @@ public void onCreate(Bundle savedInstanceState)
 		int duration = Toast.LENGTH_SHORT;
 		Context context = getApplicationContext();
 		Toast toast = Toast.makeText(context, text, duration);
+		toast.setGravity(30,0,0);
 		toast.show();
 		
 		text = "Commencez par modifier le plateau puis déplacez votre pion";
@@ -398,6 +402,23 @@ public void actionCase(int x, int y)
 			{
 				deplacement=true;	//deplacement est vrai
 				affichePions();		// affichage des pions sur le plateau
+			 	ctrouve=joueurActif.testCarteTrouvee();	 	
+			 	if(ctrouve==true){
+			 		ctrouve=false;
+		 			Context context = getApplicationContext();
+			 		
+		 			CharSequence text = "Carte trouvée!";
+		 			int duration = Toast.LENGTH_LONG;
+		 			Toast toast = Toast.makeText(context, text, duration);
+		 			
+		 			CharSequence text1 = "Appuyé sur <JOUER> pour finir votre tour et piocher un autre carte";
+		 			int duration1 = Toast.LENGTH_LONG;
+		 			Toast toast1 = Toast.makeText(context, text1, duration1);
+		 			
+		 			toast.setGravity(0,0,0);
+		 			toast.show();	 
+		 			toast1.show();	 
+			 	}
 			}
 		else
 			{
@@ -1053,11 +1074,13 @@ public void tourDejeu(){
 	 	joueurActif.testJoueurGagnant();
 	 	
 	 	if(ctrouve==true){
- 			CharSequence text = "Carte trouvée!!!";
+ 			CharSequence text = "BRAVO!!!";	
  			int duration = Toast.LENGTH_SHORT;
  			Context context = getApplicationContext();
  			Toast toast = Toast.makeText(context, text, duration);
- 			toast.show();	 		
+ 			toast.setGravity(0, 0, 0);
+ 			toast.show();	 	
+			joueurActif.modifCarteObjectif();
 	 	}
 	 	
 	 	

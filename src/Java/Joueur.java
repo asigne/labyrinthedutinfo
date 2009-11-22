@@ -120,7 +120,6 @@ public abstract class Joueur{
 				if(maCase.getIdentifiant()==this.getCarteObjectif().getIdentifiant())
 					{
 						//carte trouvée !!!
-						modifCarteObjectif();
 						return true;
 					}
 			}
