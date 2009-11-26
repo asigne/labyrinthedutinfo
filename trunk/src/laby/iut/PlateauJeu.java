@@ -146,6 +146,8 @@ public void onCreate(Bundle savedInstanceState)
          joueurActif=j1;
          //affichage de la carte courante du joueur
          afficheCarteCourante();
+         montrerCaseObjectif();
+         
          
          //WriteSettings(this, maPartie);
 
@@ -829,6 +831,7 @@ public void MaJPlateau(int modif, String sens)
 					k++;
 				}
 		}
+	montrerCaseObjectif();
 }
 
 //methode permettant d'afficher une case sur le plateau
@@ -1094,9 +1097,11 @@ public void tourDejeu(){
 		else
 			{
 			afficheCarteCourante();
+			montrerCaseObjectif();
 			affichePions();	
 			afficheScores();
 			joueurActif=maPartie.joueurSuivant(joueurActif);
+
 			deplacement=false;
 			btnAnnuler.setVisibility(4);
 			
@@ -1107,6 +1112,7 @@ public void tourDejeu(){
 			notif(text,Toast.LENGTH_LONG);
 
 			afficheCarteCourante();
+			montrerCaseObjectif();
 			plateauModif=false;
 			if(joueurActif instanceof IA)
 				{
@@ -1130,6 +1136,36 @@ public void setFullscreen() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN); 
 } 
 
+public void montrerCaseObjectif()
+{
+	Plateau monPlateau=maPartie.getMonPlateau();
+	int objectif = joueurActif.getListCarte().get(0).getIdentifiant();
+	
+	int k=0;		// compteur pour selectionner l'id de la case du tableaux
+	int noCase;
+	ImageView ICT;
+	
+	for(int ligne=0;ligne<7;ligne++)
+	{
+		for(int colonne=0;colonne<7;colonne++)
+		{
+			noCase=indicePremiereCaseTableau+k;
+			ICT = (ImageView) findViewById(noCase);
+			if(objectif==monPlateau.getCase(ligne, colonne).getIdentifiant())
+			{
+				ICT.setPadding(2, 2, 2, 2);
+				//ICT.setBackgroundColor(16777215);
+			}
+			else
+			{
+				ICT.setPadding(0, 0, 0, 0);
+				//ICT.setBackgroundColor(R.color.red);
+			}
+			k++;
+		}
+	k++;
+	}
+}
 
 
 }

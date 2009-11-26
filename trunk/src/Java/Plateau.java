@@ -93,7 +93,7 @@ public void creationListeCase()
 	for(int i=0;i<comptL;i++)
 	{
 		rotationAleatoire=rotationAleatoire();
-		ListCase.add(new L(0,rotationAleatoire,0));	
+		ListCase.add(new L(100,rotationAleatoire,0));	
 	}
 	
 	//creation des 6 'L' avec images
