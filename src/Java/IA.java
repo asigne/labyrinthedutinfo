@@ -23,32 +23,34 @@ public class IA extends Joueur {
 	}
 	//rejoindre un serveur ou une partie ???
 	
-	public Coup rechercheMeilleurCoup(Partie maPartie)
+	public Coup rechercheMeilleurCoup(Partie maPartie, String flecheInterdite, int sensInterdit)
 	{
 			// methode developpée par le prof
 			// genere le meilleur coup
 		return null;
 	} 	
 	
-	public boolean rechercheMeilleurDeplacement(Partie maPartie)
+	public void rechercheMeilleurDeplacement(Partie maPartie)
 	{
 		// methode developpée par le prof
-		//pour le deplacement, modifier les valeurs de newPositionLigne, newPositionColonne;
-		//le booleen 'deplacement est vrai si le joueur veut se deplacer;
-		return false;
+		
+		//pour le deplacement, modifier les valeurs de ligne et de  colonne;
+		int ligne=0, colonne=0;
+		seDeplacer(ligne, colonne);
 	} 
 	
-	
+
+
+
+
+	public void jouer(Partie maPartie, String flecheInterdite, int sensInterdit) {
+		//rechercher le meilleur Coup
+		Coup coupIa = rechercheMeilleurCoup(maPartie, flecheInterdite, sensInterdit);
 		
-
-
-
-	public void jouer(Partie maPartie) {
-		Coup coupIa = rechercheMeilleurCoup(maPartie);
 		//modifier le plateau
-		
 		modifierPlateau(coupIa);
+		
 		//se deplacer
-		//seDeplacer(maPartie);
+		rechercheMeilleurDeplacement(maPartie);
 	}
 }

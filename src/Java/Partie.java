@@ -174,6 +174,10 @@ public class Partie implements Serializable{
 	public String getDifficulte() {
 		return difficulte;
 	}
+	
+	public String getRegle() {
+		return regle;
+	}
 
 	
 	public boolean partieEnfant()
