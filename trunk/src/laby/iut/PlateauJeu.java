@@ -1116,7 +1116,7 @@ public void tourDejeu(){
 			plateauModif=false;
 			if(joueurActif instanceof IA)
 				{
-					((IA) joueurActif).jouer(maPartie);
+					((IA) joueurActif).jouer(maPartie, flecheInterdite, indiceInterdit);
 					tourDejeu();
 				}
 			}
