@@ -148,6 +148,8 @@ public void onCreate(Bundle savedInstanceState)
          afficheCarteCourante();
          montrerCaseObjectif();
          
+         textInfo.setText("");
+         textJoueurActif.setText("");
          
          //WriteSettings(this, maPartie);
 
@@ -317,7 +319,10 @@ public void actionCarteCourante() {
 			}
 		else
 			{
-				textJoueurActif.setText("notification pas le droit");
+				//textJoueurActif.setText("notification pas le droit");
+			CharSequence text = "Interdit avec ce type de règles";
+ 	        notif(text,Toast.LENGTH_SHORT);
+				
 			}
 }
 
@@ -514,9 +519,10 @@ public boolean actionFleche(int x, int y)
 //permet d'annuler la derniere modification du plateau
 public void annulerDernierCoup()
 {
-	if(!deplacement || (sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne()))
+	/*if(!deplacement || (sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne()))
 		// le joueur ne peut pas annuler s'il a déplacé son pion
-		{
+		{*/
+			joueurActif.seDeplacer(sauvPosLigne,sauvPosColonne);
 			if(sauvFleche=="haut")
 			{
 				fleche="bas";
@@ -577,12 +583,12 @@ public void annulerDernierCoup()
 			CharSequence text = "Déplacement annulé";
 	         notif(text,Toast.LENGTH_SHORT);
 			btnAnnuler.setVisibility(4);	//rend invisible le bouton annuler
-		}
-		else
+		//}
+		/*else
 		{
 		textInfo.setText("Vous ne pouvez pas annuler la modification tant que votre joueur ne se " +
 					"trouve pas où il était avant, Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
-		}
+		}*/
 }
 
 //deplacement des joueurs sur les case mobiles en mouvement
