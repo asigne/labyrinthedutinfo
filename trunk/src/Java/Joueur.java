@@ -11,6 +11,7 @@ public abstract class Joueur{
 	Carte carteObjectif;
 	int posLigne;
 	int posColonne;
+	int numObjectifTrouve;
 	
 	public Joueur(String nom){
 		this.identifiant=0;
@@ -48,16 +49,36 @@ public abstract class Joueur{
 		}
 	public void modifCarteObjectif()
 		{
-			if(this.getListCarte().size()>0)
+			if(partieActuelle.getRegle().equals("Normal"))
 			{
 				this.supprCarte(this.getListCarte().get(0));
-				//this.setCarteObjectif(this.getListCarte().get(0));
 			}
-//			else
-//			{
-//				partieActuelle.setPartieFinie(true);
-//				//this.setCarteObjectif(new Carte(this.getIdentifiant()+24));
-//			}
+			else
+			{
+				if(this.getListCarte().size()>0)
+				{
+					boolean objectif = false;
+					int i=0;
+					
+					while(objectif==false && i<this.getListCarte().size())
+					{
+						if(this.getListCarte().get(i).getIdentifiant()==numObjectifTrouve)
+						{
+							this.supprCarte(this.getListCarte().get(i));
+							objectif=true;
+						}	
+						i++;
+					}
+				}
+			}
+					//this.supprCarte(this.getListCarte().get(0));
+					//this.setCarteObjectif(this.getListCarte().get(0));
+				
+	//			else
+	//			{
+	//				partieActuelle.setPartieFinie(true);
+	//				//this.setCarteObjectif(new Carte(this.getIdentifiant()+24));
+	//			}
 		}
 	
 	
@@ -114,16 +135,46 @@ public abstract class Joueur{
 	
 	public boolean testCarteTrouvee()
 	{
-		if(!this.getListCarte().isEmpty())
+		if(partieActuelle.getRegle().equals("Normal"))
+		{
+			if(!this.getListCarte().isEmpty())
+				{
+					Case maCase = partieActuelle.getMonPlateau().getCase(posLigne, posColonne);
+					if(maCase.getIdentifiant()==this.getCarteObjectif().getIdentifiant())
+						{
+							numObjectifTrouve=maCase.getIdentifiant();
+							//carte trouvée !!!
+							return true;
+						}
+				}
+		}
+		else
+		{
+			if(!this.getListCarte().isEmpty())
 			{
 				Case maCase = partieActuelle.getMonPlateau().getCase(posLigne, posColonne);
-				if(maCase.getIdentifiant()==this.getCarteObjectif().getIdentifiant())
+				
+				boolean objectif = false;
+				int i=0;
+				
+				while(objectif==false && i<this.getListCarte().size())
+				{
+					if(this.getListCarte().get(i).getIdentifiant()==maCase.getIdentifiant())
 					{
-						//carte trouvée !!!
-						return true;
-					}
-			}
-		return false;
+						numObjectifTrouve=maCase.getIdentifiant();
+						objectif=true;
+					}	
+					i++;
+				}
+				
+				if(objectif)  
+				{
+					//carte trouvée !!!
+					return true;
+				}
+			}			
+		}
+			return false;
 	}
 	
 	public void testJoueurGagnant()

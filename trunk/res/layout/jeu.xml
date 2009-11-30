@@ -68,7 +68,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 	    android:layout_height="294dp" 
 	    android:layout_x="13dip" 
 	    android:layout_y="61dip"
-	    android:background="@color/red">
+	   >
 	    
 	<LinearLayout
 	android:id="@+id/l0">

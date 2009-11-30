@@ -15,6 +15,7 @@ import Java.*;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1145,31 +1146,71 @@ public void setFullscreen() {
 public void montrerCaseObjectif()
 {
 	Plateau monPlateau=maPartie.getMonPlateau();
-	int objectif = joueurActif.getListCarte().get(0).getIdentifiant();
+	
 	
 	int k=0;		// compteur pour selectionner l'id de la case du tableaux
 	int noCase;
 	ImageView ICT;
 	
-	for(int ligne=0;ligne<7;ligne++)
+	if(maPartie.getRegle().equals("Normal"))
 	{
-		for(int colonne=0;colonne<7;colonne++)
+		int objectif = joueurActif.getListCarte().get(0).getIdentifiant();
+		for(int ligne=0;ligne<7;ligne++)
 		{
-			noCase=indicePremiereCaseTableau+k;
-			ICT = (ImageView) findViewById(noCase);
-			if(objectif==monPlateau.getCase(ligne, colonne).getIdentifiant())
+			for(int colonne=0;colonne<7;colonne++)
 			{
-				ICT.setPadding(2, 2, 2, 2);
-				//ICT.setBackgroundColor(16777215);
+				noCase=indicePremiereCaseTableau+k;
+				ICT = (ImageView) findViewById(noCase);
+				if(objectif==monPlateau.getCase(ligne, colonne).getIdentifiant())
+				{
+					ICT.setPadding(2, 2, 2, 2);
+					ICT.setBackgroundColor(Color.RED);
+				}
+				else
+				{
+					ICT.setPadding(0, 0, 0, 0);
+					//ICT.setBackgroundColor(R.color.red);
+				}
+				k++;
 			}
-			else
-			{
-				ICT.setPadding(0, 0, 0, 0);
-				//ICT.setBackgroundColor(R.color.red);
-			}
-			k++;
+		k++;
 		}
-	k++;
+	}
+	else
+	{
+		for(int ligne=0;ligne<7;ligne++)
+		{
+			for(int colonne=0;colonne<7;colonne++)
+			{
+				noCase=indicePremiereCaseTableau+k;
+				ICT = (ImageView) findViewById(noCase);
+				boolean objectif = false;
+				int i=0;
+				
+				while(objectif==false && i<joueurActif.getListCarte().size())
+				{
+					if(joueurActif.getListCarte().get(i).getIdentifiant()==monPlateau.getCase(ligne, colonne).getIdentifiant())
+					{
+						objectif=true;
+					}	
+					i++;
+				}
+				
+				if(objectif)  
+				{
+					ICT.setPadding(2, 2, 2, 2);
+					ICT.setBackgroundColor(Color.RED);
+					
+				}
+				else
+				{
+					ICT.setPadding(0, 0, 0, 0);
+					//ICT.setBackgroundColor(R.color.red);
+				}
+				k++;
+			}
+		k++;
+		}
 	}
 }
 

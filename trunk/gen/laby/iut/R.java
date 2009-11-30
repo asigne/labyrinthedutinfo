@@ -17,6 +17,7 @@ public final class R {
     }
     public static final class color {
         public static final int red=0x7f050000;
+        public static final int spec=0x7f050001;
     }
     public static final class drawable {
         public static final int ca=0x7f020000;
