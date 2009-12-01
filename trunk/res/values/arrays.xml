@@ -8,10 +8,11 @@
         <item>Moyen</item>
         <item>Difficile</item>
     </string-array>
-            <string-array name="nbjoueur">
-        <item>Facile</item>
-        <item>Moyen</item>
-        <item>Difficile</item>
+    <string-array name="nbJoueurs">
+        <item>2 joueurs</item>
+        <item>3 joueurs</item>
+        <item>4 joueurs</item>
     </string-array>
+    
 </resources>
 
