@@ -10,7 +10,7 @@ package laby.iut;
 public final class R {
     public static final class array {
         public static final int difficulte=0x7f040001;
-        public static final int nbjoueur=0x7f040002;
+        public static final int nbJoueurs=0x7f040002;
         public static final int regle=0x7f040000;
     }
     public static final class attr {
@@ -95,20 +95,16 @@ public final class R {
         public static final int CarteCourante=0x7f070065;
         public static final int CaseCourante=0x7f070063;
         public static final int Jouer=0x7f070066;
-        public static final int LinearLayout0O1=0x7f07006a;
-        public static final int LoadingTextView=0x7f07006c;
         public static final int Plateau=0x7f070011;
-        public static final int ProgressBar01=0x7f07006b;
-        public static final int RejMulti=0x7f07006f;
+        public static final int RejMulti=0x7f07006d;
         public static final int TableLayout01=0x7f070001;
         public static final int TableRow02=0x7f070003;
-        public static final int Text01=0x7f070069;
         public static final int TextView01=0x7f070002;
         public static final int aide=0x7f070008;
         public static final int apropos=0x7f070007;
         public static final int charger=0x7f070005;
-        public static final int difficulte=0x7f070072;
-        public static final int editpseudo=0x7f070070;
+        public static final int continuer=0x7f070070;
+        public static final int difficulte=0x7f070076;
         public static final int fb1=0x7f070057;
         public static final int fb3=0x7f070058;
         public static final int fb5=0x7f070059;
@@ -190,16 +186,23 @@ public final class R {
         public static final int lrouge=0x7f07004e;
         public static final int lvert=0x7f070050;
         public static final int nbCartesRestantes=0x7f07000b;
-        public static final int newMulti=0x7f07006e;
-        public static final int newSolo=0x7f07006d;
+        public static final int nbJoueurs=0x7f07006e;
+        public static final int newLocal=0x7f070069;
+        public static final int newMulti=0x7f07006c;
+        public static final int newReseau=0x7f07006a;
+        public static final int newSolo=0x7f07006b;
         public static final int nouvelle=0x7f070004;
         public static final int parametres=0x7f070006;
         public static final int pbleu=0x7f07004b;
         public static final int pjaune=0x7f07004d;
         public static final int prouge=0x7f07004f;
+        public static final int pseudoJoueur1=0x7f070071;
+        public static final int pseudoJoueur2=0x7f070072;
+        public static final int pseudoJoueur3=0x7f070074;
+        public static final int pseudoJoueur4=0x7f070075;
         public static final int pvert=0x7f070051;
         public static final int quitter=0x7f070009;
-        public static final int regle=0x7f070071;
+        public static final int regle=0x7f07006f;
         public static final int textInfo=0x7f070010;
         public static final int textJ1=0x7f07000c;
         public static final int textJ2=0x7f07000d;
@@ -212,12 +215,13 @@ public final class R {
         public static final int affichagecartes=0x7f030001;
         public static final int affichagecartesjoueur=0x7f030002;
         public static final int jeu=0x7f030003;
-        public static final int jeu1=0x7f030004;
-        public static final int jeu2=0x7f030005;
-        public static final int loadinglayout=0x7f030006;
-        public static final int main=0x7f030007;
-        public static final int nouvellepartie=0x7f030008;
-        public static final int solo=0x7f030009;
+        public static final int multi=0x7f030004;
+        public static final int nouvellepartie=0x7f030005;
+        public static final int partielocale=0x7f030006;
+        public static final int pseudos2j=0x7f030007;
+        public static final int pseudos3j=0x7f030008;
+        public static final int pseudos4j=0x7f030009;
+        public static final int solo=0x7f03000a;
     }
     public static final class string {
         public static final int Annuler=0x7f060002;
@@ -226,5 +230,6 @@ public final class R {
         public static final int hello=0x7f060000;
         public static final int listdifficulte=0x7f060005;
         public static final int listregle=0x7f060004;
+        public static final int nbJoueurs=0x7f060006;
     }
 }

@@ -86,7 +86,8 @@ public class PlateauJeu extends Activity
 	int indiceI=R.drawable.i;
 	int indicePremierPion=R.id.lbleu;
 
-	String pseudo, regle, difficulte;
+	String pseudo1, pseudo2, pseudo3, pseudo4, regle, difficulte, typePartie;
+	int nbJoueurs;
 //genere une notif avec le texte "text", la durée "duration" 
 //et coordonnée par defaut(en bas du plateau)	
 public void notif(CharSequence text,int duration){
@@ -104,47 +105,63 @@ public void notif(CharSequence text,int duration,int g,int x, int y){
 }
 
 public void onCreate(Bundle savedInstanceState)
-    {    	    	
+    {    
          super.onCreate(savedInstanceState);
          setFullscreen();
          setContentView(R.layout.jeu);   
-
-         // récuperation du pseudo et des parametres de la partie
+      
+        
+         //récuperation du pseudo et des parametres de la partie
   		 Bundle objetParametre  = this.getIntent().getExtras(); 
-  		 pseudo = objetParametre.getString("pseudo");
+  		 
+  		 typePartie = objetParametre.getString("typePartie");
   		 regle = objetParametre.getString("regle");
-  		 difficulte = objetParametre.getString("difficulte");     
-         
-         initDesID();
-                               
-         maPartie=new Partie("Partie1", regle, difficulte); 			//creation de la partie     
-         monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
-         caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
-         
-         
-         //creation des joueurs
-         j1=new Utilisateur(pseudo);				
-         //ia=new IA("Ordinateur");					
-         j2=new Utilisateur("Rouge");				
-         //j3=new Utilisateur("Vert");				
-         //j4=new Utilisateur("Jaune");				
-         
-         				//ajout des joueurs a la partie
-         j1.RejoindrePartie(maPartie);				
-         //ia.RejoindrePartie(maPartie);			
-         j2.RejoindrePartie(maPartie);
-         //j3.RejoindrePartie(maPartie);
-         //j4.RejoindrePartie(maPartie);
-         
-         maPartie.lancerPartie();					//lancement de la partie
+  		 
+  		 
+  		 if(typePartie.equals("solo"))
+			 {
+		 		difficulte = objetParametre.getString("difficulte");	
+		 		nbJoueurs=2;
+			 }
+  		 
+  		if(typePartie.equals("multi"))
+	  		{
+  		  		difficulte="";
+  		  		nbJoueurs = objetParametre.getInt("nbJoueurs");
+  		  		
+	  		 switch(nbJoueurs)
+	  		 {
+		  		 case 2 :
+		  	  		 pseudo1 = objetParametre.getString("pseudoJ1");
+		  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
+		  			 break;
+		  		 case 3 :
+		  			 pseudo1 = objetParametre.getString("pseudoJ1");
+		  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
+		  	  		 pseudo3 = objetParametre.getString("pseudoJ3");
+		  	  		 break;
+		  		 case 4 :
+		  			 pseudo1 = objetParametre.getString("pseudoJ1");
+		  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
+		  	  		 pseudo3 = objetParametre.getString("pseudoJ3");
+		  	  		 pseudo4 = objetParametre.getString("pseudoJ4");
+		  	  		 break;
+	  		 }
+  		}
+  		
+  	  	 initDesID();          
+         lancementPartie();
+
          
          initPlateau2D();							//initialisation de l'affichage du plateau en 2D
-         
          affichePions();   							//affichage des pions sur le plateau
          afficheCaseCourante(0);					//affichage de la case courante
          afficheScores();
          
-         joueurActif=j1;
+         definirJoueurActif(j1);
+         
+         
+         
          //affichage de la carte courante du joueur
          afficheCarteCourante();
          montrerCaseObjectif();
@@ -152,13 +169,14 @@ public void onCreate(Bundle savedInstanceState)
          textInfo.setText("");
          textJoueurActif.setText("");
          
-         //WriteSettings(this, maPartie);
-
          CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
          notif(text,Toast.LENGTH_SHORT,0,0,0);
 		
+         
          text = "Commencez par modifier le plateau puis déplacez votre pion";
          notif(text,Toast.LENGTH_LONG);
+         
+         
          
          btnJouer.setOnClickListener(new View.OnClickListener()
          {
@@ -178,7 +196,84 @@ public void onCreate(Bundle savedInstanceState)
             	 }
              }
          });
+         
     }  
+    
+public void lancementPartie() {
+	
+    maPartie=new Partie("Partie", regle, difficulte); 			//creation de la partie     
+    monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
+    caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
+    
+    
+    if(typePartie.equals("solo"))
+    {
+    	j1=new Utilisateur("Joueur");
+    	j2=new IA("IA");	
+    	j1.RejoindrePartie(maPartie);
+    	j2.RejoindrePartie(maPartie);
+    }
+    if(typePartie.equals("multi"))
+    {
+	    //creation des joueurs
+	    switch(nbJoueurs)
+	    {
+	    case 2:
+	    	j1=new Utilisateur(pseudo1);
+	        j2=new Utilisateur(pseudo2);
+
+	        j1.RejoindrePartie(maPartie);
+	        j2.RejoindrePartie(maPartie);
+	        break;
+	    case 3:	
+	    	j1=new Utilisateur(pseudo1);
+	        j2=new Utilisateur(pseudo2);
+	        j3=new Utilisateur(pseudo3);
+	        
+	        j1.RejoindrePartie(maPartie);
+	        j2.RejoindrePartie(maPartie);
+	        j3.RejoindrePartie(maPartie);
+	        break;
+	    case 4:
+	        j1=new Utilisateur(pseudo1);	
+	        j2=new Utilisateur(pseudo2);
+	    	j3=new Utilisateur(pseudo3);
+	    	j4=new Utilisateur(pseudo4);
+	    	
+	    	j1.RejoindrePartie(maPartie);
+	    	j2.RejoindrePartie(maPartie);
+	    	j3.RejoindrePartie(maPartie);
+	    	j4.RejoindrePartie(maPartie);
+	    	break;
+	    }
+    }
+    maPartie.lancerPartie();					//lancement de la partie
+	
+}
+public void definirJoueurActif(Joueur monJoueur)
+{
+	joueurActif=monJoueur;
+	tJ1.setTextColor(Color.WHITE);
+	tJ2.setTextColor(Color.WHITE);
+	tJ3.setTextColor(Color.WHITE);
+	tJ4.setTextColor(Color.WHITE);
+	switch (monJoueur.getIdentifiant())
+	{
+	case 0:
+		tJ1.setTextColor(Color.rgb(0, 116, 232));
+		break;
+	case 1:
+		tJ2.setTextColor(Color.RED);
+		break;
+	case 2:
+		tJ3.setTextColor(Color.rgb(0, 128, 64));
+		break;
+	case 3:
+		tJ4.setTextColor(Color.YELLOW);
+		break;
+	}
+}
+
 
 public void WriteSettings(Context context, Partie data){ 
     FileOutputStream fOut = null; 
@@ -1107,7 +1202,7 @@ public void tourDejeu(){
 			montrerCaseObjectif();
 			affichePions();	
 			afficheScores();
-			joueurActif=maPartie.joueurSuivant(joueurActif);
+			definirJoueurActif(maPartie.joueurSuivant(joueurActif));
 
 			deplacement=false;
 			btnAnnuler.setVisibility(4);

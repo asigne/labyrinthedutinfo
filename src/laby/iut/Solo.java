@@ -1,7 +1,6 @@
 package laby.iut;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class Solo extends Activity {
 
@@ -20,7 +18,7 @@ public class Solo extends Activity {
 	ArrayAdapter aRegle, aDifficulte;
 	Button lancerPartie;
 	EditText editPseudo;
-	String pseudo, regle, difficulte;
+	String pseudo, regle, difficulte, typePartie;
     
     public void onCreate(Bundle savedInstanceState) {  
 		super.onCreate(savedInstanceState);
@@ -46,10 +44,10 @@ public class Solo extends Activity {
         {
         	public void onClick(View v)
         		{   
-        			editPseudo = (EditText) findViewById(R.id.editpseudo);
+        			//editPseudo = (EditText) findViewById(R.id.editpseudo);
         			regle = (String) sRegle.getSelectedItem();
         			difficulte = (String) sDifficulte.getSelectedItem();
-        			pseudo = editPseudo.getEditableText().toString();
+        			/*pseudo = editPseudo.getEditableText().toString();
         			if (pseudo.length()==0 || pseudo.length()>10){
         				CharSequence text = "pseudo entre 1 et 10 caracteres";
         				int duration = Toast.LENGTH_SHORT;
@@ -57,9 +55,9 @@ public class Solo extends Activity {
         				Toast toast = Toast.makeText(context, text, duration);
         				toast.show();
         			}
-        			else{
+        			else{*/
         				lancerPartie();
-        			}
+        			//}
         		}		
         });
     }
@@ -72,9 +70,11 @@ public class Solo extends Activity {
 		// et de parametres
 		Bundle objetbundle = new Bundle();
 		
-		objetbundle.putString("pseudo", pseudo);
+		typePartie="solo";
+		//objetbundle.putString("pseudo", pseudo);
 		objetbundle.putString("regle", regle);
 		objetbundle.putString("difficulte", difficulte);
+		objetbundle.putString("typePartie", typePartie);
 		defineIntent.putExtras(objetbundle);
 				
 		//lancement de la nouvelle activity

@@ -11,6 +11,7 @@ import android.widget.Button;
 public class NouvellePartie extends Activity {
 
 	Button newSolo, newMulti, rejMulti;
+	String typePartie;
 	
 	public void onCreate(Bundle savedInstanceState) {  
 	      super.onCreate(savedInstanceState);
@@ -26,7 +27,19 @@ public class NouvellePartie extends Activity {
 	         {
 	        	 public void onClick(View v)
 	             {   
+	        		 typePartie="solo";
 	        		 newSolo();
+	        		 
+	             }
+	         });
+	      
+	      newMulti.setOnClickListener(new View.OnClickListener()
+	         {
+	        	 public void onClick(View v)
+	             {   
+	        		 typePartie="multi";
+	        		 newMulti();
+	        		 
 	             }
 	         });
 	}
@@ -35,7 +48,19 @@ public class NouvellePartie extends Activity {
 	public void newSolo() {
 		//creation de l'intent
 		Intent defineIntent = new Intent(this, Solo.class);
-		
+		Bundle objetbundle = new Bundle();
+		objetbundle.putString("typePartie", typePartie);
+		defineIntent.putExtras(objetbundle);
+		//lancement de la nouvelle activity
+		startActivity(defineIntent);
+	}
+	
+	public void newMulti() {
+		//creation de l'intent
+		Intent defineIntent = new Intent(this, Multi.class);
+		Bundle objetbundle = new Bundle();
+		objetbundle.putString("typePartie", typePartie);
+		defineIntent.putExtras(objetbundle);
 		//lancement de la nouvelle activity
 		startActivity(defineIntent);
 	}

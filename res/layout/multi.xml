@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout 
+	android:id="@+id/AbsoluteLayout01" 
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	
+<TableLayout 
+		android:id="@+id/TableLayout01" 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+	>
+			<TextView 
+				android:textSize="35sp" 
+				android:layout_height="wrap_content" 
+				android:text="Nouvelle Partie" 
+				android:layout_width="wrap_content" 
+				android:gravity="center"
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="50dip"
+			/>
+			
+			<Button
+				android:id="@+id/newLocal" 
+				android:text="En local" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:gravity="center"
+				android:textSize="23sp" 
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="10dip"
+			/>
+			
+			<Button 
+				android:id="@+id/newReseau" 
+				android:text="En réseau" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:gravity="center"
+				android:textSize="23sp" 
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="10dip"
+			/>
+			
+			
+	</TableLayout>
+</AbsoluteLayout>

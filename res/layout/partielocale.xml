@@ -11,17 +11,17 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent" 
 	>
-		 <TextView  
+		<TextView  
 			android:textSize="35dp"
 			android:layout_marginTop="10dip"
 			android:layout_marginBottom="50dip"
 		    android:layout_height="wrap_content" 
-		    android:text="Partie Solo"
+		    android:text="Partie Locale"
 		    android:layout_width="wrap_content" 
 		    android:gravity="center"
 		/>
 		
-		<!--<TextView  
+		<!-- <TextView  
 			android:textSize="20dp"
 		    android:layout_height="wrap_content" 
 		    android:layout_width="wrap_content" 
@@ -32,7 +32,20 @@
 		    android:layout_width="200sp" 
 		    android:layout_height="wrap_content"
 		    android:singleLine="True"
-		/> -->
+		/>-->
+		
+		<TextView
+	        android:textSize="20sp"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" 
+	        android:text="Nombre de joueurs"
+    	/><Spinner 
+	        android:id="@+id/nbJoueurs"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	       	android:prompt="@string/nbJoueurs"
+		/>
 		
 		<TextView
 	        android:textSize="20sp"
@@ -45,28 +58,14 @@
 	        android:layout_height="wrap_content"
 	        android:drawSelectorOnTop="true"
 	       	android:prompt="@string/listregle"
-		/>
-		
-		<TextView
-	        android:textSize="20sp"
-	    	android:layout_height="wrap_content" 
-	     	android:layout_width="wrap_content" 
-	        android:text="Difficulté "
-	  	/>
-	  	
-	  	<Spinner 
-        android:id="@+id/difficulte"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:prompt="@string/listdifficulte"
+		/>	
    />
 	  	
   	</TableLayout>
   	
   	<Button
-		android:id="@+id/jouer"
-		android:text="Jouer" 
+		android:id="@+id/continuer"
+		android:text="Continuer" 
 		android:layout_width="320dp" 
 		android:layout_height="80dp" 
 		android:layout_x="0dp"

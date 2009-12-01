@@ -51,7 +51,13 @@ public abstract class Joueur{
 		{
 			if(partieActuelle.getRegle().equals("Normal"))
 			{
-				this.supprCarte(this.getListCarte().get(0));
+				if(this.getListCarte().size()>0)
+					{
+						if(this.getListCarte().get(0).getIdentifiant()==numObjectifTrouve)
+						{
+							this.supprCarte(this.getListCarte().get(0));
+						}
+					}
 			}
 			else
 			{
@@ -111,14 +117,11 @@ public abstract class Joueur{
 			return false;
 		}	
 	}
-	
 	public void modifPosition(int ligne, int colonne)
 	{
 		posLigne=ligne;
 		posColonne=colonne;	
 	}
-	
-	
 	//information du joueur
 	public String getNom() {
 		return nom;
@@ -130,17 +133,14 @@ public abstract class Joueur{
 		this.identifiant = identifiant;
 	}
 	
-	
-	
-	
 	public boolean testCarteTrouvee()
 	{
+		Case maCase = partieActuelle.getMonPlateau().getCase(posLigne, posColonne);
 		if(partieActuelle.getRegle().equals("Normal"))
 		{
-			if(!this.getListCarte().isEmpty())
+			if(this.getListCarte().size()>0)
 				{
-					Case maCase = partieActuelle.getMonPlateau().getCase(posLigne, posColonne);
-					if(maCase.getIdentifiant()==this.getCarteObjectif().getIdentifiant())
+					if(this.getCarteObjectif().getIdentifiant()==maCase.getIdentifiant())
 						{
 							numObjectifTrouve=maCase.getIdentifiant();
 							//carte trouvée !!!
@@ -150,28 +150,26 @@ public abstract class Joueur{
 		}
 		else
 		{
-			if(!this.getListCarte().isEmpty())
+			if(this.getListCarte().size()>0)
 			{
-				Case maCase = partieActuelle.getMonPlateau().getCase(posLigne, posColonne);
-				
-				boolean objectif = false;
+				//boolean objectif = false;
 				int i=0;
-				
-				while(objectif==false && i<this.getListCarte().size())
+				while(i<this.getListCarte().size())
 				{
 					if(this.getListCarte().get(i).getIdentifiant()==maCase.getIdentifiant())
 					{
 						numObjectifTrouve=maCase.getIdentifiant();
-						objectif=true;
+						return true;
+						//objectif=true;
 					}	
 					i++;
 				}
 				
-				if(objectif)  
+				/*if(objectif)  
 				{
 					//carte trouvée !!!
 					return true;
-				}
+				}*/
 			}			
 		}
 			return false;

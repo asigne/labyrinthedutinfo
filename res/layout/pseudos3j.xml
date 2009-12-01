@@ -11,56 +11,54 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent" 
 	>
-		 <TextView  
+		<TextView  
 			android:textSize="35dp"
 			android:layout_marginTop="10dip"
-			android:layout_marginBottom="50dip"
+			android:layout_marginBottom="30dip"
 		    android:layout_height="wrap_content" 
-		    android:text="Partie Solo"
+		    android:text="Partie Locale"
 		    android:layout_width="wrap_content" 
 		    android:gravity="center"
 		/>
 		
-		<!--<TextView  
+		<TextView  
 			android:textSize="20dp"
 		    android:layout_height="wrap_content" 
 		    android:layout_width="wrap_content" 
-		    android:text="Pseudo"
+		    android:text="Pseudo du joueur 1"
 		/><EditText
-		    android:id="@+id/editpseudo"
+		    android:id="@+id/pseudoJoueur1"
 		    android:textSize="20dp"
 		    android:layout_width="200sp" 
 		    android:layout_height="wrap_content"
 		    android:singleLine="True"
-		/> -->
-		
-		<TextView
-	        android:textSize="20sp"
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	        android:text="Type de règles"
-    	/><Spinner 
-	        android:id="@+id/regle"
-	        android:layout_width="wrap_content" 
-	        android:layout_height="wrap_content"
-	        android:drawSelectorOnTop="true"
-	       	android:prompt="@string/listregle"
+		/>
+		<TextView  
+			android:textSize="20dp"
+		    android:layout_height="wrap_content" 
+		    android:layout_width="wrap_content" 
+		    android:text="Pseudo du joueur 2"
+		/><EditText
+		    android:id="@+id/pseudoJoueur2"
+		    android:textSize="20dp"
+		    android:layout_width="200sp" 
+		    android:layout_height="wrap_content"
+		    android:singleLine="True"
+		/>
+		<TextView  
+			android:textSize="20dp"
+		    android:layout_height="wrap_content" 
+		    android:layout_width="wrap_content" 
+		    android:text="Pseudo du joueur 3"
+		/><EditText
+		    android:id="@+id/pseudoJoueur3"
+		    android:textSize="20dp"
+		    android:layout_width="200sp" 
+		    android:layout_height="wrap_content"
+		    android:singleLine="True"
 		/>
 		
-		<TextView
-	        android:textSize="20sp"
-	    	android:layout_height="wrap_content" 
-	     	android:layout_width="wrap_content" 
-	        android:text="Difficulté "
-	  	/>
-	  	
-	  	<Spinner 
-        android:id="@+id/difficulte"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:prompt="@string/listdifficulte"
-   />
+		
 	  	
   	</TableLayout>
   	

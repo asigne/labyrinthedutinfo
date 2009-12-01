@@ -9,5 +9,6 @@
 
 <string name="listregle">Choisissez le type de règle</string>
 <string name="listdifficulte">Choisissez la difficulté</string>
+<string name="nbJoueurs">Choisissez le nombre de joueurs</string>
 
 </resources>
