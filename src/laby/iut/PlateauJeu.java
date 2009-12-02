@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -49,6 +50,8 @@ public class PlateauJeu extends Activity
     Plateau monPlateau;
     Case caseCourante;	
     Coup monCoup;
+    
+    Vibrator leVibreur;
     
 	boolean ctrouve=false;
     
@@ -174,7 +177,7 @@ public void onCreate(Bundle savedInstanceState)
 		
          
          text = "Commencez par modifier le plateau puis déplacez votre pion";
-         notif(text,Toast.LENGTH_LONG);
+         notif(text,Toast.LENGTH_SHORT);
          
          
          
@@ -388,6 +391,8 @@ public  void initDesID() {
     tJ4 = (TextView) findViewById(R.id.textJ4);
     
     
+    leVibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    
 }
 
 //click sur la carteCourante
@@ -515,10 +520,11 @@ public void actionCase(int x, int y)
 			 		ctrouve=false;
 			 		
 		 			CharSequence text = "Carte trouvée!";
-		 	        notif(text,Toast.LENGTH_LONG,0,0,0);
+		 	        notif(text,Toast.LENGTH_SHORT,0,0,0);
+		 	        leVibreur.vibrate(300);
 		 			
 		 	        text = "Appuyer sur <JOUER> pour finir le tour";
-		 	        notif(text,Toast.LENGTH_LONG);
+		 	        notif(text,Toast.LENGTH_SHORT);
 			 	}
 
 			}
@@ -1030,7 +1036,6 @@ public void afficheCarteCourante()
 		if(!joueurActif.getListCarte().isEmpty())
 			{
 				carteCourante=joueurActif.getCarteObjectif();
-				
 			}
 		else
 			{
@@ -1180,53 +1185,50 @@ public void afficheScores()
 public void tourDejeu(){
 	if(plateauModif)
 		{
-	 	premiereModif=false;
-	 	ctrouve=joueurActif.testCarteTrouvee();
-	 	joueurActif.testJoueurGagnant();
-	 	
-	 	if(ctrouve==true){
- 			CharSequence text = "BRAVO!!!";	
- 	        notif(text,Toast.LENGTH_SHORT,0,0,0);	
-			joueurActif.modifCarteObjectif();
-	 	} 	
-	 	
-	 	if(maPartie.getPartieFinie())
-		 	{
-		 		//partie finie
-	 			CharSequence text = "Partie Gagnée par : "+joueurActif.getNom();
-	 	        notif(text,Toast.LENGTH_SHORT);
-		 	}
-		else
-			{
-			afficheCarteCourante();
-			montrerCaseObjectif();
-			affichePions();	
-			afficheScores();
-			definirJoueurActif(maPartie.joueurSuivant(joueurActif));
-
-			deplacement=false;
-			btnAnnuler.setVisibility(4);
-			
-			CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
-	        notif(text,Toast.LENGTH_SHORT,0,0,0);
-			
-			text = "Commencez par modifier le plateau puis déplacez votre pion";
-			notif(text,Toast.LENGTH_LONG);
-
-			afficheCarteCourante();
-			montrerCaseObjectif();
-			plateauModif=false;
-			if(joueurActif instanceof IA)
+		 	premiereModif=false;
+		 	
+		 	if(joueurActif.testCarteTrouvee()){
+	 			//CharSequence text = "BRAVO!!!";	
+	 	        //notif(text,Toast.LENGTH_SHORT,0,0,0);	
+				joueurActif.modifCarteObjectif();	
+		 	} 	
+		 	joueurActif.testJoueurGagnant();
+		 		 	
+		 	if(maPartie.getPartieFinie())
+			 	{
+			 		//partie finie : supprimer notif et mettre une boite de dialogue pour recommencer la partie
+		 			CharSequence text = "Partie Gagnée par : "+joueurActif.getNom();
+		 	        notif(text,Toast.LENGTH_SHORT);
+			 	}
+			else
 				{
-					((IA) joueurActif).jouer(maPartie, flecheInterdite, indiceInterdit);
-					tourDejeu();
-				}
+				afficheScores();
+				
+				definirJoueurActif(maPartie.joueurSuivant(joueurActif));
+	
+				deplacement=false;
+				btnAnnuler.setVisibility(4);
+				
+				CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
+		        notif(text,Toast.LENGTH_SHORT,0,0,0);
+				
+				text = "Commencez par modifier le plateau puis déplacez votre pion";
+				notif(text,Toast.LENGTH_SHORT);
+	
+				afficheCarteCourante();
+				montrerCaseObjectif();
+				plateauModif=false;
+				if(joueurActif instanceof IA)
+					{
+						((IA) joueurActif).jouer(maPartie, flecheInterdite, indiceInterdit);
+						tourDejeu();
+					}
 			}
 		}
 	else
 		{
 			CharSequence text = "Vous devez obligatoirement modifier le plateau";
-			notif(text,Toast.LENGTH_LONG);
+			notif(text,Toast.LENGTH_SHORT);
 		}
 }	
 
@@ -1249,26 +1251,29 @@ public void montrerCaseObjectif()
 	
 	if(maPartie.getRegle().equals("Normal"))
 	{
-		int objectif = joueurActif.getListCarte().get(0).getIdentifiant();
-		for(int ligne=0;ligne<7;ligne++)
+		if(!joueurActif.getListCarte().isEmpty())
 		{
-			for(int colonne=0;colonne<7;colonne++)
+			int objectif = joueurActif.getListCarte().get(0).getIdentifiant();
+			for(int ligne=0;ligne<7;ligne++)
 			{
-				noCase=indicePremiereCaseTableau+k;
-				ICT = (ImageView) findViewById(noCase);
-				if(objectif==monPlateau.getCase(ligne, colonne).getIdentifiant())
+				for(int colonne=0;colonne<7;colonne++)
 				{
-					ICT.setPadding(2, 2, 2, 2);
-					ICT.setBackgroundColor(Color.RED);
+					noCase=indicePremiereCaseTableau+k;
+					ICT = (ImageView) findViewById(noCase);
+					if(objectif==monPlateau.getCase(ligne, colonne).getIdentifiant())
+					{
+						ICT.setPadding(2, 2, 2, 2);
+						ICT.setBackgroundColor(Color.RED);
+					}
+					else
+					{
+						ICT.setPadding(0, 0, 0, 0);
+						//ICT.setBackgroundColor(R.color.red);
+					}
+					k++;
 				}
-				else
-				{
-					ICT.setPadding(0, 0, 0, 0);
-					//ICT.setBackgroundColor(R.color.red);
-				}
-				k++;
+			k++;
 			}
-		k++;
 		}
 	}
 	else
