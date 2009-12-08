@@ -34,13 +34,13 @@
 			
 			<Button
 				android:id="@+id/nouvelle"
-				android:textSize="23sp" 
+				android:textSize="21sp" 
 				android:text="Nouvelle Partie" 
 			    android:layout_width="130dp"
 			    android:layout_height="100dp"/>
 			<Button
 				android:id="@+id/charger"
-				android:textSize="23sp" 
+				android:textSize="21sp" 
 				android:text="Charger Partie" 
 			    android:layout_width="130dp"
 			    android:layout_height="100dp"
@@ -49,14 +49,14 @@
 		<TableRow android:gravity="center">
 			<Button
 				android:id="@+id/parametres"
-				android:textSize="23sp" 
-				android:text="Parametre" 
+				android:textSize="21sp" 
+				android:text="Paramètres" 
 			    android:layout_width="130dp"
 			    android:layout_height="100dp"
 			    android:gravity="center"/>
 			<Button
 				android:id="@+id/apropos"
-				android:textSize="23sp" 
+				android:textSize="21sp" 
 				android:text="A propos" 
 			    android:layout_width="130dp"
 			    android:layout_height="100dp"
@@ -66,13 +66,13 @@
 		<TableRow android:gravity="center">
 			<Button
 				android:id="@+id/aide"
-				android:textSize="23sp" 
+				android:textSize="21sp" 
 				android:text="Aide" 
 			    android:layout_width="130dp"
 			    android:layout_height="100dp"
 			    android:gravity="center"/>
 			<Button
-				android:textSize="23sp" 
+				android:textSize="21sp" 
 				android:id="@+id/quitter"
 				android:text="Quitter" 
 			    android:layout_width="130dp"

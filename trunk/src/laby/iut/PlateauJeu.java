@@ -334,7 +334,8 @@ public boolean onTouchEvent(MotionEvent event)
 					}
 					else
 					{
-						textInfo.setText("Vous avez déjà modifier le plateau");
+						CharSequence text = "Vous avez déjà modifié le plateau";
+			 	        notif(text,Toast.LENGTH_SHORT);
 					}
 					return true;
 				}
@@ -530,13 +531,13 @@ public void actionCase(int x, int y)
 			}
 		else
 			{
-				CharSequence text = "Deplacement interdit";
+				CharSequence text = "Déplacement interdit";
 		        notif(text,Toast.LENGTH_SHORT);
 			}
 	}
 	else
 	{
-		CharSequence text = "Vous devez modifier le plateau avant de vous deplacer";
+		CharSequence text = "Vous devez modifier le plateau avant de vous deplacez";
         notif(text,Toast.LENGTH_LONG);
 		//textInfo.setText("Vous devez modifier le plateau avant de vous deplacer");
 	}
@@ -682,7 +683,7 @@ public void annulerDernierCoup()
 			
 			plateauModif=false;
 			deplacement=false;
-			CharSequence text = "Déplacement annulé";
+			CharSequence text = "Modification du plateau annulée";
 	         notif(text,Toast.LENGTH_SHORT);
 			btnAnnuler.setVisibility(4);	//rend invisible le bouton annuler
 		//}
