@@ -38,11 +38,11 @@ public class PlateauJeu extends Activity
 	ImageView fg1, fg3, fg5, fd1, fd3, fd5, fh1, fh3, fh5, fb1, fb3, fb5, imageCarteCourante;
 	ImageView pionBleu, pionRouge, pionVert, pionJaune;
 	RotateAnimation rotation0, rotation90, rotation180, rotation270;
-	boolean initialisationPlateau;
+	boolean initialisationPlateau, jeuPossible=true;
 	TextView Text01, textInfo, textJoueurActif;
     LinearLayout lbleu,lvert, lrouge, ljaune;
     TableLayout lPlateau;
-    Button btnJouer, btnAnnuler; 
+    Button btnJouer, btnAnnuler, btnJoueurSvt; 
     String flecheInterdite;
     int indiceInterdit;
     
@@ -200,6 +200,15 @@ public void onCreate(Bundle savedInstanceState)
              }
          });
          
+         btnJoueurSvt.setOnClickListener(new View.OnClickListener()
+         {
+        	 public void onClick(View v)
+             {       			
+        		 btnJoueurSvt.setVisibility(4);
+        		 jeuPossible=true;
+             }            	 
+         }); 
+         
     }  
     
 public void lancementPartie() {
@@ -311,49 +320,58 @@ public void WriteSettings(Context context, Partie data){
 //methode permettant de gérer les clic sur l'écran   
 public boolean onTouchEvent(MotionEvent event)
 {
-	if (event.getAction() == MotionEvent.ACTION_DOWN)
-		{
-			int x = (int) (event.getX());
-			int y = (int) (event.getY());
-			//textInfo.setText("x:"+x+" y:"+y);
-			if(!maPartie.getPartieFinie())
+	if(jeuPossible)
+	{
+		if (event.getAction() == MotionEvent.ACTION_DOWN)
 			{
-				//gestion du click en fonction des coordonnées
-				if(x>xmin && x<=xmax && y>ymin && y<ymax && plateauModif==true)
+				int x = (int) (event.getX());
+				int y = (int) (event.getY());
+				//textInfo.setText("x:"+x+" y:"+y);
+				if(!maPartie.getPartieFinie())
 				{
-					//action sur une case du plateau
-					actionCase(x, y);
-					return true;
-				}
-				else if(x>xmin-tailleFleche && x<=xmax+tailleFleche && y>ymin-tailleFleche && y<ymax+tailleFleche)
-				{
-					//action sur une fleche
-					if(!plateauModif)
-					{		
-						actionFleche(x,y);
-					}
-					else
+					//gestion du click en fonction des coordonnées
+					if(x>xmin && x<=xmax && y>ymin && y<ymax && plateauModif==true)
 					{
-						CharSequence text = "Vous avez déjà modifié le plateau";
-			 	        notif(text,Toast.LENGTH_SHORT);
+						//action sur une case du plateau
+						actionCase(x, y);
+						return true;
 					}
-					return true;
-				}
-				else if(x>240 && y>400)
-				{
-					//action sur la caseCourante
-					actionCaseCourante();
-					return true;
-				}
-				else if(x>180 && x<230 && y<480 && y>400)
-				{
-					//action sur la carteCourante
-					actionCarteCourante();
-					return true;
+					else if(x>xmin-tailleFleche && x<=xmax+tailleFleche && y>ymin-tailleFleche && y<ymax+tailleFleche)
+					{
+						//action sur une fleche
+						if(!plateauModif)
+						{		
+							actionFleche(x,y);
+						}
+						else
+						{
+							CharSequence text = "Vous avez déjà modifié le plateau";
+				 	        notif(text,Toast.LENGTH_SHORT);
+						}
+						return true;
+					}
+					else if(x>240 && y>400)
+					{
+						//action sur la caseCourante
+						actionCaseCourante();
+						return true;
+					}
+					else if(x>180 && x<230 && y<480 && y>400)
+					{
+						//action sur la carteCourante
+						actionCarteCourante();
+						return true;
+					}
 				}
 			}
-		}
-	return false;
+			return false;
+	}
+	else
+	{
+		CharSequence text = "Veuillez cliquer sur le bouton avant de jouer !";
+        notif(text,Toast.LENGTH_SHORT,0,0,0);
+		return false;
+	}
 }
 
 //recupere les ID des différents objets graphiques
@@ -384,6 +402,7 @@ public  void initDesID() {
     textJoueurActif = (TextView) findViewById(R.id.textJoueurActif);
     btnJouer = (Button) findViewById(R.id.Jouer);
     btnAnnuler = (Button) findViewById(R.id.Annuler);
+    btnJoueurSvt = (Button) findViewById(R.id.JoueurSvt);
     
     //lPlateau = (TableLayout) findViewById(R.id.Plateau);   
     tJ1 = (TextView) findViewById(R.id.textJ1);
@@ -606,7 +625,7 @@ public boolean actionFleche(int x, int y)
 					//affichage de la nouvelle carteCourante
 					afficheCaseCourante(0);	
 					plateauModif=true;		//le plateau a été modifié
-					joueurActif.testCasesAccessibles();	//test des cases accessibles par le joueurActif
+					joueurActif.testCasesAccessibles(maPartie.getMonPlateau());	//test des cases accessibles par le joueurActif
 					return true;
 				}
 		}
@@ -1184,10 +1203,11 @@ public void afficheScores()
 }*/
 
 public void tourDejeu(){
+	
 	if(plateauModif)
 		{
 		 	premiereModif=false;
-		 	
+		 		 	
 		 	if(joueurActif.testCarteTrouvee()){
 	 			//CharSequence text = "BRAVO!!!";	
 	 	        //notif(text,Toast.LENGTH_SHORT,0,0,0);	
@@ -1209,7 +1229,8 @@ public void tourDejeu(){
 	
 				deplacement=false;
 				btnAnnuler.setVisibility(4);
-				
+				jeuPossible=false;
+				btnJoueurSvt.setVisibility(0);
 				CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
 		        notif(text,Toast.LENGTH_SHORT,0,0,0);
 				
@@ -1314,7 +1335,6 @@ public void montrerCaseObjectif()
 		}
 	}
 }
-
 
 }
 

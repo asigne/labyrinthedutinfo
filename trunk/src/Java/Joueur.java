@@ -107,8 +107,7 @@ public abstract class Joueur{
 		if(testCaseAccessible(ligne, colonne))
 		{
 			partieActuelle.getMonPlateau().getCase(posLigne, posColonne).supprJoueur(this);	
-			posLigne=ligne;
-			posColonne=colonne;	
+			modifPosition(ligne,colonne);
 			partieActuelle.getMonPlateau().getCase(ligne, colonne).ajouterJoueur(this);	
 			return true;
 		}
@@ -198,9 +197,9 @@ public abstract class Joueur{
 			   }
 	   }
 	
-	public void testCasesAccessibles()
+	public void testCasesAccessibles(Plateau monPlateau)
 	{
-		Plateau monPlateau=partieActuelle.getMonPlateau();
+		//Plateau monPlateau=partieActuelle.getMonPlateau();
 		//int posLigne=monJoueur.getPosLigne();
 		//int posColonne=monJoueur.getPosColonne();
 		
@@ -214,15 +213,15 @@ public abstract class Joueur{
 			}	
 		}
 	   
-	   fonction(posLigne, posColonne); 
+	   fonction(posLigne, posColonne, monPlateau); 
 	}
 	
 	
 	//fonction permettant de savoir si une case est accessible depuis la postion du joueur
 	// correspondant aux parametres ligne et colonne.
-	public void fonction(int ligne, int colonne)
+	public void fonction(int ligne, int colonne, Plateau monPlateau)
 	   {
-			Plateau monPlateau=partieActuelle.getMonPlateau();
+			//Plateau monPlateau=partieActuelle.getMonPlateau();
 			Case maCase=monPlateau.getCase(ligne, colonne);
 			int sortie=maCase.getSortie();
 			int entree=maCase.getEntree();
@@ -298,7 +297,7 @@ public abstract class Joueur{
 						   		monPlateau.getCase(ligne, colonne).setEntree(E);
 						   		monPlateau.getCase(ligne, colonne).setFlag(1);
 						   		
-						   		fonction(ligne,colonne);
+						   		fonction(ligne,colonne, monPlateau);
 						   		
 						   		ligne=ligne-L1;
 						   		colonne=colonne-C1;
@@ -306,4 +305,8 @@ public abstract class Joueur{
 				   }
 			   }
 	   }
+
+	public Partie getPartieActuelle() {
+		return partieActuelle;
+	}
 }

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class Plateau implements Serializable{
+public class Plateau implements Serializable, Cloneable{
 	boolean PlateauBool[][]; //plateau de booleen
 	Case PlateauCase[][];			//plateau des Cases
 	ArrayList<Case> ListCase;	//liste de toutes les cases mobiles
@@ -26,6 +26,45 @@ public class Plateau implements Serializable{
 		comptTimage=6;	//nb de T avec image
 		initialisation();
 	}
+	
+	public boolean[][] getPlateauBool() {
+		return PlateauBool;
+	}
+	
+	public Plateau clone(){
+		
+		Plateau newPlateau=null;
+		try {
+	    	// On récupère l'instance à renvoyer par l'appel de la 
+	      	// méthode super.clone()
+	      	newPlateau = (Plateau) super.clone();
+	    } catch(CloneNotSupportedException cnse) {
+	      	// Ne devrait jamais arriver car nous implémentons 
+	      	// l'interface Cloneable
+	      	cnse.printStackTrace(System.err);
+	    }
+	   
+	    newPlateau.PlateauBool = PlateauBool.clone();
+	    newPlateau.PlateauCase = PlateauCase.clone();
+	    
+	    // on renvoie le clone
+		return newPlateau;
+	}
+	
+	
+	public void setPlateauCase(Case[][] plateauCase) {
+		PlateauCase = plateauCase;
+	}
+
+	public Case[][] getPlateauCase() {
+		return PlateauCase;
+	}
+
+	public void setCase(Case maCase, int ligne, int colonne) {
+		PlateauCase[ligne][colonne]=maCase;
+	}
+	
+
 	
 	public void initialisation(){
 		{		
@@ -136,7 +175,7 @@ public int rotationAleatoire()
 public Case getCase(int ligne, int colonne){
 		return PlateauCase[ligne][colonne];
 	}
-	
+
 public Case modifierColonne(Coup monCoup)
 	{
 		Case caseCoup = monCoup.maCase;
@@ -213,7 +252,8 @@ public void affiche()
 		{
 			for(colonne=0;colonne<7;colonne++)
 				{
-						System.out.print(PlateauCase[ligne][colonne].toString()+"   \t");
+						//System.out.print(PlateauCase[ligne][colonne].toString()+"   \t");
+				System.out.print(PlateauCase[ligne][colonne]+"  \t");
 				}
 			System.out.print("\n");
 		}

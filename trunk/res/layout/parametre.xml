@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout
+	android:id="@+id/AbsoluteLayout01" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android">	
+	
+	<TableLayout 
+		android:id="@+id/TableLayout01" 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+	>
+		<TextView  
+			android:textSize="35dp"
+			android:layout_marginTop="10dip"
+			android:layout_marginBottom="50dip"
+		    android:layout_height="wrap_content" 
+		    android:text="Paramètres"
+		    android:layout_width="wrap_content" 
+		    android:gravity="center"
+		/>
+		<TextView
+	        android:textSize="20sp"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" 
+	        android:text="Vibreur"
+    	/><Spinner 
+	        android:id="@+id/vibreur"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	       	android:prompt="@string/vibreur"
+		/>
+		
+		<TextView
+	        android:textSize="20sp"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" 
+	        android:text="Notification"
+    	/><Spinner 
+	        android:id="@+id/notification"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	       	android:prompt="@string/notification"
+		/>	
+		
+		<TextView
+	        android:textSize="20sp"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" 
+	        android:text="Encadrement des cases objectifs"
+    	/><Spinner 
+	        android:id="@+id/caseRouge"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	       	android:prompt="@string/caseRouge"
+		/>			
+   />
+	  	
+  	</TableLayout>
+  	
+  	<Button
+		android:id="@+id/valider"
+		android:text="valider" 
+		android:layout_width="320dp" 
+		android:layout_height="80dp" 
+		android:layout_x="0dp"
+		android:layout_y="380dp"
+		android:textSize="25sp" 
+	/>
+
+</AbsoluteLayout>

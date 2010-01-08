@@ -42,7 +42,7 @@ public class Labyrinthe extends Activity {
 	         {
 	        	 public void onClick(View v)
 	             {   
-	        		 
+	        		 Parametre();
 	             }
 	         });
 	      
@@ -72,6 +72,15 @@ public class Labyrinthe extends Activity {
  
 	    }
     
+	public void Parametre() {
+		//creation de l'intent
+		Intent defineIntent = new Intent(this, Parametre.class);
+		
+		//lancement de la nouvelle activity
+		startActivity(defineIntent);
+		
+	}
+
 	public void initDesID() {
 		nouvelle = (Button) findViewById(R.id.nouvelle);
 		charger = (Button) findViewById(R.id.charger);

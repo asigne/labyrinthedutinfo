@@ -103,6 +103,11 @@ public class Partie implements Serializable{
 	{
 		return monPlateau;
 	}
+	
+
+	public void setMonPlateau(Plateau monPlateau) {
+		this.monPlateau = monPlateau;
+	}
 
 	//renvoie la case courante de la partie
 	public Case getCaseCourante()
@@ -125,6 +130,10 @@ public class Partie implements Serializable{
 		
 	}
 		
+	public void setCaseCourante(Case caseCourante) {
+		this.caseCourante = caseCourante;
+	}
+
 	//lancer la partie
 	public void lancerPartie()
 	{
