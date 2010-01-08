@@ -562,12 +562,27 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 	android:layout_width="80dip" 
 	android:layout_x="1dip" android:layout_y="399dip">
 </Button>
+
 <Button 
 	android:visibility="invisible"
 	android:id="@+id/Annuler" 
 	android:text="@+string/Annuler" 
-	android:layout_width="80dip" android:layout_height="80dip" android:layout_y="399dip" android:layout_x="85dip">
+	android:layout_width="80dip" 
+	android:layout_height="80dip" 
+	android:layout_y="399dip" 
+	android:layout_x="85dip">
 </Button>
+
+
+<Button 
+	android:visibility="invisible"
+	android:id="@+id/JoueurSvt" 
+	android:text="@+string/JoueurSvt" 
+	android:layout_height="80dip" 
+	android:layout_width="319dip" 
+	android:layout_x="1dip" android:layout_y="399dip">
+</Button>
+
 
 <TextView 
 	android:layout_width="wrap_content" 

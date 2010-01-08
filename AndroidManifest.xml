@@ -20,6 +20,7 @@
     	<activity android:name="Pseudos4" android:label="Pseudos4">	</activity>
     	<activity android:name="Multi" android:label="Multi">	</activity>
     	<activity android:name="PartieLocale" android:label="PartieLocale">	</activity>
+    	<activity android:name="Parametre" android:label="Parametre">	</activity>
     	
     
 

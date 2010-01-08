@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public abstract class Case implements Serializable
+public abstract class Case implements Serializable, Cloneable
 {
 	int identifiant; //identifiant pour les cases possédante une image sinon 0
 	int rotation; //indice de rotation par rapport à la position originale
@@ -31,6 +31,29 @@ public abstract class Case implements Serializable
 			flag=0;
 			ListJoueur = new ArrayList<Joueur>();
 		}
+	
+	public Case clone()
+	{
+		Case newCase= null;
+		try {
+	    	// On récupère l'instance à renvoyer par l'appel de la 
+	      	// méthode super.clone()
+	      	newCase = (Case) super.clone();
+	    } catch(CloneNotSupportedException cnse) {
+	      	// Ne devrait jamais arriver car nous implémentons 
+	      	// l'interface Cloneable
+	      	cnse.printStackTrace(System.err);
+	    }
+	    
+	    for(int i=0; i<ListJoueur.size();i++)
+	    {
+	    	newCase.ListJoueur.add(ListJoueur.get(i));
+	    }
+	    
+	    
+	    // on renvoie le clone
+		return newCase;
+	}
 	
 	public Case sauvCase()
 		{
@@ -63,7 +86,9 @@ public abstract class Case implements Serializable
 	public String toString()
 		{
 			//return tabDroit[1]+" "+tabDroit[2]+" "+tabDroit[3]+" "+tabDroit[4]+" "+this.rotation+" "+this.flag;
-			return ""+ListJoueur;
+			//return ""+noImage+" "+rotation;//ListJoueur;
+			return ""+flag+" "+rotation+" "+ListJoueur;
+			//return ListJoueur+" ";
 		}
 	
 	

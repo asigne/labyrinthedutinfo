@@ -14,5 +14,20 @@
         <item>4 joueurs</item>
     </string-array>
     
+    <string-array name="notification">
+        <item>Oui</item>
+        <item>Non</item>
+    </string-array>
+    
+    <string-array name="vibreur">
+        <item>Oui</item>
+        <item>Non</item>
+    </string-array>
+    
+    <string-array name="caseRouge">
+        <item>Oui</item>
+        <item>Non</item>
+    </string-array>
+    
 </resources>
 

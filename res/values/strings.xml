@@ -5,10 +5,14 @@
 
 <string name="Annuler">Annuler</string>
 
+<string name="JoueurSvt">Cliquez quand vous êtes prêt</string>
 <string name="Jouer">Jouer</string>
 
 <string name="listregle">Choisissez le type de règle</string>
 <string name="listdifficulte">Choisissez la difficulté</string>
 <string name="nbJoueurs">Choisissez le nombre de joueurs</string>
 
+<string name="vibreur">Activation du vibreur</string>
+<string name="notification">Activation des notifications</string>
+<string name="caseRouge">Encadrement des cases objectifs</string>
 </resources>
