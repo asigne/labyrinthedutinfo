@@ -30,28 +30,7 @@ public class Plateau implements Serializable, Cloneable{
 	public boolean[][] getPlateauBool() {
 		return PlateauBool;
 	}
-	
-	public Plateau clone(){
 		
-		Plateau newPlateau=null;
-		try {
-	    	// On récupère l'instance à renvoyer par l'appel de la 
-	      	// méthode super.clone()
-	      	newPlateau = (Plateau) super.clone();
-	    } catch(CloneNotSupportedException cnse) {
-	      	// Ne devrait jamais arriver car nous implémentons 
-	      	// l'interface Cloneable
-	      	cnse.printStackTrace(System.err);
-	    }
-	   
-	    newPlateau.PlateauBool = PlateauBool.clone();
-	    newPlateau.PlateauCase = PlateauCase.clone();
-	    
-	    // on renvoie le clone
-		return newPlateau;
-	}
-	
-	
 	public void setPlateauCase(Case[][] plateauCase) {
 		PlateauCase = plateauCase;
 	}
@@ -258,5 +237,26 @@ public void affiche()
 			System.out.print("\n");
 		}
 	}
+
+
+public Plateau sauvPlateau()
+{
+	Plateau plateauASauv = this;
+	Plateau plateauSauv=new Plateau();	
+	for(int ligne=0;ligne<7;ligne++) //parcours des lignes du plateau
+	{
+		for(int colonne=0;colonne<7;colonne++) //parcours des colonnes du plateau
+			{
+				// on sauvegarde le contenu du tableau PlateauBool
+				plateauSauv.getPlateauBool()[ligne][colonne]=plateauASauv.getPlateauBool()[ligne][colonne];
+				//on sauvegarde le contenu du tableau PlateauCase
+				plateauSauv.getPlateauCase()[ligne][colonne]=plateauASauv.getCase(ligne, colonne).sauvCase();
+			}
+	}	
+	return plateauSauv;
+}
+
+
+
 	
 }

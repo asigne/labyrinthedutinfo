@@ -13,8 +13,10 @@ public abstract class Case implements Serializable, Cloneable
 
 	//attributs utilisés lors de la recherche de chemin possible
 	int flag; //indique si la case est accessible ou non
+	int flagEnEntrant; //indique les cases du chemin actuel
+	
 	//pour les attributs entree et sortie les valeurs possibles sont : 1 pour haut, 2 pour droite, 3 pour bas et 4 pour gauche
-	int entree; //indique l'entree de la case
+	//int entree; //indique l'entree de la case
 	int sortie; // indique la sortie de la case
 	
 	
@@ -26,62 +28,11 @@ public abstract class Case implements Serializable, Cloneable
 			this.identifiant=identifiant;
 			tabDroit=new boolean[5];
 			rotation=0;
-			entree=-1;
+			//entree=-1;
 			sortie=0;
 			flag=0;
 			ListJoueur = new ArrayList<Joueur>();
 		}
-	
-	public Case clone()
-	{
-		Case newCase= null;
-		try {
-	    	// On récupère l'instance à renvoyer par l'appel de la 
-	      	// méthode super.clone()
-	      	newCase = (Case) super.clone();
-	    } catch(CloneNotSupportedException cnse) {
-	      	// Ne devrait jamais arriver car nous implémentons 
-	      	// l'interface Cloneable
-	      	cnse.printStackTrace(System.err);
-	    }
-	    
-	    for(int i=0; i<ListJoueur.size();i++)
-	    {
-	    	newCase.ListJoueur.add(ListJoueur.get(i));
-	    }
-	    
-	    
-	    // on renvoie le clone
-		return newCase;
-	}
-	
-	public Case sauvCase()
-		{
-			Case sauvCase; 
-			if(this instanceof L)
-			{
-				sauvCase=new L(0,0,0);
-			}
-			else if(this instanceof T)
-			{
-				sauvCase=new T(0,0,0);
-			}
-			else
-			{
-				sauvCase=new I(0);
-			}
-			
-			sauvCase.noImage=this.noImage;
-			sauvCase.identifiant=this.identifiant;
-			sauvCase.tabDroit=this.tabDroit;
-			sauvCase.rotation=this.rotation;
-			sauvCase.entree=this.entree;
-			sauvCase.sortie=this.sortie;
-			sauvCase.flag=this.flag;
-			sauvCase.ListJoueur=this.ListJoueur;	
-			return sauvCase;
-		}
-	
 	
 	public String toString()
 		{
@@ -100,6 +51,14 @@ public abstract class Case implements Serializable, Cloneable
 		this.flag = flag;
 	}
 		
+	public void setFlagEnEntrant(int flagEnEntrant) {
+		this.flagEnEntrant = flagEnEntrant;
+	}
+	
+	public int getFlagEnEntrant() {
+		return flagEnEntrant;
+	}
+
 	//methode retournant le droit associé au rang fourni
 	public boolean getTabDroit(int rang) {
 		return tabDroit[rang];
@@ -133,20 +92,11 @@ public abstract class Case implements Serializable, Cloneable
 		}
 	}
 
-	public int getEntree()
-	{
-		return this.entree;
-	}
-	
 	public int getSortie()
 	{
 		return this.sortie;
 	}
 	
-	public void setEntree(int entree) {
-		this.entree = entree;
-	}
-
 	public void setSortie(int sortie) {
 		this.sortie = sortie;
 	}
@@ -177,5 +127,35 @@ public abstract class Case implements Serializable, Cloneable
 		return identifiant;
 	}	
 	
-
+	public Case sauvCase()
+	{
+		Case sauvCase; 
+		Case caseASauv=this;
+		if(caseASauv instanceof L)
+		{
+			sauvCase=new L(0,0,0); //creation d'une nouvelle case L si la case a sauver est de type L
+		}
+		else if(caseASauv instanceof T)
+		{
+			sauvCase=new T(0,0,0); //creation d'une nouvelle case T si la case a sauver est de type T
+		}
+		else
+		{
+			sauvCase=new I(0); //creation d'une nouvelle case I si la case a sauver est de type I
+		}
+		
+		//copie de tous les attributs
+		sauvCase.noImage=caseASauv.noImage;
+		sauvCase.identifiant=caseASauv.identifiant;
+		sauvCase.tabDroit=caseASauv.tabDroit;
+		sauvCase.rotation=caseASauv.rotation;
+		sauvCase.sortie=caseASauv.sortie;
+		sauvCase.flag=caseASauv.flag;
+		//copie de la liste des joueurs
+		for(int i=0; i<caseASauv.ListJoueur.size(); i++)
+			{
+				sauvCase.ListJoueur.add(caseASauv.ListJoueur.get(i));
+			}
+		return sauvCase;
+	}
 }

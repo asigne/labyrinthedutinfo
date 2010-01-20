@@ -176,8 +176,8 @@ public void onCreate(Bundle savedInstanceState)
          notif(text,Toast.LENGTH_SHORT,0,0,0);
 		
          
-         text = "Commencez par modifier le plateau puis déplacez votre pion";
-         notif(text,Toast.LENGTH_SHORT);
+         //text = "Commencez par modifier le plateau puis déplacez votre pion";
+         //notif(text,Toast.LENGTH_SHORT);
          
          
          
@@ -369,7 +369,7 @@ public boolean onTouchEvent(MotionEvent event)
 	else
 	{
 		CharSequence text = "Veuillez cliquer sur le bouton avant de jouer !";
-        notif(text,Toast.LENGTH_SHORT,0,0,0);
+		notif(text,Toast.LENGTH_SHORT,0,0,0);
 		return false;
 	}
 }
@@ -539,12 +539,12 @@ public void actionCase(int x, int y)
 			 	if(ctrouve==true){
 			 		ctrouve=false;
 			 		
-		 			CharSequence text = "Carte trouvée!";
-		 	        notif(text,Toast.LENGTH_SHORT,0,0,0);
+		 			//CharSequence text = "Carte trouvée!";
+		 	        //notif(text,Toast.LENGTH_SHORT,0,0,0);
 		 	        leVibreur.vibrate(300);
 		 			
-		 	        text = "Appuyer sur <JOUER> pour finir le tour";
-		 	        notif(text,Toast.LENGTH_SHORT);
+		 	        //text = "Appuyer sur <JOUER> pour finir le tour";
+		 	        //notif(text,Toast.LENGTH_SHORT);
 			 	}
 
 			}
@@ -1234,8 +1234,8 @@ public void tourDejeu(){
 				CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
 		        notif(text,Toast.LENGTH_SHORT,0,0,0);
 				
-				text = "Commencez par modifier le plateau puis déplacez votre pion";
-				notif(text,Toast.LENGTH_SHORT);
+				//text = "Commencez par modifier le plateau puis déplacez votre pion";
+				//notif(text,Toast.LENGTH_SHORT);
 	
 				afficheCarteCourante();
 				montrerCaseObjectif();

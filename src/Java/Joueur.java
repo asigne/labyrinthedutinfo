@@ -208,7 +208,7 @@ public abstract class Joueur{
 			for(int j=0;j<7;j++)
 			{
 				monPlateau.getCase(i,j).setFlag(0);
-				monPlateau.getCase(i,j).setEntree(-1);
+				//monPlateau.getCase(i,j).setEntree(-1);
 				monPlateau.getCase(i,j).setSortie(0);
 			}	
 		}
@@ -221,91 +221,77 @@ public abstract class Joueur{
 	// correspondant aux parametres ligne et colonne.
 	public void fonction(int ligne, int colonne, Plateau monPlateau)
 	   {
-			//Plateau monPlateau=partieActuelle.getMonPlateau();
-			Case maCase=monPlateau.getCase(ligne, colonne);
-			int sortie=maCase.getSortie();
-			int entree=maCase.getEntree();
-			int L1=0, C1=0, S=0, E=0;
-			boolean Ok = false;
-			
-			monPlateau.getCase(ligne, colonne).setFlag(1);
-	
-		   
-		   for(int i=maCase.getSortie()+1;i<5;i++)
-		   {
-			   if(sortie!=entree)
-				   {
-				   		switch(i)
-					   		{
-						   		case 1: //haut
-						   			if(ligne>0 && maCase.getTabDroit(1)==true &&
-						   					monPlateau.getCase(ligne-1, colonne).getTabDroit(3)==true &&
-						   					monPlateau.getCase(ligne-1, colonne).getFlag()==0)
-						   				{
-						   					L1=-1;
-						   					C1=0;
-						   					S=1;
-						   					E=3;
-						   					Ok=true;
-						   				}	
-						   			break;
-						   			
-						   		case 2: //droite
-						   			if(colonne<6 && maCase.getTabDroit(2)==true &&
-						   					monPlateau.getCase(ligne, colonne+1).getTabDroit(4)==true &&
-						   					monPlateau.getCase(ligne, colonne+1).getFlag()==0)
-						   				{
-						   					L1=0;
-						   					C1=1;
-						   					S=2;
-						   					E=4;
-						   					Ok=true;
-						   				}		   			
-						   			break;
-						   			
-						   		case 3: //bas
-						   			if(ligne<6 && maCase.getTabDroit(3)==true &&
-						   					monPlateau.getCase(ligne+1, colonne).getTabDroit(1)==true &&
-						   					monPlateau.getCase(ligne+1, colonne).getFlag()==0)
-						   				{
-						   					L1=1;
-						   					C1=0;
-						   					S=3;
-						   					E=1;
-						   					Ok=true;
-						   				}
-						   			break;
-						   			
-						   		case 4: //gauche
-						   			if(colonne>0 && maCase.getTabDroit(4)==true &&
-						   					monPlateau.getCase(ligne, colonne-1).getTabDroit(2)==true &&
-						   					monPlateau.getCase(ligne, colonne-1).getFlag()==0)
-						   				{
-						   					L1=0;
-						   					C1=-1;
-						   					S=4;
-						   					E=2;
-						   					Ok=true;
-						   				}	
-						   			break;
-					   		}
-					   if(Ok==true)
-					   		{
-						   		monPlateau.getCase(ligne, colonne).setSortie(S);
-						   		ligne=ligne+L1;
-						   		colonne=colonne+C1;
-						   		monPlateau.getCase(ligne, colonne).setEntree(E);
-						   		monPlateau.getCase(ligne, colonne).setFlag(1);
-						   		
-						   		fonction(ligne,colonne, monPlateau);
-						   		
-						   		ligne=ligne-L1;
-						   		colonne=colonne-C1;
-					   		}
-				   }
-			   }
-	   }
+		Case maCase=monPlateau.getCase(ligne, colonne); //recupere la case à traiter
+		int L1=0, C1=0, S=0;
+		boolean Ok;
 
+		monPlateau.getCase(ligne, colonne).setFlag(1);  //met a 1 le flag de la case en cours de traitement
+		for(int i=maCase.getSortie()+1;i<5;i++)	//test de toutes les sorties (haut 1, droite 2, bas 3, gauche 4)
+		{	
+			Ok = false;
+	   		switch(i)
+		   		{
+		   		case 1: //haut
+		   			if(ligne>0 && maCase.getTabDroit(1)==true &&
+		   					monPlateau.getCase(ligne-1, colonne).getTabDroit(3)==true &&
+		   					monPlateau.getCase(ligne-1, colonne).getFlag()==0)
+		   				{
+							L1=-1;
+							C1=0;
+							S=1;
+							Ok=true;
+		   				}	
+		   			break;
+				case 2: //droite
+					if(colonne<6 && maCase.getTabDroit(2)==true &&
+							monPlateau.getCase(ligne, colonne+1).getTabDroit(4)==true &&
+							monPlateau.getCase(ligne, colonne+1).getFlag()==0)
+						{
+							L1=0;
+							C1=1;
+							S=2;
+							Ok=true;
+						}		   			
+					break;	
+				case 3: //bas
+					if(ligne<6 && maCase.getTabDroit(3)==true &&
+							monPlateau.getCase(ligne+1, colonne).getTabDroit(1)==true &&
+							monPlateau.getCase(ligne+1, colonne).getFlag()==0)
+						{
+							L1=1;
+							C1=0;
+							S=3;
+							Ok=true;
+						}
+					break;
+				case 4: //gauche
+						if(colonne>0 && maCase.getTabDroit(4)==true &&
+								monPlateau.getCase(ligne, colonne-1).getTabDroit(2)==true &&
+								monPlateau.getCase(ligne, colonne-1).getFlag()==0)
+							{
+								L1=0;
+								C1=-1;
+								S=4;
+								Ok=true;
+							}	
+						break;
+		   		}
+	   		if(Ok==true) //s'il est possible de sortir de la case en cours de traitement
+		   		{
+			   		monPlateau.getCase(ligne, colonne).setSortie(S);  //on indique par ou on sort
+			   		//on change de case
+			   		ligne=ligne+L1;
+			   		colonne=colonne+C1;
+			   		
+			   		fonction(ligne,colonne, monPlateau); //on applique la fonction sur la nouvelle case
+			   		//on revient à la case 
+			   		ligne=ligne-L1;
+			   		colonne=colonne-C1;
+		   		}
+		}
+		monPlateau.getCase(ligne, colonne).setSortie(0); //lorsque la fonction se termine sur une case on met la sortie à 0
+}
+	
 	public Partie getPartieActuelle() {
 		return partieActuelle;
 	}
