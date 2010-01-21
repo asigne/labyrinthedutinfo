@@ -38,7 +38,7 @@ public abstract class Case implements Serializable, Cloneable
 		{
 			//return tabDroit[1]+" "+tabDroit[2]+" "+tabDroit[3]+" "+tabDroit[4]+" "+this.rotation+" "+this.flag;
 			//return ""+noImage+" "+rotation;//ListJoueur;
-			return ""+flag+" "+rotation+" "+ListJoueur;
+			return identifiant+" "+flag+" "+rotation+" "+ListJoueur;
 			//return ListJoueur+" ";
 		}
 	

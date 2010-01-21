@@ -102,20 +102,26 @@ public abstract class Joueur{
 		this.posColonne = posColonne;
 		partieActuelle.getMonPlateau().getCase(posLigne, posColonne).ajouterJoueur(this);
 	}
-	public boolean seDeplacer(int ligne, int colonne)
+	public boolean seDeplacer(int ligne, int colonne, Plateau monPlateau)
 	{
-		if(testCaseAccessible(ligne, colonne))
+		if(testCaseAccessible(ligne, colonne, monPlateau))
 		{
-			partieActuelle.getMonPlateau().getCase(posLigne, posColonne).supprJoueur(this);	
+			monPlateau.getCase(posLigne, posColonne).supprJoueur(this);	
 			modifPosition(ligne,colonne);
-			partieActuelle.getMonPlateau().getCase(ligne, colonne).ajouterJoueur(this);	
+			monPlateau.getCase(ligne, colonne).ajouterJoueur(this);	
 			return true;
 		}
 		else
 		{
 			return false;
-		}	
+		}
 	}
+	
+	public boolean seDeplacer(int ligne, int colonne)
+	{
+		return seDeplacer(ligne, colonne, partieActuelle.getMonPlateau());
+	}
+	
 	public void modifPosition(int ligne, int colonne)
 	{
 		posLigne=ligne;
@@ -184,10 +190,9 @@ public abstract class Joueur{
 
 	//methode effectuant le test pour connaitre la cases accessibles par un joueur
 	
-	public boolean testCaseAccessible(int ligne, int colonne)
+	public boolean testCaseAccessible(int ligne, int colonne, Plateau monPlateau)
 		{
-			Plateau monPlateau=partieActuelle.getMonPlateau();
-			if(monPlateau.getCase(ligne, colonne).getFlag()==1)
+			if(monPlateau.getCase(ligne, colonne).getFlag()!=0)
 			   {
 				   return true;
 			   }
