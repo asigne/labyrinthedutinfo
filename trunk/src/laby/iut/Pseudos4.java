@@ -35,6 +35,7 @@ public class Pseudos4 extends Activity {
         {
         	public void onClick(View v)
 	        	{   
+        		
 	        		pseudo1 = (EditText) findViewById(R.id.pseudoJoueur1);
 	    			pseudoJ1 = pseudo1.getEditableText().toString();
 	    			pseudo2 = (EditText) findViewById(R.id.pseudoJoueur2);
@@ -66,7 +67,8 @@ public class Pseudos4 extends Activity {
 		
 		// et de parametres
 		Bundle objetbundle = new Bundle();
-		
+		String mode="nouvellePartie";
+		objetbundle.putString("mode", mode);
 		objetbundle.putString("pseudoJ1", pseudoJ1);
 		objetbundle.putString("pseudoJ2", pseudoJ2);
 		objetbundle.putString("pseudoJ3", pseudoJ3);

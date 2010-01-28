@@ -219,45 +219,27 @@ public class IA extends Joueur {
 	}
 	
 	
-	//rejoindre un serveur ou une partie ???
-	public void RejoindreServeur(Serveur monServeur){
-	
-	}
-	
-	public void RejoindrePartie(Partie maPartie){
-		partieActuelle=maPartie;
-		maPartie.ajouterJoueur(this);
-	}
-	//rejoindre un serveur ou une partie ???
-	
-	public Coup rechercheMeilleurCoup(Partie maPartie, String flecheInterdite, int sensInterdit)
-	{
-			// methode developpée par le prof
-			// genere le meilleur coup
-		return null;
-	} 	
-	
-	public void rechercheMeilleurDeplacement(Partie maPartie)
-	{
-		// methode developpée par le prof
+
+	public void jouer(int indiceInterdit, String flecheInterdite) {
+		Coup monCoup;
+		Case caseCourante=partieActuelle.getCaseCourante();
 		
-		//pour le deplacement, modifier les valeurs de ligne et de  colonne;
-		int ligne=0, colonne=0;
-		seDeplacer(ligne, colonne);
-	} 
-	
-
-
-
-
-	public void jouer(Partie maPartie, String flecheInterdite, int sensInterdit) {
-		//rechercher le meilleur Coup
-		Coup coupIa = rechercheMeilleurCoup(maPartie, flecheInterdite, sensInterdit);
 		
-		//modifier le plateau
-		modifierPlateau(coupIa);
+		//valeur par default de tour de jeu de l'IA
+		int ligneDeplacement=getPosLigne()-1, colonneDeplacement=getPosColonne();
+		if(indiceInterdit==1 && flecheInterdite=="bas")
+			{
+				monCoup=new Coup(caseCourante, 1, "bas");
+			}
+		else
+			{
+				monCoup=new Coup(caseCourante, 2, "bas");
+			}
 		
-		//se deplacer
-		rechercheMeilleurDeplacement(maPartie);
+		//a cet endroit, modifier l'objet monCoup, l'entier ligneDeplacement et colonneDeplacement
+		// en fonction de la decision de l'IA
+		
+		partieActuelle.modifierPlateau(monCoup);
+		this.seDeplacer(ligneDeplacement, colonneDeplacement);
 	}
 }

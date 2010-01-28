@@ -6,21 +6,35 @@ import java.io.ObjectOutputStream;*/
 import java.io.Serializable;
 import java.util.ArrayList;
 
-@SuppressWarnings("serial")
+
 public class Partie implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int nbCarte=24; //nb de cartes a distribuer aux joueurs
-	String nom;		//nom de la partie
+	private String nom;		//nom de la partie
 	Plateau monPlateau;	//plateau de la partie
 	Case caseCourante;	//caseCourante de la partie
-	ArrayList<Carte> ListCarte;	//liste des cartes à distribuer
+	ArrayList<Carte> ListCarte;	//liste des cartes ï¿½ distribuer
 	ArrayList<Joueur> ListJoueur;	// liste des joueurs de la partie
 	boolean partieFinie;	//si true partie finie sinon false
 	String regle="";
 	String difficulte="";
+	Joueur joueurActif;
 	
+	public Joueur getJoueurActif() {
+		return joueurActif;
+	}
+
+	public void setJoueurActif(Joueur joueurActif) {
+		this.joueurActif = joueurActif;
+	}
+
 	public Partie(String nom, String regle, String difficulte)
 	{
-		this.nom=nom;
+		this.setNom(nom);
 		partieFinie=false;
 		ListCarte = new ArrayList<Carte>();
 		ListJoueur = new ArrayList<Joueur>();
@@ -30,10 +44,10 @@ public class Partie implements Serializable{
 		//creation du plateau de maniere aleatoire
 		monPlateau=new Plateau();
 		
-		//détermination de la caseCourante
-		caseCourante=monPlateau.ListCase.get(0); // derniere case non placée sur le plateau
+		//dï¿½termination de la caseCourante
+		caseCourante=monPlateau.ListCase.get(0); // derniere case non placï¿½e sur le plateau
 		
-		//creation des cartes à distribuer
+		//creation des cartes ï¿½ distribuer
 		for(int i=0; i<nbCarte;i++)
 		{
 			ListCarte.add(new Carte(i));
@@ -200,7 +214,36 @@ public class Partie implements Serializable{
 				return false;
 			}
 	}
+/*	public int sauv() {
+		  try {
+	
+			           // ouverture d'un flux de sortie vers le fichier "save.ser"
+			        FileOutputStream fos = openFileOutput("save.dat",2);
+			
+			        // crÃ©ation d'un "flux objet" avec le flux fichier
+		        ObjectOutputStream oos= new ObjectOutputStream(fos);
+	             // sÃ©rialisation : Ã©criture de l'objet dans le flux de sortie
+	              oos.writeObject(this);
+           // on vide le tampon
+	             oos.flush();
 
+	}
+		  catch (FileNotFoundException e) {
+			  return 0;
+		  }
+		  catch (IOException e) {
+			  return 1;
+		  }
+		  return 2;
+}
+*/
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+	public String getNom() {
+		return nom;
+	}
 
 }
 
