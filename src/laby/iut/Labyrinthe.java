@@ -99,11 +99,20 @@ public class Labyrinthe extends Activity {
 	}
 	
 	public void ChargerPartie() {
+
 		//creation de l'intent
-		//Intent defineIntent = new Intent(this, Nouvelle.class);
+		Intent defineIntent = new Intent(this, PlateauJeu.class);
 		
+		// et de parametres
+		Bundle objetbundle = new Bundle();
+		String mode="chargerPartie";
+		objetbundle.putString("mode", mode);
+		defineIntent.putExtras(objetbundle);
+				
 		//lancement de la nouvelle activity
-		//startActivity(defineIntent);
+		startActivity(defineIntent);
+		
+		
 	}
 	
 	public void setFullscreen() { 

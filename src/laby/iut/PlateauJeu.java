@@ -1,17 +1,11 @@
 package laby.iut;
-//import java.io.BufferedOutputStream;
-//import java.io.File;
-//import java.io.FileNotFoundException;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
-//import java.io.ObjectInputStream;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-//import java.lang.Thread;
 import Java.*;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +29,8 @@ import Java.Joueur;
 
 public class PlateauJeu extends Activity 
 {
+
+
 	ImageView fg1, fg3, fg5, fd1, fd3, fd5, fh1, fh3, fh5, fb1, fb3, fb5, imageCarteCourante;
 	ImageView pionBleu, pionRouge, pionVert, pionJaune;
 	RotateAnimation rotation0, rotation90, rotation180, rotation270;
@@ -45,18 +41,17 @@ public class PlateauJeu extends Activity
     Button btnJouer, btnAnnuler, btnJoueurSvt; 
     String flecheInterdite;
     int indiceInterdit;
-    
     Partie maPartie;
     Plateau monPlateau;
     Case caseCourante;	
     Coup monCoup;
-    
+       
     Vibrator leVibreur;
     
 	boolean ctrouve=false;
     
    	//Utilisateur j1, j2, j3, j4;
-   	Joueur joueurActif, ia, j1, j2, j3, j4;
+   	Joueur ia, j1, j2, j3, j4;
    	//IA ia;
    	
    	int sauvModif;
@@ -78,7 +73,7 @@ public class PlateauJeu extends Activity
     //boolean jeuFait;
     
     //parametre de l'application
-    int xmin=13, xmax=307, ymin=61, ymax=355;//coordonnées du plateau de jeu
+    int xmin=13, xmax=307, ymin=61, ymax=355;//coordonnï¿½es du plateau de jeu
 	int tailleCase = 42; //taille d'une case du plateau
 	int tailleFleche = 13; //largeur fleche
 	
@@ -91,15 +86,15 @@ public class PlateauJeu extends Activity
 
 	String pseudo1, pseudo2, pseudo3, pseudo4, regle, difficulte, typePartie;
 	int nbJoueurs;
-//genere une notif avec le texte "text", la durée "duration" 
-//et coordonnée par defaut(en bas du plateau)	
+//genere une notif avec le texte "text", la durï¿½e "duration" 
+//et coordonnï¿½e par defaut(en bas du plateau)	
 public void notif(CharSequence text,int duration){
 	Context context = getApplicationContext();
 	Toast toast = Toast.makeText(context, text, duration);
 	toast.show();	
 }
-//genere une notif avec le texte "text", la durée "duration" 
-//et coordonnée g(gravity),x(xoffset),y(yoffset)	
+//genere une notif avec le texte "text", la durï¿½e "duration" 
+//et coordonnï¿½e g(gravity),x(xoffset),y(yoffset)	
 public void notif(CharSequence text,int duration,int g,int x, int y){
 	Context context = getApplicationContext();
 	Toast toast = Toast.makeText(context, text, duration);
@@ -112,58 +107,63 @@ public void onCreate(Bundle savedInstanceState)
          super.onCreate(savedInstanceState);
          setFullscreen();
          setContentView(R.layout.jeu);   
-      
-        
-         //récuperation du pseudo et des parametres de la partie
+       
+         
+         //rï¿½cuperation du pseudo et des parametres de la partie
   		 Bundle objetParametre  = this.getIntent().getExtras(); 
   		 
-  		 typePartie = objetParametre.getString("typePartie");
-  		 regle = objetParametre.getString("regle");
+  		 String mode=objetParametre.getString("mode");
+         if(mode.equals("nouvellePartie"))
+         {
   		 
-  		 
-  		 if(typePartie.equals("solo"))
-			 {
-		 		difficulte = objetParametre.getString("difficulte");	
-		 		nbJoueurs=2;
-			 }
-  		 
-  		if(typePartie.equals("multi"))
-	  		{
-  		  		difficulte="";
-  		  		nbJoueurs = objetParametre.getInt("nbJoueurs");
-  		  		
-	  		 switch(nbJoueurs)
-	  		 {
-		  		 case 2 :
-		  	  		 pseudo1 = objetParametre.getString("pseudoJ1");
-		  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
-		  			 break;
-		  		 case 3 :
-		  			 pseudo1 = objetParametre.getString("pseudoJ1");
-		  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
-		  	  		 pseudo3 = objetParametre.getString("pseudoJ3");
-		  	  		 break;
-		  		 case 4 :
-		  			 pseudo1 = objetParametre.getString("pseudoJ1");
-		  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
-		  	  		 pseudo3 = objetParametre.getString("pseudoJ3");
-		  	  		 pseudo4 = objetParametre.getString("pseudoJ4");
-		  	  		 break;
-	  		 }
-  		}
-  		
+	  		 typePartie = objetParametre.getString("typePartie");
+	  		 regle = objetParametre.getString("regle");
+	  		 
+	  		 
+	  		 if(typePartie.equals("solo"))
+				 {
+			 		difficulte = objetParametre.getString("difficulte");	
+			 		nbJoueurs=2;
+				 }
+	  		 
+	  		if(typePartie.equals("multi"))
+		  		{
+	  		  		difficulte="";
+	  		  		nbJoueurs = objetParametre.getInt("nbJoueurs");
+	  		  		
+		  		 switch(nbJoueurs)
+		  		 {
+			  		 case 2 :
+			  	  		 pseudo1 = objetParametre.getString("pseudoJ1");
+			  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
+			  			 break;
+			  		 case 3 :
+			  			 pseudo1 = objetParametre.getString("pseudoJ1");
+			  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
+			  	  		 pseudo3 = objetParametre.getString("pseudoJ3");
+			  	  		 break;
+			  		 case 4 :
+			  			 pseudo1 = objetParametre.getString("pseudoJ1");
+			  	  		 pseudo2 = objetParametre.getString("pseudoJ2");
+			  	  		 pseudo3 = objetParametre.getString("pseudoJ3");
+			  	  		 pseudo4 = objetParametre.getString("pseudoJ4");
+			  	  		 break;
+		  		 }
+	  		}
+        }
+        
   	  	 initDesID();          
-         lancementPartie();
-
-         
+         lancementPartie(mode);
          initPlateau2D();							//initialisation de l'affichage du plateau en 2D
          affichePions();   							//affichage des pions sur le plateau
          afficheCaseCourante(0);					//affichage de la case courante
-         afficheScores();
          
-         definirJoueurActif(j1);
-         
-         
+        
+        if(mode.equals("nouvellePartie"))
+        {
+        	definirJoueurActif(j1);      
+        }
+        afficheScores();
          
          //affichage de la carte courante du joueur
          afficheCarteCourante();
@@ -172,20 +172,24 @@ public void onCreate(Bundle savedInstanceState)
          textInfo.setText("");
          textJoueurActif.setText("");
          
-         CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
+         CharSequence text = "A "+maPartie.getJoueurActif().getNom()+" de jouer !";
          notif(text,Toast.LENGTH_SHORT,0,0,0);
 		
          
-         //text = "Commencez par modifier le plateau puis déplacez votre pion";
-         //notif(text,Toast.LENGTH_SHORT);
+         text = "Commencez par modifier le plateau puis dï¿½placez votre pion";
+         notif(text,Toast.LENGTH_SHORT);
          
          
          
          btnJouer.setOnClickListener(new View.OnClickListener()
          {
         	 public void onClick(View v)
-             {       			
+             {    
+
             	 tourDejeu();
+
+		         
+
              }            	 
          }); 
          
@@ -196,7 +200,20 @@ public void onCreate(Bundle savedInstanceState)
             	 if(!maPartie.getPartieFinie())
             	 {
             		 annulerDernierCoup();
+            		 Partie testa = new Partie("Partieaaa", regle, difficulte);
+            		
+            			 Context lecontext=getBaseContext();
+						testa = charg(lecontext);
+						if (testa != null) {	
+	                 CharSequence text = "A "+ testa.getListJoueur().get(0).getNom() + " de jouer !";
+	                 notif(text,Toast.LENGTH_SHORT,0,0,0);
+						}
+						else { 
+							CharSequence text = "marche pas !";
+			                 notif(text,Toast.LENGTH_SHORT,0,0,0);
+						}
             	 }
+
              }
          });
          
@@ -211,60 +228,95 @@ public void onCreate(Bundle savedInstanceState)
          
     }  
     
-public void lancementPartie() {
+public void lancementPartie(String mode) {
 	
-    maPartie=new Partie("Partie", regle, difficulte); 			//creation de la partie     
-    monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
-    caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
-    
-    
-    if(typePartie.equals("solo"))
+	if(mode.equals("nouvellePartie"))
     {
-    	j1=new Utilisateur("Joueur");
-    	j2=new IA("IA");	
-    	j1.RejoindrePartie(maPartie);
-    	j2.RejoindrePartie(maPartie);
+	    maPartie=new Partie("Partie", regle, difficulte); 			//creation de la partie     
+	    
+	    
+	    monPlateau=maPartie.getMonPlateau(); 		//recuperation du plateau de la partie
+	    caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
+	    
+	    
+	    if(typePartie.equals("solo"))
+	    {
+	    	j1=new Utilisateur("Joueur");
+	    	j2=new IA("IA");	
+	    	j1.RejoindrePartie(maPartie);
+	    	j2.RejoindrePartie(maPartie);
+	    }
+	    if(typePartie.equals("multi"))
+	    {
+		    //creation des joueurs
+		    switch(nbJoueurs)
+		    {
+		    case 2:
+		    	j1=new Utilisateur(pseudo1);
+		        j2=new Utilisateur(pseudo2);
+	
+		        j1.RejoindrePartie(maPartie);
+		        j2.RejoindrePartie(maPartie);
+		        break;
+		    case 3:	
+		    	j1=new Utilisateur(pseudo1);
+		        j2=new Utilisateur(pseudo2);
+		        j3=new Utilisateur(pseudo3);
+		        
+		        j1.RejoindrePartie(maPartie);
+		        j2.RejoindrePartie(maPartie);
+		        j3.RejoindrePartie(maPartie);
+		        break;
+		    case 4:
+		        j1=new Utilisateur(pseudo1);	
+		        j2=new Utilisateur(pseudo2);
+		    	j3=new Utilisateur(pseudo3);
+		    	j4=new Utilisateur(pseudo4);
+		    	
+		    	j1.RejoindrePartie(maPartie);
+		    	j2.RejoindrePartie(maPartie);
+		    	j3.RejoindrePartie(maPartie);
+		    	j4.RejoindrePartie(maPartie);
+		    	break;
+		    }
+	    }
+	    maPartie.lancerPartie();					//lancement de la partie
     }
-    if(typePartie.equals("multi"))
-    {
-	    //creation des joueurs
+	else
+	{		
+	  	Context lecontext=getBaseContext();
+        maPartie = (Partie) charg(lecontext);
+        monPlateau = maPartie.getMonPlateau(); 			//creation de la partie     
+ 		//recuperation du plateau de la partie
+	    caseCourante=maPartie.getCaseCourante();	//recuperation de la case courante de la partie
+						//lancement de la partie
+	    
 	    switch(nbJoueurs)
 	    {
 	    case 2:
-	    	j1=new Utilisateur(pseudo1);
-	        j2=new Utilisateur(pseudo2);
+	    	j1=maPartie.getListJoueur().get(0);
+	        j2=maPartie.getListJoueur().get(1);
 
-	        j1.RejoindrePartie(maPartie);
-	        j2.RejoindrePartie(maPartie);
 	        break;
 	    case 3:	
-	    	j1=new Utilisateur(pseudo1);
-	        j2=new Utilisateur(pseudo2);
-	        j3=new Utilisateur(pseudo3);
-	        
-	        j1.RejoindrePartie(maPartie);
-	        j2.RejoindrePartie(maPartie);
-	        j3.RejoindrePartie(maPartie);
+	    	j1=maPartie.getListJoueur().get(0);
+	        j2=maPartie.getListJoueur().get(1);
+	        j3=maPartie.getListJoueur().get(2);
 	        break;
 	    case 4:
-	        j1=new Utilisateur(pseudo1);	
-	        j2=new Utilisateur(pseudo2);
-	    	j3=new Utilisateur(pseudo3);
-	    	j4=new Utilisateur(pseudo4);
-	    	
-	    	j1.RejoindrePartie(maPartie);
-	    	j2.RejoindrePartie(maPartie);
-	    	j3.RejoindrePartie(maPartie);
-	    	j4.RejoindrePartie(maPartie);
+	    	j1=maPartie.getListJoueur().get(0);
+	        j2=maPartie.getListJoueur().get(1);
+	        j3=maPartie.getListJoueur().get(2);
+	        j4=maPartie.getListJoueur().get(3);
 	    	break;
 	    }
-    }
-    maPartie.lancerPartie();					//lancement de la partie
+	}
 	
 }
+
 public void definirJoueurActif(Joueur monJoueur)
 {
-	joueurActif=monJoueur;
+	maPartie.setJoueurActif(monJoueur);
 	tJ1.setTextColor(Color.WHITE);
 	tJ2.setTextColor(Color.WHITE);
 	tJ3.setTextColor(Color.WHITE);
@@ -290,21 +342,17 @@ public void definirJoueurActif(Joueur monJoueur)
 public void WriteSettings(Context context, Partie data){ 
     FileOutputStream fOut = null; 
     ObjectOutputStream oos = null;
-    OutputStreamWriter osw = null; 
-
-	    try{ 
-	       fOut = context.openFileOutput("aa.txt",MODE_APPEND);   
+    try{ 
+	       fOut = context.openFileOutput("kreff",MODE_WORLD_WRITEABLE);   
 	       oos = new ObjectOutputStream(fOut);
-	       osw = new OutputStreamWriter(fOut);
-	       //oos.writeObject(data); 
-	       //oos.flush();
-	        osw.write("data"); 
-	        osw.flush(); 
-	       //popup surgissant pour le résultat
+	       oos.writeObject(maPartie); 
+	       oos.flush();
+	        
+	       //popup surgissant pour le rï¿½sultat
 	        Toast.makeText(context, "Settings saved",Toast.LENGTH_SHORT).show(); 
 	        }
-       	catch (Exception e) {       
-                Toast.makeText(context, "Settings not saved",Toast.LENGTH_SHORT).show(); 
+       	catch (IOException e) {       
+                Toast.makeText(context, "Settings not savedaa",Toast.LENGTH_SHORT).show(); 
         } 
         finally { 
            try { 
@@ -312,12 +360,13 @@ public void WriteSettings(Context context, Partie data){
                  fOut.close(); 
            		}
            catch (IOException e) { 
-                   Toast.makeText(context, "Settings not saved",Toast.LENGTH_SHORT).show(); 
+                   Toast.makeText(context, "Settings not savedbb",Toast.LENGTH_SHORT).show(); 
           } 
         } 
    }
 
-//methode permettant de gérer les clic sur l'écran   
+
+//methode permettant de gï¿½rer les clic sur l'ï¿½cran   
 public boolean onTouchEvent(MotionEvent event)
 {
 	if(jeuPossible)
@@ -329,7 +378,7 @@ public boolean onTouchEvent(MotionEvent event)
 				//textInfo.setText("x:"+x+" y:"+y);
 				if(!maPartie.getPartieFinie())
 				{
-					//gestion du click en fonction des coordonnées
+					//gestion du click en fonction des coordonnï¿½es
 					if(x>xmin && x<=xmax && y>ymin && y<ymax && plateauModif==true)
 					{
 						//action sur une case du plateau
@@ -345,7 +394,7 @@ public boolean onTouchEvent(MotionEvent event)
 						}
 						else
 						{
-							CharSequence text = "Vous avez déjà modifié le plateau";
+							CharSequence text = "Vous avez dï¿½jï¿½ modifiï¿½ le plateau";
 				 	        notif(text,Toast.LENGTH_SHORT);
 						}
 						return true;
@@ -369,12 +418,12 @@ public boolean onTouchEvent(MotionEvent event)
 	else
 	{
 		CharSequence text = "Veuillez cliquer sur le bouton avant de jouer !";
-		notif(text,Toast.LENGTH_SHORT,0,0,0);
+        notif(text,Toast.LENGTH_SHORT,0,0,0);
 		return false;
 	}
 }
 
-//recupere les ID des différents objets graphiques
+//recupere les ID des diffï¿½rents objets graphiques
 public  void initDesID() {
 	fg1 = (ImageView) findViewById(R.id.fg1);
     fg3 = (ImageView) findViewById(R.id.fg3);
@@ -421,9 +470,9 @@ public void actionCarteCourante() {
 		if(maPartie.partieEnfant())
 			{	
 				ArrayList<Integer> listeCarte= new ArrayList<Integer>();
-				for(int i=0; i<joueurActif.getListCarte().size(); i++)
+				for(int i=0; i<maPartie.getJoueurActif().getListCarte().size(); i++)
 				{
-					listeCarte.add(joueurActif.getListCarte().get(i).getIdentifiant());
+					listeCarte.add(maPartie.getJoueurActif().getListCarte().get(i).getIdentifiant());
 				}
 			
 				//creation de l'intent
@@ -433,7 +482,7 @@ public void actionCarteCourante() {
 				
 				//ajout de la liste de carte au bundle
 				objetbundle.putIntegerArrayList("listeCarte",listeCarte);
-				//ajout du bundle à l'intent
+				//ajout du bundle ï¿½ l'intent
 				defineIntent.putExtras(objetbundle);
 				//lancement de la nouvelle activity
 				startActivity(defineIntent);
@@ -441,7 +490,7 @@ public void actionCarteCourante() {
 		else
 			{
 				//textJoueurActif.setText("notification pas le droit");
-			CharSequence text = "Interdit avec ce type de règles";
+			CharSequence text = "Interdit avec ce type de rï¿½gles";
  	        notif(text,Toast.LENGTH_SHORT);
 				
 			}
@@ -531,26 +580,26 @@ public void actionCase(int x, int y)
 	{
 		int ligne=CoordToLigne(y);		//converti le click en ligne
 		int colonne=CoordToColonne(x);	//converti le click en colonne
-		if(joueurActif.seDeplacer(ligne, colonne))	//le joueur doit pouvoir aller sur une case
+		if(maPartie.getJoueurActif().seDeplacer(ligne, colonne))	//le joueur doit pouvoir aller sur une case
 			{
 				deplacement=true;	//deplacement est vrai
 				affichePions();		// affichage des pions sur le plateau
-			 	ctrouve=joueurActif.testCarteTrouvee();	 	
+			 	ctrouve=maPartie.getJoueurActif().testCarteTrouvee();	 	
 			 	if(ctrouve==true){
 			 		ctrouve=false;
 			 		
-		 			//CharSequence text = "Carte trouvée!";
-		 	        //notif(text,Toast.LENGTH_SHORT,0,0,0);
+		 			CharSequence text = "Carte trouvï¿½e!";
+		 	        notif(text,Toast.LENGTH_SHORT,0,0,0);
 		 	        leVibreur.vibrate(300);
 		 			
-		 	        //text = "Appuyer sur <JOUER> pour finir le tour";
-		 	        //notif(text,Toast.LENGTH_SHORT);
+		 	        text = "Appuyer sur <JOUER> pour finir le tour";
+		 	        notif(text,Toast.LENGTH_SHORT);
 			 	}
 
 			}
 		else
 			{
-				CharSequence text = "Déplacement interdit";
+				CharSequence text = "Dï¿½placement interdit";
 		        notif(text,Toast.LENGTH_SHORT);
 			}
 	}
@@ -607,32 +656,32 @@ public boolean actionFleche(int x, int y)
 					sauvIndiceInterdit=indiceInterdit;
 					
 					//creation de la modification du plateau
-					monCoup=((Utilisateur) joueurActif).genererCoup(caseCourante, modif, fleche);
+					monCoup=((Utilisateur) maPartie.getJoueurActif()).genererCoup(caseCourante, modif, fleche);
 					//modification du plateau
-					joueurActif.modifierPlateau(monCoup);
-					//deplacement des joueurs situes sur les cases mobiles concernées
+					maPartie.getJoueurActif().modifierPlateau(monCoup);
+					//deplacement des joueurs situes sur les cases mobiles concernï¿½es
 					traitementJoueurSurCaseMobile(modif, fleche);
 					//verouillage de la fleche interdite
 					lockFleche(fleche,modif);
 					//recuperation de la nouvelle caseCourante
 					caseCourante=maPartie.getCaseCourante();
 					
-					sauvPosLigne=joueurActif.getPosLigne();
-					sauvPosColonne=joueurActif.getPosColonne();
+					sauvPosLigne=maPartie.getJoueurActif().getPosLigne();
+					sauvPosColonne=maPartie.getJoueurActif().getPosColonne();
 					sauvCaseSortante=caseCourante.sauvCase();
 					//affichage du nouveau plateau
 					MaJPlateau(modif, fleche);
 					//affichage de la nouvelle carteCourante
 					afficheCaseCourante(0);	
-					plateauModif=true;		//le plateau a été modifié
-					joueurActif.testCasesAccessibles(maPartie.getMonPlateau());	//test des cases accessibles par le joueurActif
+					plateauModif=true;		//le plateau a ï¿½tï¿½ modifiï¿½
+					maPartie.getJoueurActif().testCasesAccessibles(maPartie.getMonPlateau());	//test des cases accessibles par le joueurActif
 					return true;
 				}
 		}
 	}
 	else
 	{
-		CharSequence text = "Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !";
+		CharSequence text = "Vous ne pouvez pas modifier le plateau aprï¿½s avoir dï¿½placï¿½ votre pion !";
         notif(text,Toast.LENGTH_SHORT);
 	}
 	return false;
@@ -642,9 +691,9 @@ public boolean actionFleche(int x, int y)
 public void annulerDernierCoup()
 {
 	/*if(!deplacement || (sauvPosLigne==joueurActif.getPosLigne() && sauvPosColonne==joueurActif.getPosColonne()))
-		// le joueur ne peut pas annuler s'il a déplacé son pion
+		// le joueur ne peut pas annuler s'il a dï¿½placï¿½ son pion
 		{*/
-			joueurActif.seDeplacer(sauvPosLigne,sauvPosColonne);
+			maPartie.getJoueurActif().seDeplacer(sauvPosLigne,sauvPosColonne);
 			if(sauvFleche=="haut")
 			{
 				fleche="bas";
@@ -679,10 +728,10 @@ public void annulerDernierCoup()
 				flecheInterdite="gauche";
 			}
 			//creation de la modification du plateau
-			monCoup=((Utilisateur) joueurActif).genererCoup(sauvCaseSortante, sauvModif, fleche);
+			monCoup=((Utilisateur) maPartie.getJoueurActif()).genererCoup(sauvCaseSortante, sauvModif, fleche);
 			//modification du plateau
-			joueurActif.modifierPlateau(monCoup);
-			//deplacement des joueurs situes sur les cases mobiles concernées
+			maPartie.getJoueurActif().modifierPlateau(monCoup);
+			//deplacement des joueurs situes sur les cases mobiles concernï¿½es
 			traitementJoueurSurCaseMobile(sauvModif, fleche);
 			//recuperation de la nouvelle caseCourante
 			caseCourante=maPartie.getCaseCourante();
@@ -691,7 +740,7 @@ public void annulerDernierCoup()
 			//affichage de la nouvelle carteCourante
 			afficheCaseCourante(0);	
 			
-			if(premiereModif) //si la premiere modif est annulée
+			if(premiereModif) //si la premiere modif est annulï¿½e
 			{
 				unlockFleche(); //deverrouillage de toutes les flechs
 			}
@@ -702,14 +751,14 @@ public void annulerDernierCoup()
 			
 			plateauModif=false;
 			deplacement=false;
-			CharSequence text = "Modification du plateau annulée";
+			CharSequence text = "Modification du plateau annulï¿½e";
 	         notif(text,Toast.LENGTH_SHORT);
 			btnAnnuler.setVisibility(4);	//rend invisible le bouton annuler
 		//}
 		/*else
 		{
 		textInfo.setText("Vous ne pouvez pas annuler la modification tant que votre joueur ne se " +
-					"trouve pas où il était avant, Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
+					"trouve pas oï¿½ il ï¿½tait avant, Ligne:"+(sauvPosLigne+1)+" Colonne:"+(sauvPosColonne+1));
 		}*/
 }
 
@@ -770,7 +819,7 @@ public void traitementJoueurSurCaseMobile(int indice, String fleche)
 	affichePions();
 }
 	
-//methode desactivant la fleche opposée apres un coup
+//methode desactivant la fleche opposï¿½e apres un coup
 public void lockFleche(String fleche, int indice){
 	indiceInterdit=indice;
 	
@@ -874,29 +923,29 @@ public void unlockFleche(){
 // methode initilisant les rotations
 public void initRotation(int tailleImage, int duree)
    {
-		//rotation 0° / 360°
+		//rotation 0ï¿½ / 360ï¿½
 	   	int centre=tailleImage/2;
 		rotation0 = new RotateAnimation(0, 360, centre, centre);
 		rotation0.setDuration(duree);
 		rotation0.setFillAfter(true);
 	   	
-		//rotation 90°
+		//rotation 90ï¿½
 		rotation90 = new RotateAnimation(0, 90, centre, centre);
 		rotation90.setDuration(duree);
 		rotation90.setFillAfter(true);
 		
-		//rotation 180°
+		//rotation 180ï¿½
 		rotation180 = new RotateAnimation(0, 180, centre, centre);
 	 	rotation180.setDuration(duree);
 	 	rotation180.setFillAfter(true);
 	 	
-		//rotation 270°
+		//rotation 270ï¿½
 	 	rotation270 = new RotateAnimation(0,270, centre, centre);
 		rotation270.setDuration(duree);
 		rotation270.setFillAfter(true);  
    }
 
-//methode permettant d'afficher le plateau à l'initiation 
+//methode permettant d'afficher le plateau ï¿½ l'initiation 
 public void initPlateau2D()
    {
 		int k=0;		// compteur pour selectionner l'id de la case du tableaux
@@ -968,11 +1017,11 @@ public void afficheICT(Case caseATraiter, ImageView imageCourante, int duration,
 		/*description des parametres de la fonction
 		 * caseATraiter permet d'acceder aux attributs de la case en cours de traintement
 		 * ImageView pointe sur l'objet ImageView en cours de traitement
-		 * duration est la valeur pour la durée de la rotation
+		 * duration est la valeur pour la durï¿½e de la rotation
 		 * dimention est la dimention des cases suivant que l'on traite le plateau 
 		 * 			ou la caseCourante
 		 */
-		int noImage;	//numero de l'image à affecter à la case en cours de traitement
+		int noImage;	//numero de l'image ï¿½ affecter ï¿½ la case en cours de traitement
 		int noImageCourante; 
 		
 		//recuperation du numero de l'image a partir de l'intance de la case en cours de traitement
@@ -1053,13 +1102,13 @@ public void afficheCarteCourante()
 	{
 		Carte carteCourante;
 		int noImageCarteCourante;
-		if(!joueurActif.getListCarte().isEmpty())
+		if(!maPartie.getJoueurActif().getListCarte().isEmpty())
 			{
-				carteCourante=joueurActif.getCarteObjectif();
+				carteCourante=maPartie.getJoueurActif().getCarteObjectif();
 			}
 		else
 			{
-				carteCourante=new Carte(24+joueurActif.getIdentifiant());
+				carteCourante=new Carte(24+maPartie.getJoueurActif().getIdentifiant());
 			}
 		noImageCarteCourante=incidePremiereImageCarte+carteCourante.getIdentifiant();
 		imageCarteCourante.setImageDrawable(getResources().getDrawable(noImageCarteCourante));
@@ -1171,6 +1220,10 @@ public void affichePion(Joueur joueurCourant)
 
 public void afficheScores()
 {
+	tJ1.setTextColor(Color.WHITE);
+	tJ2.setTextColor(Color.WHITE);
+	tJ3.setTextColor(Color.WHITE);
+	tJ4.setTextColor(Color.WHITE);
 	Joueur JCT; //joueur en Cours de Traitement
 	for(int i=0; i<maPartie.getListJoueur().size();i++)
 	{
@@ -1191,6 +1244,23 @@ public void afficheScores()
 			break;
 		}
 	}	
+	
+
+	switch (maPartie.getJoueurActif().getIdentifiant())
+	{
+	case 0:
+		tJ1.setTextColor(Color.rgb(0, 116, 232));
+		break;
+	case 1:
+		tJ2.setTextColor(Color.RED);
+		break;
+	case 2:
+		tJ3.setTextColor(Color.rgb(0, 128, 64));
+		break;
+	case 3:
+		tJ4.setTextColor(Color.YELLOW);
+		break;
+	}
 }
 
 
@@ -1208,41 +1278,49 @@ public void tourDejeu(){
 		{
 		 	premiereModif=false;
 		 		 	
-		 	if(joueurActif.testCarteTrouvee()){
+		 	if(maPartie.getJoueurActif().testCarteTrouvee()){
 	 			//CharSequence text = "BRAVO!!!";	
 	 	        //notif(text,Toast.LENGTH_SHORT,0,0,0);	
-				joueurActif.modifCarteObjectif();	
+		 		maPartie.getJoueurActif().modifCarteObjectif();	
 		 	} 	
-		 	joueurActif.testJoueurGagnant();
+		 	maPartie.getJoueurActif().testJoueurGagnant();
 		 		 	
 		 	if(maPartie.getPartieFinie())
 			 	{
 			 		//partie finie : supprimer notif et mettre une boite de dialogue pour recommencer la partie
-		 			CharSequence text = "Partie Gagnée par : "+joueurActif.getNom();
+		 			CharSequence text = "Partie Gagnï¿½e par : "+maPartie.getJoueurActif().getNom();
 		 	        notif(text,Toast.LENGTH_SHORT);
 			 	}
 			else
 				{
 				afficheScores();
 				
-				definirJoueurActif(maPartie.joueurSuivant(joueurActif));
+				definirJoueurActif(maPartie.joueurSuivant(maPartie.getJoueurActif()));
 	
 				deplacement=false;
 				btnAnnuler.setVisibility(4);
 				jeuPossible=false;
 				btnJoueurSvt.setVisibility(0);
-				CharSequence text = "A "+joueurActif.getNom()+" de jouer !";
+				CharSequence text = "A "+maPartie.getJoueurActif().getNom()+" de jouer !";
 		        notif(text,Toast.LENGTH_SHORT,0,0,0);
 				
-				//text = "Commencez par modifier le plateau puis déplacez votre pion";
-				//notif(text,Toast.LENGTH_SHORT);
-	
+				text = "Commencez par modifier le plateau puis dï¿½placez votre pion";
+				notif(text,Toast.LENGTH_SHORT);
+				Context lecontext=getBaseContext();
+				WriteSettings(lecontext,maPartie);
+				
+				/*if (a == 0) { text = "impossible d'ouvrir fich" ; }
+				if (a == 1) { text = "autre erreur"; }
+				if (a == 2) text = "ok";
+				if (a == 3) text ="pas ok";*/
+				
+				notif(text,Toast.LENGTH_SHORT);
 				afficheCarteCourante();
 				montrerCaseObjectif();
 				plateauModif=false;
-				if(joueurActif instanceof IA)
+				if(maPartie.getJoueurActif() instanceof IA)
 					{
-						((IA) joueurActif).jouer(maPartie, flecheInterdite, indiceInterdit);
+						((IA) maPartie.getJoueurActif()).jouer(indiceInterdit, flecheInterdite);
 						tourDejeu();
 					}
 			}
@@ -1253,6 +1331,7 @@ public void tourDejeu(){
 			notif(text,Toast.LENGTH_SHORT);
 		}
 }	
+
 
 
 
@@ -1273,9 +1352,9 @@ public void montrerCaseObjectif()
 	
 	if(maPartie.getRegle().equals("Normal"))
 	{
-		if(!joueurActif.getListCarte().isEmpty())
+		if(!maPartie.getJoueurActif().getListCarte().isEmpty())
 		{
-			int objectif = joueurActif.getListCarte().get(0).getIdentifiant();
+			int objectif = maPartie.getJoueurActif().getListCarte().get(0).getIdentifiant();
 			for(int ligne=0;ligne<7;ligne++)
 			{
 				for(int colonne=0;colonne<7;colonne++)
@@ -1309,9 +1388,9 @@ public void montrerCaseObjectif()
 				boolean objectif = false;
 				int i=0;
 				
-				while(objectif==false && i<joueurActif.getListCarte().size())
+				while(objectif==false && i<maPartie.getJoueurActif().getListCarte().size())
 				{
-					if(joueurActif.getListCarte().get(i).getIdentifiant()==monPlateau.getCase(ligne, colonne).getIdentifiant())
+					if(maPartie.getJoueurActif().getListCarte().get(i).getIdentifiant()==monPlateau.getCase(ligne, colonne).getIdentifiant())
 					{
 						objectif=true;
 					}	
@@ -1334,6 +1413,37 @@ public void montrerCaseObjectif()
 		k++;
 		}
 	}
+}
+public Partie charg(Context context){
+	
+	 ObjectInputStream deserialise = null;
+	 Partie partie = null;
+	try {
+		deserialise = new ObjectInputStream(context.openFileInput("kreff"));
+		//InputStream openRawResource = this.getResources().openRawResource(R.raw.kref);
+		//deserialise = new ObjectInputStream(openRawResource);
+		partie = (Partie) deserialise.readObject();
+	} 
+
+	catch (NotSerializableException e) {
+		Toast.makeText(context, "Settings not savedaa" +e.getMessage(),Toast.LENGTH_SHORT).show(); 
+	}
+catch (IOException e) {
+	Toast.makeText(context, "Settings not savedaa" +e.getMessage(),Toast.LENGTH_SHORT).show(); 
+}
+catch (ClassNotFoundException e) {
+	Toast.makeText(context, "Settings not savedaa" +e.getMessage(),Toast.LENGTH_SHORT).show(); 
+}
+	 finally { 
+        try { 
+              deserialise.close(); 
+        		}
+      
+        catch (IOException e) { 
+                Toast.makeText(context, "Settings not savedbb",Toast.LENGTH_SHORT).show(); 
+       } 
+     } 
+	return partie;
 }
 
 }

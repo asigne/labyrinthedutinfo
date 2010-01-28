@@ -70,6 +70,8 @@ public class Solo extends Activity {
 		// et de parametres
 		Bundle objetbundle = new Bundle();
 		
+		String mode="nouvellePartie";
+		objetbundle.putString("mode", mode);
 		typePartie="solo";
 		//objetbundle.putString("pseudo", pseudo);
 		objetbundle.putString("regle", regle);
