@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -78,9 +79,12 @@ public class PlateauJeu extends Activity {
 	boolean deplacement = false, premiereModif = true;
 	boolean plateauModif = false;
 	// boolean jeuFait;
+	
+	
 
 	// parametre de l'application
-	int xmin = 13, xmax = 307, ymin = 61, ymax = 355;// coordonnï¿½es du plateau
+	//int xmin = 13, xmax = 307, ymin = 61, ymax = 355;// coordonnï¿½es du plateau
+	int xmin = 0, xmax = 0, ymin = 0, ymax = 0;// coordonnï¿½es du plateau
 	// de jeu
 	int tailleCase = 42; // taille d'une case du plateau
 	int tailleFleche = 13; // largeur fleche
@@ -117,7 +121,24 @@ public class PlateauJeu extends Activity {
 		super.onCreate(savedInstanceState);
 		setFullscreen();
 		setContentView(R.layout.jeu);
+		
+		Configuration c = getResources().getConfiguration();
+		if(c.orientation == Configuration.ORIENTATION_PORTRAIT ) {
+			xmin = 13;
+			xmax = 307;
+			ymin = 61;
+			ymax = 355;// coordonnï¿½es du plateau
+			// de jeu
+		} else if(c.orientation == Configuration.ORIENTATION_LANDSCAPE ){
+			xmin = 13;
+			xmax = 307;
+			ymin = 13;
+			ymax = 307;
+			// coordonnï¿½es du plateau
+			// de jeu
+		}
 
+		
 		// rï¿½cuperation du pseudo et des parametres de la partie
 		Bundle objetParametre = this.getIntent().getExtras();
 
@@ -171,7 +192,7 @@ public class PlateauJeu extends Activity {
 		afficheCarteCourante();
 		montrerCaseObjectif();
 
-		textInfo.setText("");
+		//textInfo.setText("");
 		textJoueurActif.setText("");
 
 		// CharSequence text;
@@ -358,15 +379,17 @@ public class PlateauJeu extends Activity {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (jeuPossible) {
+			Configuration c = getResources().getConfiguration();
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				int x = (int) (event.getX());
 				int y = (int) (event.getY());
-				// textInfo.setText("x:"+x+" y:"+y);
+				textInfo.setText("xmin:"+x+" xmax:"+y+" ymin:"+ymin+" ymax:"+ymax);
 				if (!maPartie.getPartieFinie()) {
 					// gestion du click en fonction des coordonnï¿½es
 					if (x > xmin && x <= xmax && y > ymin && y < ymax
 							&& plateauModif == true) {
 						// action sur une case du plateau
+						textInfo.setText("bla");
 						actionCase(x, y);
 						return true;
 					} else if (x > xmin - tailleFleche
@@ -377,20 +400,35 @@ public class PlateauJeu extends Activity {
 						if (!plateauModif) {
 							actionFleche(x, y);
 						} else {
-							CharSequence text = "Vous avez déjà modifier le plateau";
+							CharSequence text = "Vous avez dï¿½jï¿½ modifier le plateau";
 							notif(text, Toast.LENGTH_SHORT);
 						}
 						return true;
-					} else if (x > 240 && y > 400) {
-						// action sur la caseCourante
-						actionCaseCourante();
-						return true;
-					} else if (x > 180 && x < 230 && y < 480 && y > 400) {
-						// action sur la carteCourante
-						actionCarteCourante();
-						return true;
+					} else{
+						if(c.orientation == Configuration.ORIENTATION_PORTRAIT ) {
+							if (x > 240 && y > 400) {
+								// action sur la caseCourante
+								actionCaseCourante();
+								return true;
+							} else if (x > 180 && x < 230 && y < 480 && y > 400) {
+								// action sur la carteCourante
+								actionCarteCourante();
+								return true;
+							}
+						} else if(c.orientation == Configuration.ORIENTATION_LANDSCAPE ){
+							if (x > 400 && y > 240) {
+								// action sur la caseCourante
+								actionCaseCourante();
+								return true;
+							} else if (x > 330 && x < 381 && y < 320 && y > 240) {
+								// action sur la carteCourante
+								actionCarteCourante();
+								return true;
+							}
+						}
 					}
 				}
+			//	textInfo.setText("aie");
 			}
 			return false;
 		} else {
@@ -423,9 +461,8 @@ public class PlateauJeu extends Activity {
 		lvert = (LinearLayout) findViewById(R.id.lvert);
 		lrouge = (LinearLayout) findViewById(R.id.lrouge);
 		ljaune = (LinearLayout) findViewById(R.id.ljaune);
-		// Text01 = (TextView) findViewById(R.id.textInfo);
-		textInfo = (TextView) findViewById(R.id.textInfo);
 		textJoueurActif = (TextView) findViewById(R.id.textJoueurActif);
+		textInfo = (TextView) findViewById(R.id.textInfo);
 		btnJouer = (Button) findViewById(R.id.Jouer);
 		btnAnnuler = (Button) findViewById(R.id.Annuler);
 		btnJoueurSvt = (Button) findViewById(R.id.JoueurSvt);
@@ -463,7 +500,7 @@ public class PlateauJeu extends Activity {
 			startActivity(defineIntent);
 		} else {
 			// textJoueurActif.setText("notification pas le droit");
-			CharSequence text = "Interdit avec ce type de rèles";
+			CharSequence text = "Interdit avec ce type de rï¿½les";
 			notif(text, Toast.LENGTH_SHORT);
 
 		}
@@ -521,6 +558,7 @@ public class PlateauJeu extends Activity {
 
 	// click sur une case du plateau
 	public void actionCase(int x, int y) {
+		textInfo.setText("blo");
 		if (plateauModif) // plateau doit etre modifier avec de deplacer un pion
 		{
 			int ligne = CoordToLigne(y); // converti le click en ligne
@@ -549,11 +587,11 @@ public class PlateauJeu extends Activity {
 				}
 
 			} else {
-				CharSequence text = "Déplacement interdit";
+				CharSequence text = "Dï¿½placement interdit";
 				notif(text, Toast.LENGTH_SHORT);
 			}
 		} else {
-			CharSequence text = "Vous devez modifier le plateau avant de vous déplacer";
+			CharSequence text = "Vous devez modifier le plateau avant de vous dï¿½placer";
 			notif(text, Toast.LENGTH_SHORT);
 			// textInfo.setText("Vous devez modifier le plateau avant de vous deplacer");
 		}
@@ -621,7 +659,7 @@ public class PlateauJeu extends Activity {
 				}
 			}
 		} else {
-			CharSequence text = "Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !";
+			CharSequence text = "Vous ne pouvez pas modifier le plateau aprï¿½s avoir dï¿½placï¿½ votre pion !";
 			notif(text, Toast.LENGTH_SHORT);
 		}
 		return false;
@@ -680,7 +718,7 @@ public class PlateauJeu extends Activity {
 
 		plateauModif = false;
 		deplacement = false;
-		CharSequence text = "Modification du plateau annulée";
+		CharSequence text = "Modification du plateau annulï¿½e";
 		notif(text, Toast.LENGTH_SHORT);
 		btnAnnuler.setVisibility(4); // rend invisible le bouton annuler
 		// }
@@ -1115,7 +1153,7 @@ public class PlateauJeu extends Activity {
 
 				// partie finie : supprimer notif et mettre une boite de
 				// dialogue pour recommencer la partie
-				CharSequence text = "Partie Gagnée par : "+ maPartie.getJoueurActif().getNom();
+				CharSequence text = "Partie Gagnï¿½e par : "+ maPartie.getJoueurActif().getNom();
 				//notif(text, Toast.LENGTH_SHORT);
 			} else {
 
@@ -1134,7 +1172,7 @@ public class PlateauJeu extends Activity {
 				// notif(text,Toast.LENGTH_SHORT,0,0,0);
 
 				// text =
-				// "Commencez par modifier le plateau puis déplacez votre pion";
+				// "Commencez par modifier le plateau puis dï¿½placez votre pion";
 				// notif(text,Toast.LENGTH_SHORT);
 				Context lecontext = getBaseContext();
 				sauvegarder(lecontext, maPartie);
