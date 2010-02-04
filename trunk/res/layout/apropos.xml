@@ -35,11 +35,11 @@
 				android:textSize="25dp"
 				android:id="@+id/noms" 
 				android:text="
-Aurélien SIGNE
-Carlos BARROSO
-EMMANUEL DEJEAN
-Florian COUSSIN
-Michaël MERROUCHE
+Aurélien SIGNE,
+Carlos BARROSO,
+EMMANUEL DEJEAN,
+Florian COUSSIN,
+Michaël MERROUCHE,
 Raphäel MOST" 
 				android:gravity="center"
 				android:layout_marginLeft="35dip"

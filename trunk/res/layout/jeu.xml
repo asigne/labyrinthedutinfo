@@ -8,7 +8,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 	<TableLayout 
 		android:id="@+id/TableLayout01" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textInfo" android:text="@+id/textInfo"></TextView>
 		
 		<TableRow android:gravity="center">
 		<TextView
@@ -29,7 +29,8 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 			android:layout_width="160dp">
 		</TextView>
 		
-		</TableRow>
+		
+</TableRow>
 		<TableRow android:gravity="center">
 		<TextView
 			android:textSize="17dp"  
@@ -53,14 +54,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 	
 	
 	
-	<TextView 
-		android:layout_y="0dip" 
-		android:layout_x="0dip" 
-		android:layout_height="wrap_content" 
-		android:text="@+id/textInfo" 
-		android:layout_width="320dip" 
-		android:id="@+id/textInfo">
-	</TextView>
+	
 		
 	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@+id/Plateau" 

@@ -13,7 +13,7 @@
 
         <activity android:label="NouvellePartie" android:name="NouvellePartie">	</activity>
         <activity android:name="Solo" android:label="newSolo">		</activity>
-        <activity android:name="PlateauJeu" android:label="PlateauJeu">		</activity>
+        <activity android:name="PlateauJeu"  android:label="PlateauJeu">		</activity>
     	<activity android:name="AffichageCartes" android:label="AffichageCartes">	</activity>
     	<activity android:name="Pseudos2" android:label="Pseudos2">	</activity>
     	<activity android:name="Pseudos3" android:label="Pseudos3">	</activity>
