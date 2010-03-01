@@ -320,58 +320,40 @@ public class IA extends Joueur {
 		}
 		return 50 * nombreChemin + (14 - distance);
 	}
-/*	
 	
-	//rejoindre un serveur ou une partie ???
-	public void RejoindreServeur(Serveur monServeur){
-	
-	}
-	
-	public void RejoindrePartie(Partie maPartie){
-		partieActuelle=maPartie;
-		maPartie.ajouterJoueur(this);
-	}
-	//rejoindre un serveur ou une partie ???
-	
-	public Coup rechercheMeilleurCoup(Partie maPartie, String flecheInterdite, int sensInterdit)
-	{
-			// methode developp�e par le prof
-	    	// genere le meilleur coup
-		//maPartie.getCaseCourante.rotate();
-	    Coup monCoup=new Coup(maPartie.getCaseCourante(), 3, "haut");
-	    return monCoup;
-	    //TODO retourner aussi le d�placement
-	} 	
-	
-	public void rechercheMeilleurDeplacement(Partie maPartie)
-	{
-		// methode developp�e par le prof
-		
-		//pour le deplacement, modifier les valeurs de ligne et de  colonne;
-		int ligne=0, colonne=0;
-		seDeplacer(ligne, colonne);
-	} 
-	
-*/
-	
-	public void jouer(int indiceInterdit, String flecheInterdite) {
+	public Coup jouer(int indiceInterdit, String flecheInterdite) {
 		Coup monCoup;
 		Case caseCourante = partieActuelle.getCaseCourante();
 
+		
+		
 		// valeur par default de tour de jeu de l'IA
 		int ligneDeplacement = getPosLigne() - 1, colonneDeplacement = getPosColonne();
-		if (indiceInterdit == 1 && flecheInterdite == "bas") {
-			monCoup = new Coup(caseCourante, 1, "bas");
+		if (indiceInterdit == 1 && flecheInterdite.equals("bas")) {
+			monCoup = new Coup(caseCourante, 3, "bas");
 		} else {
-			monCoup = new Coup(caseCourante, 2, "bas");
+			monCoup = new Coup(caseCourante, 1, "bas");
 		}
 
 		// a cet endroit, modifier l'objet monCoup, l'entier ligneDeplacement et
 		// colonneDeplacement
 		// en fonction de la decision de l'IA
-
+		
+		ObjetIA oia=new ObjetIA();
+		oia.setPlateau(partieActuelle.getMonPlateau());
+		
+		
+		AMove meilleurDeplacement = minimaxAB(flecheInterdite, indiceInterdit, this, oia, IA.MAX, 1, -10000, 10000);
+		
+		ObjetIA jeuIa=meilleurDeplacement.getO();
+		monCoup=jeuIa.getCoup();
+		ligneDeplacement=jeuIa.getDeplacementX();
+		colonneDeplacement=jeuIa.getDeplacementY();
+		
 		partieActuelle.modifierPlateau(monCoup);
+		testCasesAccessibles(partieActuelle.getMonPlateau());
 		this.seDeplacer(ligneDeplacement, colonneDeplacement);
+		return monCoup;
 	}
 	
 	private class AMove{
