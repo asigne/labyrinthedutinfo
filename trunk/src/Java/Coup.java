@@ -30,4 +30,14 @@ public class Coup {
 
 		return coupSauv;
 	}
+
+	public int getModif() {
+		return modif;
+	}
+
+	public String getSens() {
+		return sens;
+	}
+	
+	
 }
