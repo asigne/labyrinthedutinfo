@@ -236,6 +236,7 @@ public class PlateauJeu extends Activity {
 		btnJoueurSvt.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				btnJoueurSvt.setVisibility(4);
+				afficheCarteCourante();
 				montrerCaseObjectif();
 				jeuPossible = true;
 
@@ -1153,7 +1154,7 @@ public class PlateauJeu extends Activity {
 
 				// partie finie : supprimer notif et mettre une boite de
 				// dialogue pour recommencer la partie
-				CharSequence text = "Partie Gagn�e par : "+ maPartie.getJoueurActif().getNom();
+				//CharSequence text = "Partie Gagn�e par : "+ maPartie.getJoueurActif().getNom();
 				//notif(text, Toast.LENGTH_SHORT);
 			} else {
 
@@ -1185,11 +1186,14 @@ public class PlateauJeu extends Activity {
 
 				// notif(text,Toast.LENGTH_SHORT);
 				afficheCarteCourante();
+				afficheCaseCourante(0);
 
 				plateauModif = false;
 				if (maPartie.getJoueurActif() instanceof IA) {
-					((IA) maPartie.getJoueurActif()).jouer(indiceInterdit,
-							flecheInterdite);
+					Coup coupIa = ((IA) maPartie.getJoueurActif()).jouer(indiceInterdit,flecheInterdite);
+					plateauModif=true;
+					MaJPlateau(coupIa.getModif(), coupIa.getSens());
+					affichePions();
 					tourDejeu();
 				}
 			}
