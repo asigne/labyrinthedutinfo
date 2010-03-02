@@ -15,16 +15,16 @@
 			<TextView 
 				android:textSize="35sp" 
 				android:layout_height="wrap_content" 
-				android:text="Type de Partie" 
+				android:text="Partie Locale" 
 				android:layout_width="wrap_content" 
 				android:gravity="center"
 				android:layout_marginTop="10dip"
-				android:layout_marginBottom="50dip"
+				android:layout_marginBottom="10dip"
 			/>
 			
 			<Button
 				android:id="@+id/newSolo" 
-				android:text="Nouvelle partie contre l'ordinateur" 
+				android:text="Partie contre l'ordinateur" 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:gravity="center"
@@ -34,8 +34,29 @@
 			/>
 			
 			<Button 
-				android:id="@+id/newMulti" 
-				android:text="Créer une partie Multijoueurs" 
+				android:id="@+id/newLocal" 
+				android:text="Partie MultiJoueurs" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:gravity="center"
+				android:textSize="23sp" 
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="30dip"
+			/>
+			
+			<TextView 
+				android:textSize="35sp" 
+				android:layout_height="wrap_content" 
+				android:text="Partie Réseau" 
+				android:layout_width="wrap_content" 
+				android:gravity="center"
+				android:layout_marginTop="10dip"
+				android:layout_marginBottom="10dip"
+			/>
+			
+			<Button 
+				android:id="@+id/newRes" 
+				android:text="Créer une partie" 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:gravity="center"
@@ -45,8 +66,8 @@
 			/>
 			
 			<Button 
-				android:id="@+id/RejMulti" 
-				android:text="Rejoindre une partie Multijoueurs" 
+				android:id="@+id/rejMulti" 
+				android:text="Rejoindre une partie" 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
 				android:gravity="center"
