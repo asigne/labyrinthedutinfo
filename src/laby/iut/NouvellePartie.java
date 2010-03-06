@@ -10,7 +10,7 @@ import android.widget.Button;
 
 public class NouvellePartie extends Activity {
 
-	Button newSolo, newMulti, rejMulti;
+	Button newSolo, newRes, newLoc, rejMulti;
 	String typePartie;
 
 	@Override
@@ -20,8 +20,9 @@ public class NouvellePartie extends Activity {
 		setContentView(R.layout.nouvellepartie);
 
 		newSolo = (Button) findViewById(R.id.newSolo);
-		newMulti = (Button) findViewById(R.id.newMulti);
-		// rejMulti = (Button) findViewById(R.id.rejMulti);
+		newLoc = (Button) findViewById(R.id.newLocal);
+		newRes = (Button) findViewById(R.id.newRes);
+		rejMulti = (Button) findViewById(R.id.rejMulti);
 
 		newSolo.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -30,14 +31,55 @@ public class NouvellePartie extends Activity {
 
 			}
 		});
-
-		newMulti.setOnClickListener(new View.OnClickListener() {
+		
+		newLoc.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				typePartie = "multi";
-				newMulti();
+				partieLocale();
 
 			}
 		});
+
+		newRes.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				typePartie = "multi";
+				Serveur();
+
+			}
+		});
+		
+		rejMulti.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				typePartie = "multi";
+				Client();
+			}
+		});
+	}
+	
+	public void partieLocale() {
+		// creation de l'intent
+		Intent defineIntent = new Intent(this, PartieLocale.class);
+		Bundle objetbundle = new Bundle();
+		objetbundle.putString("typePartie", typePartie);
+		defineIntent.putExtras(objetbundle);
+		// lancement de la nouvelle activity
+		startActivity(defineIntent);
+	}
+	
+	public void Serveur() {
+		// creation de l'intent
+		Intent defineIntent = new Intent(this, PlateauJeuReseau.class);
+		// et de parametres
+		Bundle objetbundle = new Bundle();
+
+		String mode = "nouvellePartie";
+		objetbundle.putString("mode", mode);
+		objetbundle.putString("typeJoueur", "serveur");
+		objetbundle.putString("typePartie", typePartie);
+		defineIntent.putExtras(objetbundle);
+
+		// lancement de la nouvelle activity
+		startActivity(defineIntent);
 	}
 
 	public void newSolo() {
@@ -58,6 +100,29 @@ public class NouvellePartie extends Activity {
 		defineIntent.putExtras(objetbundle);
 		// lancement de la nouvelle activity
 		startActivity(defineIntent);
+	}
+	
+
+	public void Client() {
+		// creation de l'intent
+		Intent defineIntent = new Intent(this, PlateauJeuReseau.class);
+		// et de parametres
+		Bundle objetbundle = new Bundle();
+
+		String mode = "nouvellePartie";
+		objetbundle.putString("mode", mode);
+		objetbundle.putString("typeJoueur", "client");
+		objetbundle.putString("typePartie", typePartie);
+		defineIntent.putExtras(objetbundle);
+
+		// lancement de la nouvelle activity
+		startActivity(defineIntent);
+	}
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
 	}
 
 	public void setFullscreen() {

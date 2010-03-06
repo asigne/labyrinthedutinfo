@@ -52,6 +52,12 @@ public class PartieLocale extends Activity {
 			}
 		});
 	}
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
 
 	public void continuer() {
 		Intent defineIntent = null;

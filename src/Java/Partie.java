@@ -120,7 +120,7 @@ public class Partie implements Serializable {
 	// modifie le plateau
 	public void modifierPlateau(Coup monCoup) {
 		String sens = monCoup.sens;
-		if (sens == "haut" || sens == "bas") {
+		if (sens.equals("haut") || sens.equals("bas")) {
 			caseCourante = monPlateau.modifierColonne(monCoup);
 		} else {
 			caseCourante = monPlateau.modifierLigne(monCoup);
@@ -221,34 +221,31 @@ public class Partie implements Serializable {
 		ArrayList<Joueur> listEnCoursDeTest = null;
 		Joueur JCT; // joueur en Cours de Traitement
 
-		if (fleche == "haut") {
+		if (fleche.equals("haut")) {
 			for (int ligne = 6; ligne >= 0; ligne--) {
-				listEnCoursDeTest = monPlateau.getCase(ligne, indice)
-				.getListJoueur();
+				listEnCoursDeTest = monPlateau.getCase(ligne, indice).getListJoueur();
 				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
 					JCT = listEnCoursDeTest.get(i);
 					JCT.modifPosition(ligne, indice);
 				}
 			}
-		} else if (fleche == "bas") {
+		} else if (fleche.equals("bas")) {
 			for (int ligne = 0; ligne <= 6; ligne++) {
-				listEnCoursDeTest = monPlateau.getCase(ligne, indice)
-				.getListJoueur();
+				listEnCoursDeTest = monPlateau.getCase(ligne, indice).getListJoueur();
 				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
 					JCT = listEnCoursDeTest.get(i);
 					JCT.modifPosition(ligne, indice);
 				}
 			}
-		} else if (fleche == "gauche") {
+		} else if (fleche.equals("gauche")) {
 			for (int colonne = 6; colonne >= 0; colonne--) {
-				listEnCoursDeTest = monPlateau.getCase(indice, colonne)
-				.getListJoueur();
+				listEnCoursDeTest = monPlateau.getCase(indice, colonne).getListJoueur();
 				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
 					JCT = listEnCoursDeTest.get(i);
 					JCT.modifPosition(indice, colonne);
 				}
 			}
-		} else if (fleche == "droite") {
+		} else if (fleche.equals("droite")) {
 			for (int colonne = 0; colonne <= 6; colonne++) {
 				listEnCoursDeTest = monPlateau.getCase(indice, colonne)
 				.getListJoueur();

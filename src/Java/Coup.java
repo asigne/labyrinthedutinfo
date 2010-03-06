@@ -1,6 +1,8 @@
 package Java;
 
-public class Coup {
+import java.io.Serializable;
+
+public class Coup implements Serializable{
 	Case maCase;
 	int modif; // numero de ligne ou de colonne
 	String sens; // sens de l'insertion de la case courante dans le plateau
@@ -31,6 +33,10 @@ public class Coup {
 		return coupSauv;
 	}
 
+	public Case getMaCase() {
+		return maCase;
+	}
+
 	public int getModif() {
 		return modif;
 	}
@@ -38,6 +44,9 @@ public class Coup {
 	public String getSens() {
 		return sens;
 	}
+	
+	
+	
 	
 	
 }

@@ -2,32 +2,20 @@ package Java;
 
 import java.io.Serializable;
 
-public class ObjetIA implements Serializable {
-
-	Plateau Plateau;
+public class ObjetReseau implements Serializable {
 	Coup Coup;
 	int deplacementX, deplacementY;
 
-	public ObjetIA() {
-		Plateau = null;
+	public ObjetReseau() {
 		Coup = null;
-		deplacementX = 0;
-		deplacementY = 0;
+		deplacementX = 99;
+		deplacementY = 55;
 	}
 
 	public void affiche() {
-		Plateau.affiche();
 		System.out.println(Coup);
 		System.out.println("deplacementX" + deplacementX);
 		System.out.println("deplacementY" + deplacementY);
-	}
-
-	public Plateau getPlateau() {
-		return Plateau;
-	}
-
-	public void setPlateau(Plateau plateau) {
-		Plateau = plateau;
 	}
 
 	public Coup getCoup() {

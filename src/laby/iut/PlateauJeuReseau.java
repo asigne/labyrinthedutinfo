@@ -13,33 +13,41 @@ import Java.Coup;
 import Java.IA;
 import Java.Joueur;
 import Java.L;
+import Java.ObjetReseau;
 import Java.Partie;
 import Java.Plateau;
 import Java.T;
+import Java.BluetoothChatService;
 import Java.Utilisateur;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PlateauJeu extends Activity {
-
+public class PlateauJeuReseau extends Activity {
 	ImageView fg1, fg3, fg5, fd1, fd3, fd5, fh1, fh3, fh5, fb1, fb3, fb5,
 	imageCarteCourante;
 	ImageView pionBleu, pionRouge, pionVert, pionJaune;
@@ -48,33 +56,31 @@ public class PlateauJeu extends Activity {
 	TextView Text01, textInfo, textJoueurActif;
 	LinearLayout lbleu, lvert, lrouge, ljaune;
 	TableLayout lPlateau;
-	Button btnJouer, btnAnnuler, btnJoueurSvt;
-	String flecheInterdite;
+	Button btnJouer, btnAnnuler, btnJoueurSvt, btnEnvoiPlateau;
+	String flecheInterdite="";
 	int indiceInterdit;
 	Partie maPartie;
 	Plateau monPlateau;
 	Case caseCourante;
 	Coup monCoup;
-
+	ObjetReseau monJeu, jeuAdversaire;
+	int cptPaquets=0;
 	Vibrator leVibreur;
-
+	byte[] objetBuffer= new byte[4818];
 	boolean ctrouve = false;
-
+	boolean autorisationJouer = false;
 	Joueur ia, j1, j2, j3, j4;
-
 	int sauvModif;
 	Case sauvCaseCourante, sauvCaseSortante;
 	String sauvFleche;
-	String sauvFlecheInterdite;
+	String sauvFlecheInterdite="";
 	int sauvIndiceInterdit;
-	int sauvPosLigne, sauvPosColonne;
-
+	int sauvPosLigne=0, sauvPosColonne=0;
 	TextView tJ1, tJ2, tJ3, tJ4;
-
 	String fleche;
-
 	boolean deplacement = false, premiereModif = true;
 	boolean plateauModif = false;
+	
 
 	// parametre de l'application
 	//int xmin = 13, xmax = 307, ymin = 61, ymax = 355;// coordonn�es du plateau
@@ -90,8 +96,46 @@ public class PlateauJeu extends Activity {
 	int indiceI = R.drawable.i;
 	int indicePremierPion = R.id.lbleu;
 
-	String pseudo1, pseudo2, pseudo3, pseudo4, regle, difficulte, typePartie;
+	String pseudo1, pseudo2, pseudo3, pseudo4, regle, difficulte, typePartie,typeJoueur,typePartieMulti;
 	int nbJoueurs;
+	
+	
+	// Debugging
+    private static final String TAG = "BluetoothChat";
+    private static final boolean D = true;
+
+    // Message types sent from the BluetoothChatService Handler
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_READ_JEU = 6;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_DEVICE_NAME = 4;
+    public static final int MESSAGE_TOAST = 5;
+
+    // Key names received from the BluetoothChatService Handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE = 1;
+    private static final int REQUEST_ENABLE_BT = 2;
+
+    // Name of the connected device
+    private String mConnectedDeviceName = null;
+    // Array adapter for the conversation thread
+ ///   private ArrayAdapter<String> mConversationArrayAdapter;
+    // String buffer for outgoing messages
+    private StringBuffer mOutStringBuffer;
+    // Local Bluetooth adapter
+    private BluetoothAdapter mBluetoothAdapter = null;
+    // Member object for the chat services
+    private BluetoothChatService mChatService = null;
+
+    
+	
+	
+	
+	
 
 	// genere une notif avec le texte "text", la dur�e "duration"
 	// et coordonn�e par defaut(en bas du plateau)
@@ -114,7 +158,7 @@ public class PlateauJeu extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setFullscreen();
-		setContentView(R.layout.jeu);
+		setContentView(R.layout.jeureseau);
 		
 		Configuration c = getResources().getConfiguration();
 		if(c.orientation == Configuration.ORIENTATION_PORTRAIT ) {
@@ -131,80 +175,119 @@ public class PlateauJeu extends Activity {
 			// coordonn�es du plateau
 			// de jeu
 		}
-
-		
 		// r�cuperation du pseudo et des parametres de la partie
 		Bundle objetParametre = this.getIntent().getExtras();
 
 		String mode = objetParametre.getString("mode");
-		if (mode.equals("nouvellePartie")) {
-
-			typePartie = objetParametre.getString("typePartie");
-			regle = objetParametre.getString("regle");
-
-			if (typePartie.equals("solo")) {
-				difficulte = objetParametre.getString("difficulte");
-				nbJoueurs = 2;
-			}
-
-			if (typePartie.equals("multi")) {
-				//detailler le cas local ou reseau
-						
-				//si local
-				difficulte = "";
-				nbJoueurs = objetParametre.getInt("nbJoueurs");
-
-				switch (nbJoueurs) {
-				case 2:
-					pseudo1 = objetParametre.getString("pseudoJ1");
-					pseudo2 = objetParametre.getString("pseudoJ2");
-					break;
-				case 3:
-					pseudo1 = objetParametre.getString("pseudoJ1");
-					pseudo2 = objetParametre.getString("pseudoJ2");
-					pseudo3 = objetParametre.getString("pseudoJ3");
-					break;
-				case 4:
-					pseudo1 = objetParametre.getString("pseudoJ1");
-					pseudo2 = objetParametre.getString("pseudoJ2");
-					pseudo3 = objetParametre.getString("pseudoJ3");
-					pseudo4 = objetParametre.getString("pseudoJ4");
-					break;
-			
+		typeJoueur = objetParametre.getString("typeJoueur");
+		typePartie = objetParametre.getString("typePartie");
+		
+		difficulte = objetParametre.getString("difficulte");
+		regle = "enfant";											//ajouter un menu pour selectionner les regles
+		
+		
+        // Get local Bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        monJeu = new ObjetReseau();
+		
+		
+		
+		if (typePartie.equals("multi")) {
+				initDesID();
+				btnEnvoiPlateau.setVisibility(4);
+				btnJouer.setVisibility(4);
+				if (typeJoueur.equals("serveur")) {
+					ensureDiscoverable();    
+					nbJoueurs = 2;
+					lancementPartie(mode);													
+					initPlateau2D(); // initialisation de l'affichage du plateau en 2D
+					affichePions(); // affichage des pions sur le plateau
+					afficheCaseCourante(0); // affichage de la case courante
+					definirJoueurActif(j1);
+					monJeu.setDeplacementX(0);
+					monJeu.setDeplacementY(0);
+					afficheScores();
+					afficheCarteCourante();
+					montrerCaseObjectif();
+					textJoueurActif.setText("Serveur");
 				}
-			}
+				else if(typeJoueur.equals("client")) {
+				//si client
+					ensureDiscoverable();  
+					scan();
+					//recupererPartie
+					//Se defnir en tant que joueur2 et serveur en joueur1
+					/*initPlateau2D(); // initialisation de l'affichage du plateau en 2D
+					affichePions(); // affichage des pions sur le plateau
+					afficheCaseCourante(0); // affichage de la case courante
+					definirJoueurActif(j1);
+					afficheScores();
+					afficheCarteCourante();
+					montrerCaseObjectif();
+				*/
+				textJoueurActif.setText("Client");
+				}
+
 		}
-
-		initDesID();
-		lancementPartie(mode);													
-		initPlateau2D(); // initialisation de l'affichage du plateau en 2D
-		affichePions(); // affichage des pions sur le plateau
-		afficheCaseCourante(0); // affichage de la case courante
-
-		if (mode.equals("nouvellePartie")) {
-			definirJoueurActif(j1);
-		}
-		afficheScores();
-
-		// affichage de la carte courante du joueur
-		afficheCarteCourante();
-		montrerCaseObjectif();
-
-		textJoueurActif.setText("");
-
-		// CharSequence text;
-		// text = "A "+maPartie.getJoueurActif().getNom()+" de jouer !";
-		// notif(text,Toast.LENGTH_SHORT,0,0,0);
-
-		// text =
-		// "Commencez par modifier le plateau puis d�placez votre pion";
-		// notif(text,Toast.LENGTH_SHORT);
+		
 
 		btnJouer.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
-				tourDejeu();
-
+				if (plateauModif)
+				{
+        			premiereModif = false;
+        			
+        			
+        			monJeu.getCoup().getMaCase().getListJoueur().clear();
+					byte[] send = toBytes(monJeu);
+					mChatService.write(send);
+					//byte[] send = toBytes(PC);
+	                Object readObject = toObject(send);
+	                textInfo.setText("Envoi des données...");
+                
+                
+	               
+	                
+        			if (maPartie.getJoueurActif().testCarteTrouvee())
+        			{
+        				maPartie.getJoueurActif().modifCarteObjectif();
+        			}
+        			maPartie.getJoueurActif().testJoueurGagnant();
+        			if (maPartie.getPartieFinie())
+        			{
+        				partieFinie();
+        				CharSequence text = "Partie Gagnée par : "+ maPartie.getJoueurActif().getNom();
+        			}
+        			else
+        			{
+        				afficheScores();
+        				definirJoueurActif(maPartie.joueurSuivant(maPartie.getJoueurActif()));
+        				
+        				//deplacement = false;
+        				btnAnnuler.setVisibility(4);
+        				btnJouer.setVisibility(4);
+        				//jeuPossible = false;
+        				//cacherCaseObjectif();
+        				//btnJoueurSvt.setVisibility(0);
+        				//afficheCarteCourante();
+        				//montrerCaseObjectif();
+        				//plateauModif = false;
+        				
+        				/*deplacement = false;
+        				btnAnnuler.setVisibility(4);
+        				jeuPossible = false;
+        				cacherCaseObjectif();
+        				btnJoueurSvt.setVisibility(0);
+        				afficheCarteCourante();
+        				plateauModif = false;*/
+        				autorisationJouer=false;
+        			}
+        		}
+				else
+        		{
+        			CharSequence text = "Vous devez obligatoirement modifier le plateau";
+        			notif(text, Toast.LENGTH_SHORT);
+        		}
 			}
 		});
 
@@ -212,6 +295,7 @@ public class PlateauJeu extends Activity {
 			public void onClick(View v) {
 				if (!maPartie.getPartieFinie()) {
 					annulerDernierCoup();
+					autorisationJouer=true;
 				}
 
 			}
@@ -225,7 +309,28 @@ public class PlateauJeu extends Activity {
 
 			}
 		});
+		
+		btnEnvoiPlateau.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				byte[] send = toBytes(maPartie);
+				mChatService.write(send);
+				//byte[] send = toBytes(PC);
+	            
+	           
+                Object readObject = toObject(send);
+                
+                textInfo.setText("Envoi de la partie au client");
+                btnEnvoiPlateau.setVisibility(4);
+                btnJouer.setVisibility(0);
+                autorisationJouer=true;
+			}
+		});
 
+	}
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
 	}
 
 	public void lancementPartie(String mode) {
@@ -247,35 +352,11 @@ public class PlateauJeu extends Activity {
 				j2.RejoindrePartie(maPartie);
 			}
 			if (typePartie.equals("multi")) {
-				switch (nbJoueurs) {
-				case 2:
-					j1 = new Utilisateur(pseudo1);
-					j2 = new Utilisateur(pseudo2);
-
+				// creation des joueurs
+					j1 = new Utilisateur("Serveur");
+					j2 = new Utilisateur("Client");
 					j1.RejoindrePartie(maPartie);
 					j2.RejoindrePartie(maPartie);
-					break;
-				case 3:
-					j1 = new Utilisateur(pseudo1);
-					j2 = new Utilisateur(pseudo2);
-					j3 = new Utilisateur(pseudo3);
-
-					j1.RejoindrePartie(maPartie);
-					j2.RejoindrePartie(maPartie);
-					j3.RejoindrePartie(maPartie);
-					break;
-				case 4:
-					j1 = new Utilisateur(pseudo1);
-					j2 = new Utilisateur(pseudo2);
-					j3 = new Utilisateur(pseudo3);
-					j4 = new Utilisateur(pseudo4);
-
-					j1.RejoindrePartie(maPartie);
-					j2.RejoindrePartie(maPartie);
-					j3.RejoindrePartie(maPartie);
-					j4.RejoindrePartie(maPartie);
-					break;
-				}
 			}
 			maPartie.lancerPartie(); // lancement de la partie
 		} else {
@@ -361,11 +442,13 @@ public class PlateauJeu extends Activity {
 	// methode permettant de g�rer les clic sur l'�cran
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (jeuPossible) {
-			Configuration c = getResources().getConfiguration();
+		Configuration c = getResources().getConfiguration();
+		if(autorisationJouer)
+		{
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				int x = (int) (event.getX());
 				int y = (int) (event.getY());
+				//textInfo.setText("xmin:"+x+" xmax:"+y+" ymin:"+ymin+" ymax:"+ymax);
 				if (!maPartie.getPartieFinie()) {
 					// gestion du click en fonction des coordonn�es
 					if (x > xmin && x <= xmax && y > ymin && y < ymax
@@ -381,7 +464,7 @@ public class PlateauJeu extends Activity {
 						if (!plateauModif) {
 							actionFleche(x, y);
 						} else {
-							CharSequence text = "Vous avez déjà modifier le plateau";
+							CharSequence text = "Vous avez d�j� modifier le plateau";
 							notif(text, Toast.LENGTH_SHORT);
 						}
 						return true;
@@ -411,8 +494,10 @@ public class PlateauJeu extends Activity {
 				}
 			}
 			return false;
-		} else {
-			CharSequence text = "Veuillez cliquer sur le bouton avant de jouer !";
+		}
+		else
+		{
+			CharSequence text = "Ce n'est pas a vous de jouer !";
 			notif(text, Toast.LENGTH_SHORT, 0, 0, 0);
 			return false;
 		}
@@ -446,6 +531,7 @@ public class PlateauJeu extends Activity {
 		btnJouer = (Button) findViewById(R.id.Jouer);
 		btnAnnuler = (Button) findViewById(R.id.Annuler);
 		btnJoueurSvt = (Button) findViewById(R.id.JoueurSvt);
+		btnEnvoiPlateau = (Button) findViewById(R.id.EnvoyerPlateauClient);
 
 		// lPlateau = (TableLayout) findViewById(R.id.Plateau);
 		tJ1 = (TextView) findViewById(R.id.textJ1);
@@ -479,7 +565,8 @@ public class PlateauJeu extends Activity {
 			// lancement de la nouvelle activity
 			startActivity(defineIntent);
 		} else {
-			CharSequence text = "Interdit avec ce type de rèles";
+			// textJoueurActif.setText("notification pas le droit");
+			CharSequence text = "Interdit avec ce type de r�les";
 			notif(text, Toast.LENGTH_SHORT);
 
 		}
@@ -551,6 +638,8 @@ public class PlateauJeu extends Activity {
 				// case
 			{
 				deplacement = true; // deplacement est vrai
+				monJeu.setDeplacementX(ligne);
+				monJeu.setDeplacementY(colonne);
 				affichePions(); // affichage des pions sur le plateau
 				ctrouve = maPartie.getJoueurActif().testCarteTrouvee();
 				if (ctrouve == true) {
@@ -565,12 +654,13 @@ public class PlateauJeu extends Activity {
 				}
 
 			} else {
-				CharSequence text = "Déplacement interdit";
+				CharSequence text = "D�placement interdit";
 				notif(text, Toast.LENGTH_SHORT);
 			}
 		} else {
 			CharSequence text = "Vous devez modifier le plateau avant de vous déplacer";
 			notif(text, Toast.LENGTH_SHORT);
+			// textInfo.setText("Vous devez modifier le plateau avant de vous deplacer");
 		}
 	}
 
@@ -607,12 +697,17 @@ public class PlateauJeu extends Activity {
 					sauvIndiceInterdit = indiceInterdit;
 
 					// creation de la modification du plateau
-					monCoup = ((Utilisateur) maPartie.getJoueurActif())
-					.genererCoup(caseCourante, modif, fleche);
+					monCoup = ((Utilisateur) maPartie.getJoueurActif()).genererCoup(caseCourante, modif, fleche);
+					monJeu.setCoup(monCoup);
+										
 					// modification du plateau
 					maPartie.getJoueurActif().modifierPlateau(monCoup);
 					// deplacement des joueurs situes sur les cases mobiles
 					// concern�es
+					
+			
+					
+					
 					maPartie.traitementJoueurSurCaseMobile(modif, fleche);
 					affichePions();
 					// verouillage de la fleche interdite
@@ -636,7 +731,7 @@ public class PlateauJeu extends Activity {
 				}
 			}
 		} else {
-			CharSequence text = "Vous ne pouvez pas modifier le plateau apr�s avoir d�plac� votre pion !";
+			CharSequence text = "Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !";
 			notif(text, Toast.LENGTH_SHORT);
 		}
 		return false;
@@ -650,23 +745,23 @@ public class PlateauJeu extends Activity {
 		 * pas annuler s'il a d�plac� son pion {
 		 */
 		maPartie.getJoueurActif().seDeplacer(sauvPosLigne, sauvPosColonne);
-		if (sauvFleche == "haut") {
+		if (sauvFleche.equals("haut")) {
 			fleche = "bas";
-		} else if (sauvFleche == "bas") {
+		} else if (sauvFleche.equals("bas")) {
 			fleche = "haut";
-		} else if (sauvFleche == "gauche") {
+		} else if (sauvFleche.equals("gauche")) {
 			fleche = "droite";
-		} else if (sauvFleche == "droite") {
+		} else if (sauvFleche.equals("droite")) {
 			fleche = "gauche";
 		}
 
-		if (sauvFlecheInterdite == "haut") {
+		if (sauvFlecheInterdite.equals("haut")) {
 			flecheInterdite = "bas";
-		} else if (sauvFlecheInterdite == "bas") {
+		} else if (sauvFlecheInterdite.equals("bas")) {
 			flecheInterdite = "haut";
-		} else if (sauvFlecheInterdite == "gauche") {
+		} else if (sauvFlecheInterdite.equals("gauche")) {
 			flecheInterdite = "droite";
-		} else if (sauvFlecheInterdite == "droite") {
+		} else if (sauvFlecheInterdite.equals("droite")) {
 			flecheInterdite = "gauche";
 		}
 		// creation de la modification du plateau
@@ -727,7 +822,7 @@ public class PlateauJeu extends Activity {
 		fd3.setVisibility(3);
 		fd5.setVisibility(3);
 
-		if (fleche == "haut") {
+		if (fleche.equals("haut")) {
 			switch (indice) {
 			case 1:
 				fb1.setVisibility(4);
@@ -740,7 +835,7 @@ public class PlateauJeu extends Activity {
 				break;
 			}
 			flecheInterdite = "bas";
-		} else if (fleche == "bas") {
+		} else if (fleche.equals("bas")) {
 			switch (indice) {
 			case 1:
 				fh1.setVisibility(4);
@@ -753,7 +848,7 @@ public class PlateauJeu extends Activity {
 				break;
 			}
 			flecheInterdite = "haut";
-		} else if (fleche == "gauche") {
+		} else if (fleche.equals("gauche")) {
 			switch (indice) {
 			case 1:
 				fd1.setVisibility(4);
@@ -766,7 +861,7 @@ public class PlateauJeu extends Activity {
 				break;
 			}
 			flecheInterdite = "droite";
-		} else if (fleche == "droite") {
+		} else if (fleche.equals("droite")) {
 			switch (indice) {
 			case 1:
 				fg1.setVisibility(4);
@@ -834,7 +929,7 @@ public class PlateauJeu extends Activity {
 			for (int colonne = 0; colonne < 7; colonne++) {
 				noCase = indicePremiereCaseTableau + k;
 				ICT = (ImageView) findViewById(noCase);
-				afficheICT(monPlateau.getCase(ligne, colonne), ICT, 2000, 42);
+				afficheICT(maPartie.getMonPlateau().getCase(ligne, colonne), ICT, 2000, 42);
 				k++;
 			}
 			k++;
@@ -847,7 +942,7 @@ public class PlateauJeu extends Activity {
 		int k; // compteur pour selectionner l'id de la case du tableaux
 		int noCase;
 		ImageView ICT;
-		if (sens == "haut" || sens == "bas") {
+		if (sens.equals("haut") || sens.equals("bas")) {
 			k = modif;
 			int colonne = modif;
 			for (int ligne = 0; ligne < 7; ligne++) {
@@ -1107,61 +1202,38 @@ public class PlateauJeu extends Activity {
 		}
 	}
 
-	public void tourDejeu() {
+	/*
+	 * public void afficheEcran() { affichePlateau(); afficheCarteCourante();
+	 * afficheCaseCourante(0); affichePions(); }
+	 */
 
+/*	public void tourDejeu() {
 		if (plateauModif) {
 			premiereModif = false;
-
 			if (maPartie.getJoueurActif().testCarteTrouvee()) {
 				maPartie.getJoueurActif().modifCarteObjectif();
 			}
 			maPartie.getJoueurActif().testJoueurGagnant();
-
 			if (maPartie.getPartieFinie()) {
 				partieFinie();
+				CharSequence text = "Partie Gagn�e par : "+ maPartie.getJoueurActif().getNom();
 			} else {
-
 				afficheScores();
-
 				definirJoueurActif(maPartie.joueurSuivant(maPartie
 						.getJoueurActif()));
-
 				deplacement = false;
 				btnAnnuler.setVisibility(4);
 				jeuPossible = false;
 				cacherCaseObjectif();
 				btnJoueurSvt.setVisibility(0);
-				// CharSequence text =
-				// "A "+maPartie.getJoueurActif().getNom()+" de jouer !";
-				// notif(text,Toast.LENGTH_SHORT,0,0,0);
-
-				// text =
-				// "Commencez par modifier le plateau puis d�placez votre pion";
-				// notif(text,Toast.LENGTH_SHORT);
-				Context lecontext = getBaseContext();
-				sauvegarder(lecontext, maPartie);
-
-				/*
-				 * if (a == 0) { text = "impossible d'ouvrir fich" ; } if (a ==
-				 * 1) { text = "autre erreur"; } if (a == 2) text = "ok"; if (a
-				 * == 3) text ="pas ok";
-				 */
-
-				// notif(text,Toast.LENGTH_SHORT);
 				afficheCarteCourante();
-
 				plateauModif = false;
-				if (maPartie.getJoueurActif() instanceof IA) {
-					((IA) maPartie.getJoueurActif()).jouer(indiceInterdit,
-							flecheInterdite);
-					tourDejeu();
-				}
 			}
 		} else {
 			CharSequence text = "Vous devez obligatoirement modifier le plateau";
 			notif(text, Toast.LENGTH_SHORT);
 		}
-	}
+	}*/
 
 	public void setFullscreen() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1284,9 +1356,15 @@ public class PlateauJeu extends Activity {
 	public void partieFinie() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("La partie a été gagnée par \n"+ maPartie.getJoueurActif().getNom()).setCancelable(
-				false).setPositiveButton("Retour Menu Principal",
+				false).setPositiveButton("Recommencer",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
+						finish();
+					}
+				}).setNegativeButton("Menu principal",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
 						appelMenuPrincipal();
 					}
 				});
@@ -1303,9 +1381,375 @@ public class PlateauJeu extends Activity {
 		startActivity(defineIntent);
 	}
 	
-	@Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-	}
+	
+	
+	
+	
+	
+	private void ensureDiscoverable() {				//autoriser la visibilite du telephone
+        if(D) Log.d(TAG, "ensure discoverable");
+        if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivity(discoverableIntent);
+//            if(typeJoueur.equals("client"))
+//            {
+//            	scan();
+//            }
+            
+            
+        }
+    }
+    
+
+
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        if(D) Log.e(TAG, "+++ ON CREATE +++");
+//
+//        // Set up the window layout
+//        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+//        setContentView(R.layout.main);
+//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
+//
+//        // Set up the custom title
+//        mTitle = (TextView) findViewById(R.id.title_left_text);
+//        mTitle.setText(R.string.app_name);
+//        mTitle = (TextView) findViewById(R.id.title_right_text);
+//
+//        // Get local Bluetooth adapter
+//        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        ensureDiscoverable();     
+//        
+//    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(D) Log.e(TAG, "++ ON START ++");
+
+        // If BT is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        // Otherwise, setup the chat session
+        } else {
+            if (mChatService == null) startBT();
+        }
+    }
+
+    public void startBT(){
+    	// Initialize the BluetoothChatService to perform bluetooth connections
+        mChatService = new BluetoothChatService(this, mHandler);
+    }
+
+//
+//    private void setupChat() {
+//        Log.d(TAG, "setupChat()");
+//
+//        // Initialize the array adapter for the conversation thread
+//        mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.message);
+//        mConversationView = (ListView) findViewById(R.id.in);
+//        mConversationView.setAdapter(mConversationArrayAdapter);
+//
+//        // Initialize the compose field with a listener for the return key
+//        mOutEditText = (EditText) findViewById(R.id.edit_text_out);
+//
+//        // Initialize the send button with a listener that for click events
+//        mSendButton = (Button) findViewById(R.id.button_send);
+//        mSendButton.setOnClickListener(new OnClickListener() {
+//            public void onClick(View v) {
+//                // Send a message using content of the edit text widget
+//                TextView view = (TextView) findViewById(R.id.edit_text_out);
+//                String message = view.getText().toString();
+//                sendMessage(message);
+//            }
+//        });
+//
+//        // Initialize the BluetoothChatService to perform bluetooth connections
+//        mChatService = new BluetoothChatService(this, mHandler);
+//
+//        // Initialize the buffer for outgoing messages
+//        mOutStringBuffer = new StringBuffer("");
+//    }
+
+
+    
+
+    /**
+     * Sends a message.
+     * @param message  A string of text to send.
+     */
+   /* private void sendMessage(String message) {									//envoi donnees
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {												
+            // Get the message bytes and tell the BluetoothChatService to write
+            byte[] send = message.getBytes();
+            mChatService.write(send);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
+            mOutEditText.setText(mOutStringBuffer);
+        }
+    }
+*/
+      // The Handler that gets information back from the BluetoothChatService
+    private final Handler mHandler = new Handler() {
+    	
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MESSAGE_STATE_CHANGE:
+                if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                switch (msg.arg1) {
+                case BluetoothChatService.STATE_CONNECTED:
+                    textInfo.setText(R.string.title_connected_to);
+                    textInfo.append(mConnectedDeviceName);
+                    if (typeJoueur.equals("serveur"))
+                    		btnEnvoiPlateau.setVisibility(0);
+                   // mConversationArrayAdapter.clear();
+                    break;
+                case BluetoothChatService.STATE_CONNECTING:
+                	textInfo.setText(R.string.title_connecting);
+                    break;
+                case BluetoothChatService.STATE_LISTEN:
+                case BluetoothChatService.STATE_NONE:
+                    textInfo.setText(R.string.title_not_connected);
+                    break;
+                }
+                break;
+            case MESSAGE_WRITE:
+                byte[] writeBuf = (byte[]) msg.obj;
+                // construct a string from the buffer
+                String writeMessage = new String(writeBuf);
+              //  mConversationArrayAdapter.add("Me:  " + writeMessage);
+                break;
+            case MESSAGE_READ:
+            	int cpt=cptPaquets;
+            	
+            	byte[] objetBufferLocal=objetBuffer;
+                
+              //  cpt+=msg.arg1;
+            	byte[] Buflu = (byte[]) msg.obj;
+            	//Object readObject = toObject(Buflu);
+            	//textInfo.setText(""+readObject.getClass());
+            	
+            	
+            	
+            	
+            //	textInfo.setText(""+readBuf.length);
+                for (int i=0;i<Buflu.length;i++)
+                {
+                	objetBuffer[cpt]=Buflu[i];
+                	cpt++;
+                	if(cpt==4818)
+                	{
+                		break;
+                	}
+                }
+            	
+                if(cpt==4818){
+                	Object readObject = toObject(objetBufferLocal);
+                	
+                	maPartie=(Partie) readObject;
+                	monPlateau = maPartie.getMonPlateau(); // creation de la partie
+        			// recuperation du plateau de la partie
+        			caseCourante = maPartie.getCaseCourante(); // recuperation de la
+        			initPlateau2D();
+					affichePions(); // affichage des pions sur le plateau
+					afficheCaseCourante(0); // affichage de la case courante
+					j1=maPartie.getListJoueur().get(0);
+					j2=maPartie.getListJoueur().get(1);
+					definirJoueurActif(j1);
+					afficheScores();
+					//afficheCarteCourante();
+					//montrerCaseObjectif();
+					cpt=0;
+					objetBuffer=null;
+                }
+                
+                cptPaquets=cpt;
+                break;
+            case MESSAGE_DEVICE_NAME:
+                // save the connected device's name
+                mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                Toast.makeText(getApplicationContext(), "Connecté à "
+                               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                break;
+            case MESSAGE_TOAST:
+                Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
+                               Toast.LENGTH_SHORT).show();
+                break;
+            case MESSAGE_READ_JEU:
+            	byte[] readBuf = (byte[]) msg.obj;
+            	Object ObjectJeu = toObject(readBuf);
+            	//textInfo.setText(""+ObjectJeu.getClass());
+            	ObjetReseau jeuAd= new ObjetReseau();
+            	
+            	jeuAd= (ObjetReseau) ObjectJeu;
+            	
+            	int modif=jeuAd.getCoup().getModif();
+            	String sens=jeuAd.getCoup().getSens();
+            	int ligneDepl=(int) jeuAd.getDeplacementX();
+            	int colonneDepl=(int)jeuAd.getDeplacementY();
+            	
+            	//textInfo.setText(" "+ligneDepl+" "+colonneDepl+" ");
+
+            	
+            	maPartie.modifierPlateau(jeuAd.getCoup());
+            	maPartie.traitementJoueurSurCaseMobile(modif, sens);
+            	lockFleche(sens, modif);  
+				// recuperation de la nouvelle caseCourante
+				caseCourante = maPartie.getCaseCourante();
+				plateauModif = true; // le plateau a deja ete modifie
+				maPartie.getJoueurActif().testCasesAccessibles(maPartie.getMonPlateau()); // test des cases
+
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	
+            	maPartie.getJoueurActif().seDeplacer(ligneDepl,colonneDepl,maPartie.getMonPlateau());
+               	deplacement = true; // deplacement est vrai
+               	ctrouve = false; //p-e inutil
+            	
+            	MaJPlateau(modif, sens);
+            	affichePions();
+
+    			if (maPartie.getJoueurActif().testCarteTrouvee())
+    			{
+    				maPartie.getJoueurActif().modifCarteObjectif();
+    			}
+        		maPartie.getJoueurActif().testJoueurGagnant();
+        		if (maPartie.getPartieFinie()) {
+        			partieFinie();
+        			CharSequence text = "Partie Gagnée par : "+ maPartie.getJoueurActif().getNom();
+        		}
+        		else 
+        		{
+    				afficheScores();
+    				definirJoueurActif(maPartie.joueurSuivant(maPartie.getJoueurActif()));
+    				deplacement = false;
+    				btnAnnuler.setVisibility(4);
+    				btnJouer.setVisibility(0);
+    				//jeuPossible = false;
+    				//cacherCaseObjectif();
+    				//btnJoueurSvt.setVisibility(0);
+    				afficheCarteCourante();
+    				afficheCaseCourante(0);
+    				montrerCaseObjectif();
+    				plateauModif = false;
+    			}
+        		autorisationJouer=true;
+        		monJeu.setDeplacementX(maPartie.getJoueurActif().getPosLigne());
+        		monJeu.setDeplacementY(maPartie.getJoueurActif().getPosColonne());
+        		//textInfo.setText(""+deplacement);
+            	break;
+            }
+        }
+    };
+
+    public static Object toObject(byte[] bytes){
+    	Object object = null;
+    	try{
+    	object = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes)).readObject();
+    	}
+    	catch(java.io.IOException ioe){
+    	//java.util.logging.Logger.global.log(java.util.loggi ng.Level.SEVERE,ioe.getMessage());
+    	}
+    	catch(java.lang.ClassNotFoundException cnfe){
+    	//java.util.logging.Logger.global.log(java.util.loggi ng.Level.SEVERE,cnfe.getMessage());
+    	}
+    	return object;
+    	}
+    
+    public static byte[] toBytes(Object object){
+    	java.io.ByteArrayOutputStream baos = new
+    	java.io.ByteArrayOutputStream();
+    	try{
+    	java.io.ObjectOutputStream oos = new
+    	java.io.ObjectOutputStream(baos);
+    	oos.writeObject(object);
+    	}catch(java.io.IOException ioe){
+    	//java.util.logging.Logger.global.log(java.util.loggi ng.Level.SEVERE,ioe.getMessage());
+    	}
+    	return baos.toByteArray();
+    	}
+
+    
+    @Override
+    public synchronized void onResume() {
+        super.onResume();
+        if(D) Log.e(TAG, "+ ON RESUME +");
+
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (mChatService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
+              // Start the Bluetooth chat services
+              mChatService.start();
+            }
+        }
+    }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(D) Log.d(TAG, "onActivityResult " + resultCode);
+//        Toast.makeText(getApplicationContext(), "Connected to "
+//                + mConnectedDeviceName, Toast.LENGTH_LONG).show();
+        switch (requestCode) {
+        case REQUEST_CONNECT_DEVICE:
+            // When DeviceListActivity returns with a device to connect
+//          Toast.makeText(getApplicationContext(), "Connected to "
+//          + mConnectedDeviceName, Toast.LENGTH_LONG).show();
+            if (resultCode == Activity.RESULT_OK) {
+                // Get the device MAC address
+                String address = data.getExtras()
+                                     .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+                // Get the BLuetoothDevice object
+                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                // Attempt to connect to the device
+                mChatService.connect(device);
+            }
+            break;
+        case REQUEST_ENABLE_BT:
+            // When the request to enable Bluetooth returns
+            if (resultCode == Activity.RESULT_OK) {
+                // Bluetooth is now enabled, so set up a chat session
+                startBT();
+            } else {
+                // User did not enable Bluetooth or an error occured
+                Log.d(TAG, "BT not enabled");
+                Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
+    public void scan()	//scan des autres phones
+    {
+    	// Launch the DeviceListActivity to see devices and do scan
+        Intent serverIntent = new Intent(this, DeviceListActivity.class);
+        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+    }
+    
 }

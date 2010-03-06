@@ -3,10 +3,7 @@ package Java;
 import java.util.ArrayList;
 
 public class IA extends Joueur {
-		
-	int profondeurLimite = 2; 	
-	final static  int  MIN = -1;
-	final static int MAX = 1 ;
+
 	/**
 	 * 
 	 */
@@ -54,7 +51,7 @@ public class IA extends Joueur {
 				break;
 			}
 			for (int i = 1; i <= 5; i = i + 2) // i est la variable pour passer
-				// de la colonne 1 ï¿½ la 3 puis ï¿½
+				// de la colonne 1 à la 3 puis à
 				// la 5
 			{
 				if (fleche != flecheInterdite || i != indiceInterdit) // on test
@@ -68,9 +65,9 @@ public class IA extends Joueur {
 				{
 					int rotation = 0;
 					for (int j = 0; j < 4; j++) // on effectue les 4 modif
-						// possibles (la case insï¿½rï¿½e
-						// peut etre insï¿½rï¿½e de 4
-						// maniï¿½res)
+						// possibles (la case insérée
+						// peut etre insérée de 4
+						// manières)
 					{
 						maPartie.getCaseCourante().rotate(rotation); // on
 						// effectue
@@ -79,17 +76,17 @@ public class IA extends Joueur {
 						// de la
 						// case
 						monCoup = new Coup(maPartie.getCaseCourante(), i,
-								fleche); // crï¿½ation du nouveau coup
+								fleche); // création du nouveau coup
 						maPartie.modifierPlateau(monCoup); // application du
 						// coup (modif
 						// plateau)
 						ObjetIA monObjetIA = new ObjetIA();
 						monObjetIA.setPlateau(maPartie.getMonPlateau()
-								.sauvPlateau()); // ajout du plateau ï¿½
+								.sauvPlateau()); // ajout du plateau à
 						// monObjetIA
 						monObjetIA.setCoup(monCoup.sauvCoup());// ajout du coup
-						// ï¿½ monObjetIA
-						ListeObjetIA.add(monObjetIA); // ajout du new ObjetIA ï¿½
+						// à monObjetIA
+						ListeObjetIA.add(monObjetIA); // ajout du new ObjetIA à
 						// la liste
 						maPartie.setMonPlateau(plateauSauv.sauvPlateau()); // restauration
 						// du
@@ -98,7 +95,7 @@ public class IA extends Joueur {
 						maPartie.setCaseCourante(caseSauv); // restauration de
 						// la caseCourante
 						// Initiale
-						rotation += 90; // change le degrï¿½ de rotation
+						rotation += 90; // change le degré de rotation
 					}
 				}
 			}
@@ -122,7 +119,7 @@ public class IA extends Joueur {
 		// "flag" des cases
 		// accessibles par le
 		// joueur
-		// Partie maPartie = joueurActif.getPartieActuelle(); //rï¿½cupï¿½reration
+		// Partie maPartie = joueurActif.getPartieActuelle(); //récupéreration
 		// de la partie en cours
 		for (int ligne = 0; ligne < 7; ligne++) // parcours des lignes du
 			// plateau
@@ -134,7 +131,7 @@ public class IA extends Joueur {
 				if (monPlateau.getCase(ligne, colonne).getFlag() != 0) // test
 					// si le
 					// joueur
-					// ï¿½ la
+					// à la
 					// droit
 					// d'aller
 					// sur
@@ -144,7 +141,7 @@ public class IA extends Joueur {
 					// System.out.println("ligne"+ligne+" colonne"+colonne
 					// +" ok");
 					if (ligne != 0 || colonne != 0) {
-						joueurActif.seDeplacer(ligne, colonne, monPlateau); // dï¿½placement
+						joueurActif.seDeplacer(ligne, colonne, monPlateau); // déplacement
 						// du
 						// joueur
 					}
@@ -153,13 +150,13 @@ public class IA extends Joueur {
 					ObjetIA newObjetIA = new ObjetIA();
 					newObjetIA.setPlateau(monPlateau.sauvPlateau()); // ajout du
 					// plateau
-					// ï¿½
+					// à
 					// newObjetIA
-					newObjetIA.setCoup(monObjetIA.getCoup());// ajout du coup ï¿½
+					newObjetIA.setCoup(monObjetIA.getCoup());// ajout du coup à
 					// newObjetIA
 					newObjetIA.setDeplacementX(ligne);
 					newObjetIA.setDeplacementY(colonne);
-					ListeObjetIA.add(newObjetIA); // ajout du new ObjetIA ï¿½ la
+					ListeObjetIA.add(newObjetIA); // ajout du new ObjetIA à la
 					// liste
 				}
 			}
@@ -168,7 +165,7 @@ public class IA extends Joueur {
 			}
 
 	// methode retournant la liste de tous les successeurs
-	public static ArrayList<ObjetIA> successeurs(Partie maPartie,
+	public static ArrayList<ObjetIA> methode3(Partie maPartie,
 			int indiceInterdit, String flecheInterdite, Joueur joueurActif) {
 		ArrayList<ObjetIA> ListeObjetIAMethode1 = new ArrayList<ObjetIA>();
 		ArrayList<ObjetIA> ListeObjetIAMethode2 = new ArrayList<ObjetIA>();
@@ -190,11 +187,11 @@ public class IA extends Joueur {
 
 	// methode permettant de calculer le nombre de chemins pour atteindre une
 	// case, ce nombre est l'entier
-	// flag de la case concernï¿½e lorsque cette methode a ï¿½tï¿½ effectuï¿½e
+	// flag de la case concernée lorsque cette methode a été effectuée
 	public static void methode4(int ligne, int colonne, Joueur joueurActif,
 			ObjetIA monObjetIA) {
 		Plateau monPlateau = monObjetIA.getPlateau();
-		Case maCase = monPlateau.getCase(ligne, colonne);// recupere la case ï¿½
+		Case maCase = monPlateau.getCase(ligne, colonne);// recupere la case à
 		// traiter
 		int L1 = 0, C1 = 0, S = 0;
 		boolean Ok;
@@ -206,7 +203,7 @@ public class IA extends Joueur {
 		// case de 1
 		monPlateau.getCase(ligne, colonne).setFlagEnEntrant(1); // passe le
 		// flagEnEntrant
-		// ï¿½ 1
+		// à 1
 		for (int i = maCase.getSortie() + 1; i < 5; i++)// test de toutes les
 			// sorties (haut 1,
 			// droite 2, bas 3,
@@ -271,7 +268,7 @@ public class IA extends Joueur {
 				// de traitement
 			{
 				monPlateau.getCase(ligne, colonne).setSortie(S); // on indique
-				// par oï¿½ on
+				// par où on
 				// sort
 				// on change de case
 				ligne = ligne + L1;
@@ -291,16 +288,17 @@ public class IA extends Joueur {
 		}
 		monPlateau.getCase(ligne, colonne).setFlagEnEntrant(0); // on repasse le
 		// flagEnEntrant
-		// ï¿½ 0
+		// à 0
 		monPlateau.getCase(ligne, colonne).setSortie(0); // //lorsque la
 		// fonction se
 		// termine sur une
 		// case on met la
-		// sortie ï¿½ 0
+		// sortie à 0
 	}
 
 	// methode retournant la valeur d'un plateau
-	public static int methode5(Joueur joueurActif, ObjetIA monObjetIA) {
+	public static int methode5(int ligne, int colonne, Joueur joueurActif,
+			ObjetIA monObjetIA) {
 		methode4(joueurActif.getPosLigne(), joueurActif.getPosColonne(),
 				joueurActif, monObjetIA);
 		Plateau monPlateau = monObjetIA.getPlateau();
@@ -320,120 +318,24 @@ public class IA extends Joueur {
 		}
 		return 50 * nombreChemin + (14 - distance);
 	}
-	
-	public Coup jouer(int indiceInterdit, String flecheInterdite) {
+
+	public void jouer(int indiceInterdit, String flecheInterdite) {
 		Coup monCoup;
 		Case caseCourante = partieActuelle.getCaseCourante();
 
-		
-		
 		// valeur par default de tour de jeu de l'IA
 		int ligneDeplacement = getPosLigne() - 1, colonneDeplacement = getPosColonne();
-		if (indiceInterdit == 1 && flecheInterdite.equals("bas")) {
-			monCoup = new Coup(caseCourante, 3, "bas");
-		} else {
+		if (indiceInterdit == 1 && flecheInterdite == "bas") {
 			monCoup = new Coup(caseCourante, 1, "bas");
+		} else {
+			monCoup = new Coup(caseCourante, 2, "bas");
 		}
 
 		// a cet endroit, modifier l'objet monCoup, l'entier ligneDeplacement et
 		// colonneDeplacement
 		// en fonction de la decision de l'IA
-		
-		ObjetIA oia=new ObjetIA();
-		oia.setPlateau(partieActuelle.getMonPlateau());
-		
-		
-		AMove meilleurDeplacement = minimaxAB(flecheInterdite, indiceInterdit, this, oia, IA.MAX, 1, -10000, 10000);
-		
-		ObjetIA jeuIa=meilleurDeplacement.getO();
-		monCoup=jeuIa.getCoup();
-		ligneDeplacement=jeuIa.getDeplacementX();
-		colonneDeplacement=jeuIa.getDeplacementY();
-		
+
 		partieActuelle.modifierPlateau(monCoup);
-		testCasesAccessibles(partieActuelle.getMonPlateau());
 		this.seDeplacer(ligneDeplacement, colonneDeplacement);
-		return monCoup;
-	}
-	
-	private class AMove{
-		private int val;
-		private ObjetIA o;
-		
-		public AMove(int val, ObjetIA o){
-			this.val = val;
-			this.o = o;
-				
-		}
-		
-		public int getVal() {
-			return val;
-		}
-		public void setVal(int val) {
-			this.val = val;
-		}
-		public ObjetIA getO() {
-			return o;
-		}
-		public void setO(ObjetIA o) {
-			this.o = o;
-		}
-		
-		
-	}
-	
-	
-	private AMove minimaxAB(String flecheInterdite, int sensInterdit, Joueur joueurActif, ObjetIA oia,
-			int minmax , int depth, int alpha, int beta){
-		if (depth == this.profondeurLimite || joueurActif.testCarteTrouvee()) {// TODO complÃ©ter ceci
-			return (new AMove(methode5(joueurActif,oia),oia));	
-		}
-		if (minmax == MIN) {
-			ArrayList<ObjetIA> succs = 
-				successeurs(joueurActif.getPartieActuelle(), sensInterdit, flecheInterdite, joueurActif);
-			AMove ret= new AMove(beta,oia);
-			int taille = succs.size();
-			for (int i = 0 ; (i < taille) || (alpha > beta) ; i++){
-				ObjetIA o = succs.get(i);
-				
-				joueurActif.getPartieActuelle().modifierPlateau(o.getCoup());
-				joueurActif.seDeplacer(o.getDeplacementX(), o.getDeplacementY());
-				
-				Joueur j = joueurActif.getPartieActuelle().joueurSuivant(joueurActif);
-				
-				
-				
-				AMove currentMove = minimaxAB(flecheInterdite, sensInterdit, j,o, MAX, depth+1, alpha, beta); // TODO metre a jour ceci 
-				if (currentMove.getVal() < beta){				
-					beta  = currentMove.getVal();
-					ret = currentMove;
-				}
-			}		
-			return ret;	
-		}
-		else { //if (minmax == MAX) {
-			ArrayList<ObjetIA> succs = 
-				successeurs(joueurActif.getPartieActuelle(), sensInterdit, flecheInterdite, joueurActif);
-			AMove ret= new AMove(beta,oia);
-			int taille = succs.size();
-			for (int i = 0 ; (i < taille) || (alpha > beta) ; i++){
-				ObjetIA o = succs.get(i);
-				
-				joueurActif.getPartieActuelle().modifierPlateau(o.getCoup());
-				joueurActif.seDeplacer(o.getDeplacementX(), o.getDeplacementY());
-				
-				Joueur j = joueurActif.getPartieActuelle().joueurSuivant(joueurActif);
-				
-				
-				
-				AMove currentMove = minimaxAB(flecheInterdite, sensInterdit, j,o, MIN, depth+1, alpha, beta); // TODO metre a jour ceci 
-				if (currentMove.getVal() > alpha){				
-					alpha  = currentMove.getVal();
-					ret = currentMove;
-				}
-			}		
-			return ret;	
-		}
 	}
 }
-	
