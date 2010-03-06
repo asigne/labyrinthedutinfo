@@ -62,6 +62,12 @@ public class Solo extends Activity {
 			}
 		});
 	}
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
 
 	public void lancerPartie() {
 

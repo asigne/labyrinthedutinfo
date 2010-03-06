@@ -3,7 +3,7 @@ package Java;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Joueur implements Serializable {
+public abstract class Joueur implements Serializable, Cloneable {
 	/**
 	 * 
 	 */

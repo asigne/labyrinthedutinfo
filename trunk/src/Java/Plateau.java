@@ -1,5 +1,6 @@
 package Java;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ public class Plateau implements Serializable, Cloneable {
 	int comptL; // nb de L sans image
 	int comptTimage; // nb de T avec image
 	int ligne, colonne; // indice pour le parcours du plateau
-	int rotationAleatoire; // variable pour déterminer la rotation aléatoire des
+	int rotationAleatoire; // variable pour dï¿½terminer la rotation alï¿½atoire des
 	// cases
 	int caseAleatoire; // variable pour choisir une case aleatoire dans la liste
 	// "ListCase"
@@ -47,7 +48,7 @@ public class Plateau implements Serializable, Cloneable {
 
 	public void initialisation() {
 		{
-			// initialisation du PlateauBool à false
+			// initialisation du PlateauBool ï¿½ false
 			for (ligne = 0; ligne < 7; ligne++) {
 				for (colonne = 0; colonne < 7; colonne++) {
 					PlateauBool[ligne][colonne] = false;
@@ -77,7 +78,7 @@ public class Plateau implements Serializable, Cloneable {
 			PlateauCase[6][4] = new T(17, 180, 12); // livre
 
 			PlateauBool[2][0] = true;
-			PlateauCase[2][0] = new T(8, 270, 3); // épée
+			PlateauCase[2][0] = new T(8, 270, 3); // ï¿½pï¿½e
 			PlateauBool[4][0] = true;
 			PlateauCase[4][0] = new T(12, 270, 7); // tetemort
 			PlateauBool[2][6] = true;
@@ -90,7 +91,7 @@ public class Plateau implements Serializable, Cloneable {
 			PlateauBool[2][4] = true;
 			PlateauCase[2][4] = new T(10, 0, 5); // tresor
 			PlateauBool[4][2] = true;
-			PlateauCase[4][2] = new T(13, 90, 8); // clés
+			PlateauCase[4][2] = new T(13, 90, 8); // clï¿½s
 			PlateauBool[4][4] = true;
 			PlateauCase[4][4] = new T(14, 180, 9); // couronne
 
@@ -171,7 +172,7 @@ public class Plateau implements Serializable, Cloneable {
 		String sens = monCoup.sens;
 
 		Case caseTemp;
-		if (sens == "haut") {
+		if (sens.equals("haut")) {
 			caseTemp = PlateauCase[6][colonne];
 			for (ligne = 6; ligne > 0; ligne--) {
 				PlateauCase[ligne][colonne] = PlateauCase[ligne - 1][colonne];
@@ -203,7 +204,7 @@ public class Plateau implements Serializable, Cloneable {
 		String sens = monCoup.sens;
 
 		Case caseTemp;
-		if (sens == "gauche") {
+		if (sens .equals("gauche")) {
 			caseTemp = PlateauCase[ligne][6];
 			for (colonne = 6; colonne > 0; colonne--) {
 				PlateauCase[ligne][colonne] = PlateauCase[ligne][colonne - 1];

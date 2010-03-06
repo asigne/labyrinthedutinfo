@@ -24,7 +24,7 @@ public class Pseudos2 extends Activity {
 		setFullscreen();
 
 		setContentView(R.layout.pseudos2j);
-		// récuperation du pseudo et des parametres de la partie
+		// rï¿½cuperation du pseudo et des parametres de la partie
 		Bundle objetParametre = this.getIntent().getExtras();
 		nbJoueurs = objetParametre.getInt("nbJoueurs");
 		regle = objetParametre.getString("regle");
@@ -49,7 +49,11 @@ public class Pseudos2 extends Activity {
 			}
 		});
 	}
-
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
 	public void lancerPartie() {
 
 		// creation de l'intent

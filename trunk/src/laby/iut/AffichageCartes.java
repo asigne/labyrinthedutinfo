@@ -29,6 +29,11 @@ public class AffichageCartes extends Activity {
 		nbCartesRestantes.setText("Nombre de cartes restantes : " + (nbCartes));
 		gridview.setAdapter(new ImageAdapter(this, liste));
 	}
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
 
 	public void setFullscreen() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

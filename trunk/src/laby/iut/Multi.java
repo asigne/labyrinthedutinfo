@@ -34,9 +34,15 @@ public class Multi extends Activity {
 
 		newReseau.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				partieReseau();
+				Serveur();
 			}
 		});
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
 	}
 
 	public void partieLocale() {
@@ -49,11 +55,30 @@ public class Multi extends Activity {
 		startActivity(defineIntent);
 	}
 
-	public void partieReseau() {
+	/*public void partieReseau() {
 		// creation de l'intent
-		// Intent defineIntent = new Intent(this, PartieReseau.class);
+		Intent defineIntent = new Intent(this, PartieReseau.class);
+		Bundle objetbundle = new Bundle();
+		objetbundle.putString("typePartie", typePartie);
+		defineIntent.putExtras(objetbundle);
 		// lancement de la nouvelle activity
-		// startActivity(defineIntent);
+		startActivity(defineIntent);
+	}*/
+	
+	public void Serveur() {
+		// creation de l'intent
+		Intent defineIntent = new Intent(this, PlateauJeuReseau.class);
+		// et de parametres
+		Bundle objetbundle = new Bundle();
+
+		String mode = "nouvellePartie";
+		objetbundle.putString("mode", mode);
+		objetbundle.putString("typeJoueur", "serveur");
+		objetbundle.putString("typePartie", typePartie);
+		defineIntent.putExtras(objetbundle);
+
+		// lancement de la nouvelle activity
+		startActivity(defineIntent);
 	}
 
 	public void setFullscreen() {
