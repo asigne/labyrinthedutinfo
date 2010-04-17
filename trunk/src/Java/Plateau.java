@@ -166,6 +166,38 @@ public class Plateau implements Serializable, Cloneable {
 		return PlateauCase[ligne][colonne];
 	}
 
+	public Case modifierColonneReseau(Coup monCoup, Case caseCoup) {
+		//Case caseCoup = monCoup.maCase;
+		colonne = monCoup.modif;
+		String sens = monCoup.sens;
+
+		Case caseTemp;
+		if (sens.equals("haut")) {
+			caseTemp = PlateauCase[6][colonne];
+			for (ligne = 6; ligne > 0; ligne--) {
+				PlateauCase[ligne][colonne] = PlateauCase[ligne - 1][colonne];
+			}
+			// attention : a modifier : modifier les methode modifierLigne et
+			// modifierColonne pour tenir
+			// compte du nouvel etat de la caseCourante (notemment lors du jeu
+			// contre l'IA)
+			PlateauCase[0][colonne] = caseCoup;
+			PlateauCase[0][colonne].setListJoueur(caseTemp.getListJoueur());
+		} else {
+			caseTemp = PlateauCase[0][colonne];
+			for (ligne = 0; ligne < 6; ligne++) {
+				PlateauCase[ligne][colonne] = PlateauCase[ligne + 1][colonne];
+			}
+			// attention : a modifier : modifier les methode modifierLigne et
+			// modifierColonne pour tenir
+			// compte du nouvel etat de la caseCourante (notemment lors du jeu
+			// contre l'IA)
+			PlateauCase[6][colonne] = caseCoup;
+			PlateauCase[6][colonne].setListJoueur(caseTemp.getListJoueur());
+		}
+		return caseTemp;
+	}
+	
 	public Case modifierColonne(Coup monCoup) {
 		Case caseCoup = monCoup.maCase;
 		colonne = monCoup.modif;
@@ -198,6 +230,39 @@ public class Plateau implements Serializable, Cloneable {
 		return caseTemp;
 	}
 
+	public Case modifierLigneReseau(Coup monCoup, Case caseCoup) {
+		//Case caseCoup = monCoup.maCase;
+		ligne = monCoup.modif;
+		String sens = monCoup.sens;
+
+		Case caseTemp;
+		if (sens .equals("gauche")) {
+			caseTemp = PlateauCase[ligne][6];
+			for (colonne = 6; colonne > 0; colonne--) {
+				PlateauCase[ligne][colonne] = PlateauCase[ligne][colonne - 1];
+			}
+			// attention : a modifier : modifier les methode modifierLigne et
+			// modifierColonne pour tenir
+			// compte du nouvel etat de la caseCourante (notemment lors du jeu
+			// contre l'IA)
+			PlateauCase[ligne][0] = caseCoup;
+			PlateauCase[ligne][0].setListJoueur(caseTemp.getListJoueur());
+		} else {
+			caseTemp = PlateauCase[ligne][0];
+			for (colonne = 0; colonne < 6; colonne++) {
+				PlateauCase[ligne][colonne] = PlateauCase[ligne][colonne + 1];
+			}
+			// attention : a modifier : modifier les methode modifierLigne et
+			// modifierColonne pour tenir
+			// compte du nouvel etat de la caseCourante (notemment lors du jeu
+			// contre l'IA)
+			PlateauCase[ligne][6] = caseCoup;
+			PlateauCase[ligne][6].setListJoueur(caseTemp.getListJoueur());
+			
+		}
+		return caseTemp;
+	}
+	
 	public Case modifierLigne(Coup monCoup) {
 		Case caseCoup = monCoup.maCase;
 		ligne = monCoup.modif;

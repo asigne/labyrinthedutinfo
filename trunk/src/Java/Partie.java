@@ -127,6 +127,16 @@ public class Partie implements Serializable {
 		}
 
 	}
+	
+	public void modifierPlateauReseau(Coup monCoup) {
+		String sens = monCoup.sens;
+		if (sens.equals("haut") || sens.equals("bas")) {
+			caseCourante = monPlateau.modifierColonneReseau(monCoup, caseCourante);
+		} else {
+			caseCourante = monPlateau.modifierLigneReseau(monCoup, caseCourante);
+		}
+
+	}
 
 	public void setCaseCourante(Case caseCourante) {
 		this.caseCourante = caseCourante;
@@ -252,6 +262,46 @@ public class Partie implements Serializable {
 				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
 					JCT = listEnCoursDeTest.get(i);
 					JCT.modifPosition(indice, colonne);
+				}
+			}
+		}
+	}
+	
+	public void traitementJoueurSurCaseMobileReseau(int indice, String fleche) {
+		ArrayList<Joueur> listEnCoursDeTest = null;
+		Joueur JCT; // joueur en Cours de Traitement
+
+		if (fleche.equals("haut")) {
+			for (int ligne = 6; ligne >= 0; ligne--) {
+				listEnCoursDeTest = monPlateau.getCase(ligne, indice).getListJoueur();
+				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
+					JCT = listEnCoursDeTest.get(i);
+					JCT.modifPositionReseau(ligne, indice);
+				}
+			}
+		} else if (fleche.equals("bas")) {
+			for (int ligne = 0; ligne <= 6; ligne++) {
+				listEnCoursDeTest = monPlateau.getCase(ligne, indice).getListJoueur();
+				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
+					JCT = listEnCoursDeTest.get(i);
+					JCT.modifPositionReseau(ligne, indice);
+				}
+			}
+		} else if (fleche.equals("gauche")) {
+			for (int colonne = 6; colonne >= 0; colonne--) {
+				listEnCoursDeTest = monPlateau.getCase(indice, colonne).getListJoueur();
+				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
+					JCT = listEnCoursDeTest.get(i);
+					JCT.modifPositionReseau(indice, colonne);
+				}
+			}
+		} else if (fleche.equals("droite")) {
+			for (int colonne = 0; colonne <= 6; colonne++) {
+				listEnCoursDeTest = monPlateau.getCase(indice, colonne)
+				.getListJoueur();
+				for (int i = 0; i < listEnCoursDeTest.size(); i++) {
+					JCT = listEnCoursDeTest.get(i);
+					JCT.modifPositionReseau(indice, colonne);
 				}
 			}
 		}
