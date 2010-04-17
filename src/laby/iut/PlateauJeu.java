@@ -381,7 +381,7 @@ public class PlateauJeu extends Activity {
 						if (!plateauModif) {
 							actionFleche(x, y);
 						} else {
-							CharSequence text = "Vous avez déjà modifier le plateau";
+							CharSequence text = "Vous avez déjà modifié le plateau";
 							notif(text, Toast.LENGTH_SHORT);
 						}
 						return true;
@@ -479,7 +479,7 @@ public class PlateauJeu extends Activity {
 			// lancement de la nouvelle activity
 			startActivity(defineIntent);
 		} else {
-			CharSequence text = "Interdit avec ce type de rèles";
+			CharSequence text = "Interdit avec ce type de règles";
 			notif(text, Toast.LENGTH_SHORT);
 
 		}
@@ -636,7 +636,7 @@ public class PlateauJeu extends Activity {
 				}
 			}
 		} else {
-			CharSequence text = "Vous ne pouvez pas modifier le plateau apr�s avoir d�plac� votre pion !";
+			CharSequence text = "Vous ne pouvez pas modifier le plateau après avoir déplacé votre pion !";
 			notif(text, Toast.LENGTH_SHORT);
 		}
 		return false;
@@ -695,7 +695,7 @@ public class PlateauJeu extends Activity {
 
 		plateauModif = false;
 		deplacement = false;
-		CharSequence text = "Modification du plateau annul�e";
+		CharSequence text = "Modification du plateau annulée";
 		notif(text, Toast.LENGTH_SHORT);
 		btnAnnuler.setVisibility(4); // rend invisible le bouton annuler
 		// }

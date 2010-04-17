@@ -74,6 +74,7 @@ public class NouvellePartie extends Activity {
 
 		String mode = "nouvellePartie";
 		objetbundle.putString("mode", mode);
+		objetbundle.putString("regle", "Enfant");
 		objetbundle.putString("typeJoueur", "serveur");
 		objetbundle.putString("typePartie", typePartie);
 		defineIntent.putExtras(objetbundle);
@@ -111,6 +112,7 @@ public class NouvellePartie extends Activity {
 
 		String mode = "nouvellePartie";
 		objetbundle.putString("mode", mode);
+		objetbundle.putString("regle", "Enfant");
 		objetbundle.putString("typeJoueur", "client");
 		objetbundle.putString("typePartie", typePartie);
 		defineIntent.putExtras(objetbundle);

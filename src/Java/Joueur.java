@@ -120,6 +120,14 @@ public abstract class Joueur implements Serializable, Cloneable {
 		posLigne = ligne;
 		posColonne = colonne;
 	}
+	
+	public void modifPositionReseau(int ligne, int colonne) {
+		partieActuelle.getCaseCourante().supprJoueur(this);
+		posLigne = ligne;
+		posColonne = colonne;
+		partieActuelle.getMonPlateau().getCase(ligne, colonne).ajouterJoueur(this);
+	}
+	
 
 	// information du joueur
 	public String getNom() {

@@ -183,7 +183,7 @@ public class PlateauJeuReseau extends Activity {
 		typePartie = objetParametre.getString("typePartie");
 		
 		difficulte = objetParametre.getString("difficulte");
-		regle = "enfant";											//ajouter un menu pour selectionner les regles
+		regle = objetParametre.getString("regle");							
 		
 		
         // Get local Bluetooth adapter
@@ -237,6 +237,12 @@ public class PlateauJeuReseau extends Activity {
 				{
         			premiereModif = false;
         			
+        			ArrayList<Joueur> sauvListeJoueur = new ArrayList<Joueur>();
+    				for (int i = 0; i < monJeu.getCoup().getMaCase().getListJoueur().size(); i++) {
+    					sauvListeJoueur.add(monJeu.getCoup().getMaCase().getListJoueur().get(i));
+    				}
+        			
+        			
         			
         			monJeu.getCoup().getMaCase().getListJoueur().clear();
 					byte[] send = toBytes(monJeu);
@@ -244,9 +250,13 @@ public class PlateauJeuReseau extends Activity {
 					//byte[] send = toBytes(PC);
 	                Object readObject = toObject(send);
 	                textInfo.setText("Envoi des données...");
-                
-                
-	               
+	                
+	                
+    				for (int i = 0; i <sauvListeJoueur.size(); i++) {
+    					monJeu.getCoup().getMaCase().getListJoueur().add(sauvListeJoueur.get(i));
+    				}
+    				
+	                
 	                
         			if (maPartie.getJoueurActif().testCarteTrouvee())
         			{
@@ -443,12 +453,12 @@ public class PlateauJeuReseau extends Activity {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		Configuration c = getResources().getConfiguration();
-		if(autorisationJouer)
-		{
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				int x = (int) (event.getX());
-				int y = (int) (event.getY());
-				//textInfo.setText("xmin:"+x+" xmax:"+y+" ymin:"+ymin+" ymax:"+ymax);
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			int x = (int) (event.getX());
+			int y = (int) (event.getY());
+			//textInfo.setText("xmin:"+x+" xmax:"+y+" ymin:"+ymin+" ymax:"+ymax);
+			if(autorisationJouer)
+				{
 				if (!maPartie.getPartieFinie()) {
 					// gestion du click en fonction des coordonn�es
 					if (x > xmin && x <= xmax && y > ymin && y < ymax
@@ -464,7 +474,7 @@ public class PlateauJeuReseau extends Activity {
 						if (!plateauModif) {
 							actionFleche(x, y);
 						} else {
-							CharSequence text = "Vous avez d�j� modifier le plateau";
+							CharSequence text = "Vous avez déjà modifié le plateau";
 							notif(text, Toast.LENGTH_SHORT);
 						}
 						return true;
@@ -493,14 +503,22 @@ public class PlateauJeuReseau extends Activity {
 					}
 				}
 			}
-			return false;
+			else
+			{
+				if (x > 180 && x < 230 && y < 480 && y > 400) {
+					// action sur la carteCourante
+					actionCarteCourante();
+					return false;
+				}
+				else
+				{
+				CharSequence text = "Ce n'est pas à vous de jouer !";
+				notif(text, Toast.LENGTH_SHORT);
+				return false;
+				}
+			}
 		}
-		else
-		{
-			CharSequence text = "Ce n'est pas a vous de jouer !";
-			notif(text, Toast.LENGTH_SHORT, 0, 0, 0);
-			return false;
-		}
+		return false;
 	}
 
 	// recupere les ID des diff�rents objets graphiques
@@ -547,10 +565,18 @@ public class PlateauJeuReseau extends Activity {
 	public void actionCarteCourante() {
 		// recuperation de la liste des identifiants des cartes
 		if (maPartie.partieEnfant()) {
+			Joueur JoueurAuto;
 			ArrayList<Integer> listeCarte = new ArrayList<Integer>();
-			for (int i = 0; i < maPartie.getJoueurActif().getListCarte().size(); i++) {
-				listeCarte.add(maPartie.getJoueurActif().getListCarte().get(i)
-						.getIdentifiant());
+			if (typeJoueur.equals("serveur")) {
+				 JoueurAuto=maPartie.getListJoueur().get(0);
+			}
+			else
+			{
+				JoueurAuto=maPartie.getListJoueur().get(1);
+			}
+			
+			for (int i = 0; i < JoueurAuto.getListCarte().size(); i++) {
+				listeCarte.add(JoueurAuto.getListCarte().get(i).getIdentifiant());
 			}
 
 			// creation de l'intent
@@ -566,7 +592,7 @@ public class PlateauJeuReseau extends Activity {
 			startActivity(defineIntent);
 		} else {
 			// textJoueurActif.setText("notification pas le droit");
-			CharSequence text = "Interdit avec ce type de r�les";
+			CharSequence text = "Interdit avec ce type de règles";
 			notif(text, Toast.LENGTH_SHORT);
 
 		}
@@ -654,7 +680,7 @@ public class PlateauJeuReseau extends Activity {
 				}
 
 			} else {
-				CharSequence text = "D�placement interdit";
+				CharSequence text = "Déplacement interdit";
 				notif(text, Toast.LENGTH_SHORT);
 			}
 		} else {
@@ -701,7 +727,7 @@ public class PlateauJeuReseau extends Activity {
 					monJeu.setCoup(monCoup);
 										
 					// modification du plateau
-					maPartie.getJoueurActif().modifierPlateau(monCoup);
+					maPartie.modifierPlateau(monCoup);
 					// deplacement des joueurs situes sur les cases mobiles
 					// concern�es
 					
@@ -768,7 +794,7 @@ public class PlateauJeuReseau extends Activity {
 		monCoup = ((Utilisateur) maPartie.getJoueurActif()).genererCoup(
 				sauvCaseSortante, sauvModif, fleche);
 		// modification du plateau
-		maPartie.getJoueurActif().modifierPlateau(monCoup);
+		maPartie.modifierPlateau(monCoup);
 		// deplacement des joueurs situes sur les cases mobiles concern�es
 		maPartie.traitementJoueurSurCaseMobile(sauvModif, fleche);
 		affichePions();
@@ -790,7 +816,7 @@ public class PlateauJeuReseau extends Activity {
 
 		plateauModif = false;
 		deplacement = false;
-		CharSequence text = "Modification du plateau annul�e";
+		CharSequence text = "Modification du plateau annulée";
 		notif(text, Toast.LENGTH_SHORT);
 		btnAnnuler.setVisibility(4); // rend invisible le bouton annuler
 		// }
@@ -1072,7 +1098,7 @@ public class PlateauJeuReseau extends Activity {
 	public void affichePion(Joueur joueurCourant) {
 		int moitiee = tailleCase / 2;
 		int quart = tailleCase / 4;
-		int posLigne, posColonne, coordX = 70, coordY = 70;
+		int posLigne, posColonne, coordX = 0, coordY = 0;
 		int nbJoueurCase;
 		int numPion;
 		LinearLayout pionCourant = null;
@@ -1603,30 +1629,17 @@ public class PlateauJeuReseau extends Activity {
             	
             	//textInfo.setText(" "+ligneDepl+" "+colonneDepl+" ");
 
-            	
+            	while(maPartie.getCaseCourante().getRotation()!=jeuAd.getCoup().getMaCase().getRotation())
+            	{
+            		maPartie.getCaseCourante().rotate(90);
+            	}
             	maPartie.modifierPlateau(jeuAd.getCoup());
             	maPartie.traitementJoueurSurCaseMobile(modif, sens);
             	lockFleche(sens, modif);  
 				// recuperation de la nouvelle caseCourante
 				caseCourante = maPartie.getCaseCourante();
 				plateauModif = true; // le plateau a deja ete modifie
-				maPartie.getJoueurActif().testCasesAccessibles(maPartie.getMonPlateau()); // test des cases
-
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
-            	
+				maPartie.getJoueurActif().testCasesAccessibles(maPartie.getMonPlateau()); // test des cases          	
             	maPartie.getJoueurActif().seDeplacer(ligneDepl,colonneDepl,maPartie.getMonPlateau());
                	deplacement = true; // deplacement est vrai
                	ctrouve = false; //p-e inutil

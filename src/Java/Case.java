@@ -5,13 +5,13 @@ import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public abstract class Case implements Serializable, Cloneable {
-	int identifiant; // identifiant pour les cases possédante une image sinon 0
-	int rotation; // indice de rotation par rapport à la position originale
+	int identifiant; // identifiant pour les cases possï¿½dante une image sinon 0
+	int rotation; // indice de rotation par rapport ï¿½ la position originale
 	int noImage; // numero de l'image ou 0 sinon
-	boolean tabDroit[]; // tableau contenant les possibilité de sortie de la
+	boolean tabDroit[]; // tableau contenant les possibilitï¿½ de sortie de la
 	// case
 
-	// attributs utilisés lors de la recherche de chemin possible
+	// attributs utilisï¿½s lors de la recherche de chemin possible
 	int flag; // indique si la case est accessible ou non
 	int flagEnEntrant; // indique les cases du chemin actuel
 
@@ -58,7 +58,7 @@ public abstract class Case implements Serializable, Cloneable {
 		return flagEnEntrant;
 	}
 
-	// methode retournant le droit associé au rang fourni
+	// methode retournant le droit associï¿½ au rang fourni
 	public boolean getTabDroit(int rang) {
 		return tabDroit[rang];
 	}
@@ -67,15 +67,15 @@ public abstract class Case implements Serializable, Cloneable {
 		return this.noImage;
 	}
 
-	// methode permettant de faire tourner la case de 'indice' degrés
-	// l'indice rotation et les droits de la case sont modifiés
+	// methode permettant de faire tourner la case de 'indice' degrï¿½s
+	// l'indice rotation et les droits de la case sont modifiï¿½s
 	public void rotate(int indice) {
 		for (int i = 0; i < indice; i = i + 90) {
-			tabDroit[0] = tabDroit[4]; // droit temporaire pour l'échange
+			tabDroit[0] = tabDroit[4]; // droit temporaire pour l'ï¿½change
 			if (rotation < 270) {
 				rotation = rotation + 90; // MaJ de rotation
 			} else {
-				rotation = 0; // 360° correspond a 0°
+				rotation = 0; // 360ï¿½ correspond a 0ï¿½
 
 			}
 			for (int j = 4; j > 0; j--) {
@@ -94,6 +94,12 @@ public abstract class Case implements Serializable, Cloneable {
 
 	public int getRotation() {
 		return this.rotation;
+	}
+	
+	
+
+	public void setRotation(int rotation) {
+		this.rotation = rotation;
 	}
 
 	public void ajouterJoueur(Joueur newJoueur) {
